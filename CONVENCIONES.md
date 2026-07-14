@@ -60,7 +60,7 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 
 ### Identidad y Filosofía
 * **Nombre Oficial:** Grupo Asiaven (F. 1 de enero de 2010).
-* **Slogan Principal:** "La visión se hizo más grande" / "Construye tu sueño".
+* **Slogan Principal:** "La visión se hizo realidad" / "Construye tu sueño".
 * **Slogan Secundario:** "El camino hacia el éxito siempre está en construcción".
 * **Propuesta de Valor Integral:** "Más que un lujo es una necesidad. Asiaven está compuesto por diversas filiales que abarcan desde la construcción de infraestructuras hasta la implementación de sistemas de ascensores y motores. Ofrecemos servicios de construcción, maquinaria pesada e importación y distribución de productos con estándares de calidad global."
 * **Misión:** Utilizar tecnologías innovadoras dependiendo de las necesidades del cliente a nivel empresarial con el objetivo de incrementar su competitividad mediante soluciones creativas adaptadas al entorno práctico del mismo.

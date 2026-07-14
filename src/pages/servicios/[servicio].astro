@@ -4,6 +4,7 @@ import Navbar from "../../components/sections/Navbar.astro";
 import Footer from "../../components/sections/Footer.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
+import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
 import { services } from "../../data/services";
 import { Download } from "lucide-react";
 
@@ -15,6 +16,89 @@ export function getStaticPaths() {
 }
 
 const { service } = Astro.props;
+
+const elevatorsData = [
+  {
+    title: "Ascensores Residenciales",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
+    features: [
+      "Bajo consumo energético",
+      "Baja contaminación sónica",
+      "Velocidades desde 1 m/s hasta 1,75 m/s",
+      "Materiales de cabina de alta calidad",
+      "Modernos sistemas de seguridad",
+      "Modernos sistemas de operadores de puertas",
+      "Innovadores y confiables sistemas electrónicos",
+      "Confort durante el recorrido",
+      "Reducción de espacios",
+    ],
+  },
+  {
+    title: "Ascensores para Oficina",
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=1200",
+    features: [
+      "Bajo consumo energético",
+      "Baja contaminación sónica",
+      "Alta velocidades de acuerdo a la fosa y los requerimientos",
+      "Materiales de cabina de lujo",
+      "Modernos sistemas de seguridad",
+      "Modernos sistemas de operadores de puertas",
+      "Innovadores y confiables sistemas electrónicos",
+      "Confort durante el recorrido",
+      "Reducción de espacios",
+    ],
+  },
+  {
+    title: "Ascensores Panorámicos",
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=80&w=1200",
+    features: [
+      "Bajo consumo energético",
+      "Baja contaminación sónica",
+      "Velocidad acorde al diseño",
+      "Materiales de cabina panorámica de lujo",
+      "Modernos sistemas de seguridad",
+      "Modernos sistemas de operadores de puertas",
+      "Innovadores y confiables sistemas electrónicos",
+      "Confort durante el recorrido",
+    ],
+  },
+  {
+    title: "Ascensores para Hospitales",
+    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=1200",
+    features: [
+      "Ascensores Desarrollados para Hospitales",
+      "Tamaño ideal de cabina (Traslado de Pacientes en Cama)",
+      "Programa especial de Recorrido (Tiempo de apertura de puertas y tiempo de arrancada y frenado)",
+      "Poco servicio de mantenimiento (Evitando: Fuera de Servicio)",
+      "Componentes de Alta Rotación",
+      "Los mejores componentes para brindarle el confort requerido durante el uso del ascensor",
+    ],
+  },
+];
+
+const escalatorsData = [
+  {
+    title: "Escaleras Mecánicas",
+    image: "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&q=80&w=1200",
+    features: [
+      "Flexibles y Personalizables: Se adaptan a cualquier espacio y se pueden diseñar a medida.",
+      "Directas y Eficientes: Llevan a los usuarios directamente a su destino.",
+      "Modulares: Se pueden combinar con otros sistemas de transporte.",
+      "Seguras: Incorporan sistemas de seguridad de última generación.",
+      "Estéticas: Se integran perfectamente en cualquier entorno.",
+    ],
+  },
+  {
+    title: "Rampas Mecánicas",
+    image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=1200",
+    features: [
+      "Inclusivas: Permiten el acceso a todos, especialmente a personas con movilidad reducida.",
+      "Versátiles: Se adaptan a distintos espacios y necesidades.",
+      "Seguras: Garantizan un desplazamiento sin riesgos.",
+      "Personalizables: Se ajustan a cualquier estilo arquitectónico.",
+    ],
+  },
+];
 ---
 
 <Layout title={`${service.title} - Asiaven`}>
@@ -61,6 +145,24 @@ const { service } = Astro.props;
         )}
       </div>
     </div>
+
+    {service.slug === "ascensores" && (
+      <div class="mt-20">
+        <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
+          Nuestras Soluciones en Elevación
+        </h2>
+        <ProductFeatureSlider products={elevatorsData} client:load />
+      </div>
+    )}
+
+    {service.slug === "escaleras-mecanicas" && (
+      <div class="mt-20">
+        <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
+          Nuestros Sistemas de Movilidad
+        </h2>
+        <ProductFeatureSlider products={escalatorsData} client:load />
+      </div>
+    )}
   </main>
   <Footer />
 </Layout>

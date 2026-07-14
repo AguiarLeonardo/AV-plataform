@@ -18,7 +18,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     overline: "MÁS QUE UN LUJO, UNA NECESIDAD",
-    title: "La visión se hizo más grande",
+    title: "La visión se hizo realidad",
     subtitle:
       "Ofrecemos soluciones integrales en construcción, suministro de maquinaria pesada y distribución de tecnología de punta con estándares globales.",
     ctas: [
