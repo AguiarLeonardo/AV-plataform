@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/sections/Navbar.astro";
 import Footer from "../../components/sections/Footer.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
+import ClientLogosCarousel from "../../components/react/ClientLogosCarousel.tsx";
 import { MapPin } from "lucide-react";
 
 const clientes = [
@@ -61,6 +62,14 @@ const clientes = [
             </div>
           ))
         }
+      </div>
+
+      <div class="mt-24">
+        <h2 class="text-3xl md:text-4xl text-corporativo-gray font-bold text-center mb-12">
+          Empresas que confían en nosotros
+        </h2>
+
+        <ClientLogosCarousel client:visible />
       </div>
     </section>
   </main>
