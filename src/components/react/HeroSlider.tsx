@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
   {
-    title: "Innovación y Excelencia Industrial",
+    title: "La visión se hizo más grande",
     subtext:
-      "Líderes corporativos en infraestructura, con más de 15 años entregando soluciones de ingeniería a la altura de nuestros clientes.",
+      "Más que un lujo es una necesidad. Ofrecemos servicios de construcción, maquinaria pesada e importación y distribución de productos traídos desde el continente asiático.",
     cta: "Conócenos",
     href: "#nosotros",
     image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=1920",
   },
   {
-    title: "Especializados en Diferentes Servicios",
+    title: "Construye tu sueño",
     subtext:
-      "Desde manufactura avanzada hasta mantenimiento de precisión, cubrimos todas las necesidades de tu empresa.",
+      "Desde la construcción de infraestructuras hasta la implementación de sistemas de ascensores y motores: 8 servicios especializados para cubrir cada necesidad de tu empresa.",
     cta: "Ver Catálogo",
     href: "/servicios",
     image: "https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80&w=1920",
   },
   {
-    title: "La Opción Más Confiable",
+    title: "El camino hacia el éxito siempre está en construcción",
     subtext:
-      "Más de 15 años brindando soluciones integrales y calidad garantizada a nuestros clientes.",
+      "18+ años en el mercado, 802+ proyectos exitosos y más de 50 empresas nacionales e internacionales confían en nosotros.",
     cta: "Nuestra Experiencia",
     href: "/proyectos",
     image: "https://images.unsplash.com/photo-1524638431109-93d95c968f03?auto=format&fit=crop&q=80&w=1920",
@@ -37,8 +38,16 @@ export default function HeroSlider() {
     return () => clearInterval(interval);
   }, []);
 
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
   return (
-    <div className="relative h-[82dvh] md:h-[calc(100dvh-100px)] w-full overflow-hidden">
+    <div className="group relative h-[82dvh] md:h-[calc(100dvh-100px)] w-full overflow-hidden">
       {slides.map((slide, index) => (
         <div
           key={slide.image}
@@ -82,6 +91,22 @@ export default function HeroSlider() {
           </div>
         </div>
       ))}
+
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white opacity-60 backdrop-blur-sm transition-all duration-300 hover:bg-corporativo-blue hover:opacity-100"
+        aria-label="Diapositiva anterior"
+      >
+        <ChevronLeft className="h-6 w-6" />
+      </button>
+
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white opacity-60 backdrop-blur-sm transition-all duration-300 hover:bg-corporativo-blue hover:opacity-100"
+        aria-label="Siguiente diapositiva"
+      >
+        <ChevronRight className="h-6 w-6" />
+      </button>
 
       <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-3">
         {slides.map((_, index) => (
