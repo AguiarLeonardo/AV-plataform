@@ -4,16 +4,17 @@ import { MapPin, Mail, Phone } from "lucide-react";
 const currentYear = new Date().getFullYear();
 
 const quickLinks = [
-  { label: "Inicio", href: "#" },
-  { label: "Nosotros", href: "#nosotros" },
-  { label: "Proyectos", href: "#proyectos" },
-  { label: "Servicios", href: "#servicios" },
+  { label: "Inicio", href: "/" },
+  { label: "Nosotros", href: "/#nosotros" },
+  { label: "Proyectos", href: "/proyectos" },
+  { label: "Servicios", href: "/servicios" },
+  { label: "Contáctanos", href: "/#contacto" },
 ];
 
 const contactInfo = [
-  { Icon: MapPin, text: "C.C Paseo Las Mercedes, Piso 2, Caracas Venezuela" },
-  { Icon: Mail, text: "info@asiaven.com" },
-  { Icon: Phone, text: "+58 412-2712253" },
+  { Icon: MapPin, text: "C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela" },
+  { Icon: Mail, text: "proyectos@asiaven.com" },
+  { Icon: Phone, text: "+58 212-9924333" },
 ];
 ---
 
@@ -24,6 +25,9 @@ const contactInfo = [
         <a href="/" class="text-2xl font-bold tracking-widest text-white">ASIAVEN</a>
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
           Servicios de construcción, maquinaria pesada e importación y distribución de productos desde el continente asiático.
+        </p>
+        <p class="mt-4 max-w-xs text-sm italic leading-relaxed text-gray-500">
+          "El camino hacia el éxito siempre está en construcción".
         </p>
       </div>
 

@@ -55,3 +55,50 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 - **Client Roster Tipográfico:** La experiencia de la empresa se demuestra mediante un diseño de lista premium (tarjetas corporativas), destacando el nombre del proyecto, ubicación y el tipo de intervención técnica realizada por Asiaven.
 
 Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, debes leer este archivo para garantizar que respetas las reglas de Tailwind v4, Astro y las directrices de negocio de Asiaven.
+
+## Base de Conocimiento Corporativo (Knowledge Base)
+
+### Identidad y Filosofía
+* **Nombre Oficial:** Grupo Asiaven (F. 1 de enero de 2010).
+* **Slogan Principal:** "La visión se hizo más grande" / "Construye tu sueño".
+* **Slogan Secundario:** "El camino hacia el éxito siempre está en construcción".
+* **Propuesta de Valor Integral:** "Más que un lujo es una necesidad. Asiaven está compuesto por diversas filiales que abarcan desde la construcción de infraestructuras hasta la implementación de sistemas de ascensores y motores. Ofrecemos servicios de construcción, maquinaria pesada e importación y distribución de productos traídos desde el continente asiático."
+* **Misión:** Utilizar tecnologías innovadoras dependiendo de las necesidades del cliente a nivel empresarial con el objetivo de incrementar su competitividad mediante soluciones creativas adaptadas al entorno práctico del mismo.
+* **Visión:** Poder ser referente mundial con nuestros principales productos elevadores Asiaven y solventar todos los problemas de nuestros clientes dándole soluciones a medida para convertirnos en la mejor alternativa de las empresas en esta área.
+
+### Cifras Oficiales (Estadísticas)
+* **18+** Años en el mercado / Éxito Invicto.
+* **802** Proyectos Exitosos / Realizados.
+* **50+** Empresas Internacionales y Nacionales.
+* **30+** Trabajadores y sumando.
+* **51K** Seguidores.
+
+### Catálogo Oficial de Servicios (8 Servicios)
+1. Ascensores
+2. Escaleras Mecánicas
+3. Compras Internacionales
+4. Mantenimiento
+5. Tecnología
+6. Construcción
+7. Envasados (Latas)
+8. Recipientes de Gas Licuado
+
+### Beneficios Clave (Value Props)
+* **Horario Flexible:** Consulta en la hora que mejor sea ideal para ti.
+* **Paquete Asequible:** Amplia variedad de equipos ofrecidos.
+* **Cobertura Nacional:** En cualquier estado del país, si deseas concretar algún proyecto, lo llevamos hacia ti.
+
+### Datos de Contacto y Ubicación
+* **Sede Principal:** C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela.
+* **Teléfono:** +58 212-9924333
+* **Email:** proyectos@asiaven.com
+
+### Client Roster (Cartera de Clientes)
+* Fundación Propatria
+* Pequiven
+* Distribuidora Adelina. C.A
+* Landscape Vision Corp.
+* Hotel Humboldt
+* Asian Commerce. LTD
+* Telecomunicaciones Asiaven
+* Belcor Diseño Construcción

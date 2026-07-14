@@ -73,7 +73,7 @@ export const services: Service[] = [
   },
   {
     slug: "tecnologia",
-    title: "Tecnología y Telecomunicaciones",
+    title: "Tecnología",
     shortDescription:
       "Soluciones tecnológicas avanzadas en telecomunicaciones e infraestructura digital para empresas.",
     fullDescription: [
@@ -105,7 +105,7 @@ export const services: Service[] = [
   },
   {
     slug: "envasados",
-    title: "Envasados",
+    title: "Envasados (Latas)",
     shortDescription:
       "Fabricación y distribución de envases de aluminio de alta calidad para la industria alimentaria y de bebidas.",
     fullDescription: [
