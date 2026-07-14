@@ -1,0 +1,23 @@
+---
+const stats = [
+  { value: "800+", label: "Proyectos realizados" },
+  { value: "18+", label: "Años de experiencia" },
+  { value: "50+", label: "Empresas Internacionales y Nacionales" },
+  { value: "30+", label: "Trabajadores y contando más cada día" },
+];
+---
+
+<section class="border-b border-gray-300 bg-gray-200">
+  <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-gray-400/50 lg:px-8">
+    {stats.map(({ value, label }) => (
+      <div class="flex flex-col items-center gap-1 py-2 text-center">
+        <span class="text-4xl font-extrabold tracking-tight text-corporativo-gray md:text-5xl">
+          {value}
+        </span>
+        <span class="mt-1 text-sm font-semibold leading-snug tracking-wide text-gray-600 uppercase">
+          {label}
+        </span>
+      </div>
+    ))}
+  </div>
+</section>

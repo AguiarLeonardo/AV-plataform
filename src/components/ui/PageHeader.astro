@@ -1,0 +1,25 @@
+---
+interface Props {
+  title: string;
+  bgImage?: string;
+}
+
+const {
+  title,
+  bgImage = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920",
+} = Astro.props;
+---
+
+<header class="relative w-full h-[35vh] min-h-[300px] flex items-center justify-center overflow-hidden pt-20">
+  <img
+    src={bgImage}
+    alt={title}
+    class="absolute inset-0 w-full h-full object-cover"
+    loading="eager"
+    decoding="async"
+  />
+  <div class="absolute inset-0 bg-black/65"></div>
+  <h1 class="relative z-10 text-white text-4xl md:text-5xl lg:text-6xl font-extrabold text-center px-4 drop-shadow-lg">
+    {title}
+  </h1>
+</header>

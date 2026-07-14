@@ -1,0 +1,80 @@
+---
+const navLinks = [
+  { label: "Inicio", href: "/" },
+  { label: "Nosotros", href: "/#nosotros" },
+  { label: "Proyectos", href: "/proyectos" },
+  { label: "Servicios", href: "/servicios" },
+];
+---
+
+<header class="sticky top-0 z-50 w-full bg-corporativo-gray shadow-sm">
+  <nav class="mx-auto flex w-full items-center justify-between px-4 py-4 sm:px-8 lg:px-16">
+    <a href="/" class="text-2xl font-bold tracking-widest uppercase text-white select-none">
+      ASIAVEN
+    </a>
+
+    <button
+      id="mobile-menu-btn"
+      type="button"
+      class="inline-flex items-center justify-center rounded-md p-2 text-white/80 hover:text-white md:hidden"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+    >
+      <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path id="icon-open" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        <path id="icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <div id="nav-links" class="hidden items-center gap-8 md:flex">
+      {navLinks.map(({ label, href }) => (
+        <a
+          href={href}
+          class="text-sm font-medium tracking-wide text-white/80 transition-colors duration-200 hover:text-corporativo-blue"
+        >
+          {label}
+        </a>
+      ))}
+      <a
+        href="#contacto"
+        class="ml-auto rounded-lg bg-corporativo-blue px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
+      >
+        Contáctanos
+      </a>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="hidden border-t border-white/10 md:hidden">
+    <div class="flex flex-col gap-1 px-6 py-4">
+      {navLinks.map(({ label, href }) => (
+        <a
+          href={href}
+          class="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+        >
+          {label}
+        </a>
+      ))}
+      <a
+        href="#contacto"
+        class="mt-2 rounded-lg bg-corporativo-blue px-6 py-2.5 text-center text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
+      >
+        Contáctanos
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = document.getElementById("icon-open");
+  const iconClose = document.getElementById("icon-close");
+
+  btn?.addEventListener("click", () => {
+    const expanded = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!expanded));
+    menu?.classList.toggle("hidden");
+    iconOpen?.classList.toggle("hidden");
+    iconClose?.classList.toggle("hidden");
+  });
+</script>

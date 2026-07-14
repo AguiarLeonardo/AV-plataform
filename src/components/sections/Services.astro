@@ -1,0 +1,14 @@
+---
+import ServicesCarousel from "../react/ServicesCarousel.tsx";
+---
+
+<section id="servicios" class="bg-gray-50 h-[100dvh] flex flex-col justify-center py-8">
+  <div class="mx-auto w-full max-w-7xl px-6 lg:px-8">
+    <div class="flex justify-between items-end mb-6">
+      <h2 class="text-4xl text-corporativo-gray font-bold">Nuestros Servicios</h2>
+      <a href="/servicios" class="text-corporativo-blue font-semibold hover:underline flex items-center gap-2">Ver todos &rarr;</a>
+    </div>
+    
+    <ServicesCarousel client:visible />
+  </div>
+</section>

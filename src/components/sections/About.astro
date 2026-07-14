@@ -1,0 +1,56 @@
+---
+import { Clock, Package, MapPin } from "lucide-react";
+---
+
+<section id="nosotros" class="bg-white py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
+      <!-- Izquierda: Imagen corporativa -->
+      <div class="relative overflow-hidden rounded-3xl shadow-2xl">
+        <img
+          src="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=1000"
+          alt="Acerca de Asiaven"
+          class="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <!-- Derecha: Contenido -->
+      <div>
+        <h2 class="mt-4 text-4xl font-extrabold tracking-tight text-corporativo-gray sm:text-5xl">
+          Somos Empresa Internacional Líder en el Mundo
+        </h2>
+        <p class="mt-6 text-lg leading-relaxed text-gray-600">
+          Fundada el 1 de enero del 2010, hemos estado a la vanguardia ofreciendo servicios de construcción, maquinaria pesada e importación. Nuestra experiencia y dedicación nos permiten entregar soluciones integrales adaptadas a los más altos estándares.
+        </p>
+
+        <dl class="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600">
+          <div class="relative pl-12">
+            <dt class="inline font-bold text-corporativo-gray">
+              <Clock className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
+              Horario Flexible.
+            </dt>
+            <dd class="inline"> Nos adaptamos a los requerimientos de tiempo de tu proyecto para garantizar entregas oportunas.</dd>
+          </div>
+
+          <div class="relative pl-12">
+            <dt class="inline font-bold text-corporativo-gray">
+              <Package className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
+              Paquete Asequible.
+            </dt>
+            <dd class="inline"> Ofrecemos la mejor relación calidad-precio en servicios de construcción e importación directa.</dd>
+          </div>
+
+          <div class="relative pl-12">
+            <dt class="inline font-bold text-corporativo-gray">
+              <MapPin className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
+              En cualquier estado del País.
+            </dt>
+            <dd class="inline"> Amplia cobertura nacional, llevando nuestras soluciones y maquinarias a donde tu obra lo necesite.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
