@@ -2,30 +2,40 @@
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/sections/Navbar.astro";
 import Footer from "../../components/sections/Footer.astro";
+import PageHeader from "../../components/ui/PageHeader.astro";
+import ServiceSlider from "../../components/react/ServiceSlider.tsx";
+import { services } from "../../data/services";
 
 export function getStaticPaths() {
-  return [
-    { params: { servicio: "ascensores" } },
-    { params: { servicio: "escaleras-mecanicas" } },
-    { params: { servicio: "compras-internacionales" } },
-    { params: { servicio: "mantenimiento" } },
-    { params: { servicio: "tecnologia" } },
-    { params: { servicio: "construccion" } },
-    { params: { servicio: "envasados" } },
-    { params: { servicio: "recipientes-gas-licuado" } },
-  ];
+  return services.map((service) => ({
+    params: { servicio: service.slug },
+    props: { service },
+  }));
 }
 
-const { servicio } = Astro.params;
+const { service } = Astro.props;
 ---
 
-<Layout title={`Servicio: ${servicio} - Asiaven`}>
+<Layout title={`${service.title} - Asiaven`}>
   <Navbar />
-  <main class="min-h-[60dvh] flex flex-col items-center justify-center pt-24">
-    <h1 class="text-4xl font-bold text-corporativo-gray capitalize">
-      Servicio: {servicio?.replace("-", " ")}
-    </h1>
-    <p class="mt-4 text-lg text-gray-500">Página en construcción</p>
+  <PageHeader title={service.title} bgImage={service.images[0]} />
+  <main class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <ServiceSlider images={service.images} client:load />
+
+      <div class="prose prose-lg text-gray-700">
+        <h2 class="text-corporativo-gray">{service.title}</h2>
+        {service.fullDescription.map((paragraph) => (
+          <p class="mb-6 leading-relaxed">{paragraph}</p>
+        ))}
+        <a
+          href="/#contacto"
+          class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+        >
+          Solicitar Cotización &rarr;
+        </a>
+      </div>
+    </div>
   </main>
   <Footer />
 </Layout>
