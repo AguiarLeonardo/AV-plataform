@@ -18,7 +18,7 @@ export const services: Service[] = [
       "Nuestro servicio de mantenimiento preventivo y correctivo asegura la continuidad operativa, con tiempos de respuesta rápidos y personal especializado disponible para atender cualquier eventualidad en la infraestructura vertical de nuestros clientes.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1528659129532-6fb0d7a0491c?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
     ],
@@ -34,8 +34,8 @@ export const services: Service[] = [
       "El plan de mantenimiento preventivo que ofrecemos está diseñado para maximizar la vida útil de los equipos, minimizando interrupciones operativas y garantizando el cumplimiento de las normativas técnicas vigentes en cada país donde operamos.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1563200780-8772a98f1214?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1519567770579-c2fc5436df51?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1555529771-7888783a18d3?auto=format&fit=crop&w=1200&q=80",
     ],
   },
@@ -98,9 +98,9 @@ export const services: Service[] = [
       "Priorizamos la seguridad ocupacional y el cumplimiento normativo en cada obra, ofreciendo a nuestros clientes la tranquilidad de trabajar con un socio confiable y con experiencia comprobada en proyectos de gran envergadura.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1504307651254-35680f356f90?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1590644365607-1c5a9e3ac0c3?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80",
     ],
   },
   {
@@ -114,9 +114,9 @@ export const services: Service[] = [
       "Ofrecemos soluciones de envasado flexibles y escalables, adaptadas al volumen y requerimientos específicos de cada cliente, con tiempos de entrega competitivos y trazabilidad completa del producto.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1620054796788-75b28e202de6?auto=format&fit=crop&q=80&w=1000",
+      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?auto=format&fit=crop&q=80&w=1000",
       "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1591901206069-b2d0fc10a71d?auto=format&fit=crop&q=80&w=1000",
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1000",
     ],
   },
   {
@@ -130,7 +130,7 @@ export const services: Service[] = [
       "Contamos con capacidad de producción a gran escala y asesoría técnica especializada, acompañando a nuestros clientes en la selección de la solución más adecuada para sus necesidades de almacenamiento y transporte de gas.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1614315582315-998fb91ea0e6?auto=format&fit=crop&q=80&w=1000",
+      "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&q=80&w=1000",
       "https://images.unsplash.com/photo-1605152276897-4f618f831968?auto=format&fit=crop&q=80&w=1000",
       "https://images.unsplash.com/photo-1567789884554-0b844b597180?auto=format&fit=crop&q=80&w=1000",
     ],
