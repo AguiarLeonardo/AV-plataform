@@ -3,57 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../components/sections/Navbar.astro";
 import Footer from "../../components/sections/Footer.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
-
-const services = [
-  {
-    title: "Ascensores",
-    slug: "ascensores",
-    image:
-      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Escaleras Mecánicas",
-    slug: "escaleras-mecanicas",
-    image:
-      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Compras Internacionales",
-    slug: "compras-internacionales",
-    image:
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Mantenimiento",
-    slug: "mantenimiento",
-    image:
-      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Tecnología",
-    slug: "tecnologia",
-    image:
-      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Construcción",
-    slug: "construccion",
-    image:
-      "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Envasados",
-    slug: "envasados",
-    image:
-      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    title: "Recipientes de Gas Licuado",
-    slug: "recipientes-gas-licuado",
-    image:
-      "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&q=80&w=1000",
-  },
-];
+import { services } from "../../data/services";
 ---
 
 <Layout title="Todos Nuestros Servicios - Asiaven">
@@ -82,7 +32,7 @@ const services = [
             class="group relative h-80 w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(33.333%-1.5rem)] md:max-w-none flex-shrink-0 flex-grow-0 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-corporativo-blue focus:ring-offset-2"
           >
             <img
-              src={service.image}
+              src={service.images[0]}
               alt={service.title}
               class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"

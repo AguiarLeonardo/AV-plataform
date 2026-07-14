@@ -76,12 +76,12 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 ### Catálogo Oficial de Servicios (8 Servicios)
 1. Ascensores
 2. Escaleras Mecánicas
-3. Compras Internacionales
-4. Mantenimiento
-5. Tecnología
-6. Construcción
-7. Envasados
-8. Recipientes de Gas Licuado
+3. Tecnología y Telecomunicaciones
+4. Envases
+5. Construcción
+6. Recipientes de Gas Licuado
+7. Mantenimiento
+8. Compras Internacionales
 
 ### División Tecnológica (Equipos AV)
 * **Portafolio:** Laptops, All-in-One, Mini-PCs, Workstations y Monitores corporativos.

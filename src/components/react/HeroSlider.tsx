@@ -31,7 +31,7 @@ const slides: Slide[] = [
     title: "Innovación en Soluciones de Envasado",
     subtitle:
       "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
-    ctas: [{ text: "Ver Catálogo", href: "/servicios/envasados", primary: true }],
+    ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
     image: "https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80&w=1920",
   },
   {
@@ -45,7 +45,7 @@ const slides: Slide[] = [
     title: "Vanguardia en Equipamiento Tecnológico",
     subtitle:
       "Suministro de hardware corporativo, servidores e infraestructura de redes. Equipos de última generación respaldados por 3 años de garantía integral.",
-    ctas: [{ text: "División Tecnológica", href: "/servicios/tecnologia", primary: true }],
+    ctas: [{ text: "División Tecnológica", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true }],
     image: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&q=80&w=1920",
   },
 ];

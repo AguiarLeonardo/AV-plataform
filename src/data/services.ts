@@ -40,40 +40,8 @@ export const services: Service[] = [
     ],
   },
   {
-    slug: "compras-internacionales",
-    title: "Compras Internacionales",
-    shortDescription:
-      "Gestión integral de importación y distribución de productos desde el continente asiático.",
-    fullDescription: [
-      "Facilitamos el acceso de nuestros clientes corporativos a los mercados de manufactura asiática mediante un servicio integral de compras internacionales, que abarca la negociación directa con fabricantes certificados hasta la entrega final en destino.",
-      "Nuestro equipo gestiona el proceso logístico y aduanero de principio a fin, incluyendo control de calidad en origen, consolidación de carga y trazabilidad completa de cada embarque, reduciendo tiempos y costos operativos.",
-      "Trabajamos con una red consolidada de proveedores en Asia, lo que nos permite ofrecer condiciones comerciales competitivas y garantizar la continuidad del suministro para proyectos industriales y comerciales de gran escala.",
-    ],
-    images: [
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80",
-    ],
-  },
-  {
-    slug: "mantenimiento",
-    title: "Mantenimiento",
-    shortDescription:
-      "Servicio preventivo y correctivo para garantizar el funcionamiento óptimo de todos nuestros equipos instalados.",
-    fullDescription: [
-      "Nuestro servicio de mantenimiento está diseñado para garantizar la continuidad operativa de infraestructuras críticas, mediante contratos adaptados a las necesidades específicas de cada cliente y equipo instalado.",
-      "Contamos con un sistema de monitoreo continuo y protocolos de respuesta rápida que permiten anticipar fallas antes de que afecten la operación, reduciendo costos asociados a paradas no programadas.",
-      "El equipo técnico de Asiaven combina experiencia de campo con herramientas de diagnóstico modernas, asegurando intervenciones precisas y un historial documentado del estado de cada activo bajo mantenimiento.",
-    ],
-    images: [
-      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
-    ],
-  },
-  {
-    slug: "tecnologia",
-    title: "Tecnología",
+    slug: "tecnologia-y-telecomunicaciones",
+    title: "Tecnología y Telecomunicaciones",
     shortDescription:
       "Soluciones tecnológicas avanzadas en telecomunicaciones e infraestructura digital para empresas.",
     fullDescription: [
@@ -85,6 +53,22 @@ export const services: Service[] = [
       "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+    ],
+  },
+  {
+    slug: "envases",
+    title: "Envases",
+    shortDescription:
+      "Fabricación y distribución de envases de aluminio de alta calidad para la industria alimentaria y de bebidas.",
+    fullDescription: [
+      "Fabricamos y distribuimos envases de aluminio de alta calidad, diseñados para cumplir con los estrictos estándares sanitarios y de resistencia exigidos por las marcas líderes de la industria alimentaria y de bebidas.",
+      "Nuestra capacidad de producción está respaldada por controles de calidad en cada etapa del proceso, garantizando consistencia dimensional, hermeticidad y durabilidad en cada lote fabricado.",
+      "Ofrecemos soluciones de envasado flexibles y escalables, adaptadas al volumen y requerimientos específicos de cada cliente, con tiempos de entrega competitivos y trazabilidad completa del producto.",
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?auto=format&fit=crop&q=80&w=1000",
+      "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=1000",
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1000",
     ],
   },
   {
@@ -104,22 +88,6 @@ export const services: Service[] = [
     ],
   },
   {
-    slug: "envasados",
-    title: "Envasados",
-    shortDescription:
-      "Fabricación y distribución de envases de aluminio de alta calidad para la industria alimentaria y de bebidas.",
-    fullDescription: [
-      "Fabricamos y distribuimos envases de aluminio de alta calidad, diseñados para cumplir con los estrictos estándares sanitarios y de resistencia exigidos por las marcas líderes de la industria alimentaria y de bebidas.",
-      "Nuestra capacidad de producción está respaldada por controles de calidad en cada etapa del proceso, garantizando consistencia dimensional, hermeticidad y durabilidad en cada lote fabricado.",
-      "Ofrecemos soluciones de envasado flexibles y escalables, adaptadas al volumen y requerimientos específicos de cada cliente, con tiempos de entrega competitivos y trazabilidad completa del producto.",
-    ],
-    images: [
-      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1000",
-    ],
-  },
-  {
     slug: "recipientes-gas-licuado",
     title: "Recipientes de Gas Licuado",
     shortDescription:
@@ -133,6 +101,38 @@ export const services: Service[] = [
       "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&q=80&w=1000",
       "https://images.unsplash.com/photo-1605152276897-4f618f831968?auto=format&fit=crop&q=80&w=1000",
       "https://images.unsplash.com/photo-1567789884554-0b844b597180?auto=format&fit=crop&q=80&w=1000",
+    ],
+  },
+  {
+    slug: "mantenimiento",
+    title: "Mantenimiento",
+    shortDescription:
+      "Servicio preventivo y correctivo para garantizar el funcionamiento óptimo de todos nuestros equipos instalados.",
+    fullDescription: [
+      "Nuestro servicio de mantenimiento está diseñado para garantizar la continuidad operativa de infraestructuras críticas, mediante contratos adaptados a las necesidades específicas de cada cliente y equipo instalado.",
+      "Contamos con un sistema de monitoreo continuo y protocolos de respuesta rápida que permiten anticipar fallas antes de que afecten la operación, reduciendo costos asociados a paradas no programadas.",
+      "El equipo técnico de Asiaven combina experiencia de campo con herramientas de diagnóstico modernas, asegurando intervenciones precisas y un historial documentado del estado de cada activo bajo mantenimiento.",
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
+    ],
+  },
+  {
+    slug: "compras-internacionales",
+    title: "Compras Internacionales",
+    shortDescription:
+      "Gestión integral de importación y distribución de productos desde el continente asiático.",
+    fullDescription: [
+      "Facilitamos el acceso de nuestros clientes corporativos a los mercados de manufactura asiática mediante un servicio integral de compras internacionales, que abarca la negociación directa con fabricantes certificados hasta la entrega final en destino.",
+      "Nuestro equipo gestiona el proceso logístico y aduanero de principio a fin, incluyendo control de calidad en origen, consolidación de carga y trazabilidad completa de cada embarque, reduciendo tiempos y costos operativos.",
+      "Trabajamos con una red consolidada de proveedores en Asia, lo que nos permite ofrecer condiciones comerciales competitivas y garantizar la continuidad del suministro para proyectos industriales y comerciales de gran escala.",
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80",
     ],
   },
 ];
