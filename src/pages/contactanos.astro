@@ -1,0 +1,162 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/sections/Navbar.astro";
+import Footer from "../components/sections/Footer.astro";
+import PageHeader from "../components/ui/PageHeader.astro";
+import FAQAccordion from "../components/react/FAQAccordion.tsx";
+import { MapPin, Phone, Mail } from "lucide-react";
+
+const contactInfo = [
+  { Icon: MapPin, label: "Dirección", value: "C.C Paseo Las Mercedes Piso 2" },
+  { Icon: Phone, label: "Teléfono", value: "+58 212-9924333" },
+  { Icon: Mail, label: "Email", value: "proyectos@asiaven.com" },
+];
+
+const faqs = [
+  {
+    question:
+      "¿Qué tipo de mantenimiento requieren las máquinas para elevadores y escaleras mecánicas?",
+    answer:
+      "Nuestras máquinas están diseñadas para ser eficientes y duraderas, pero requieren mantenimiento preventivo regular, como cualquier equipo mecánico. Ofrecemos planes de mantenimiento personalizados que incluyen inspecciones periódicas, lubricación, y ajustes necesarios para garantizar que el equipo funcione sin problemas y evitar costosos tiempos de inactividad.",
+  },
+  {
+    question: "¿Cómo garantizan la seguridad de los elevadores y escaleras mecánicas que venden?",
+    answer:
+      "La seguridad es nuestra prioridad. Todos nuestros productos cumplen con las normativas internacionales de seguridad y pasan por rigurosas pruebas de calidad. Además, nuestros sistemas están equipados con tecnología avanzada de detección de fallos, frenos de emergencia y controladores de sobrecarga, lo que garantiza la máxima protección para los usuarios.",
+  },
+  {
+    question:
+      "¿Cómo puedo saber cuál es el equipo adecuado para mi proyecto (elevadores, escaleras mecánicas o sistemas de aparcamiento)?",
+    answer:
+      "Ofrecemos asesoría personalizada para cada cliente. Nuestros expertos evaluarán el tamaño y tipo de proyecto, el número de usuarios esperados y las especificaciones del edificio o espacio para recomendar la solución más adecuada. Desde pequeños elevadores residenciales hasta grandes sistemas para edificios comerciales, tenemos el equipo perfecto para cada necesidad.",
+  },
+];
+---
+
+<Layout title="Contáctanos - Asiaven">
+  <Navbar />
+  <PageHeader
+    title="Detalles de Contacto"
+    bgImage="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=1920"
+  />
+
+  <main class="max-w-7xl mx-auto px-4 py-16">
+    <!-- Sección Superior: Info & Mapa -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+      <div>
+        <h2 class="text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl mb-8">
+          Oficina central de Venezuela
+        </h2>
+
+        <div class="flex flex-col gap-6">
+          {
+            contactInfo.map(({ Icon, label, value }) => (
+              <div class="flex items-start gap-4">
+                <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-50">
+                  <Icon className="h-5 w-5 text-corporativo-blue" />
+                </div>
+                <div>
+                  <p class="text-sm font-semibold uppercase tracking-wide text-gray-400">{label}</p>
+                  <p class="text-lg text-corporativo-gray">{value}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <iframe
+        src="https://www.google.com/maps?q=Centro+Comercial+Paseo+Las+Mercedes,+Caracas,+Venezuela&output=embed"
+        class="w-full h-80 rounded-xl shadow-lg border border-gray-100"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación de Asiaven en Google Maps"
+      ></iframe>
+    </div>
+
+    <!-- Sección Inferior: Formulario & FAQs -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div>
+        <h2 class="text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl">
+          Realizar Consulta
+        </h2>
+        <p class="mt-4 text-base leading-relaxed text-gray-600">
+          En grupo Asiaven estamos disponibles para ti en todo momento. Contáctanos, queremos saber de ti. Tu opinión es muy importante.
+        </p>
+
+        <form class="mt-8 flex flex-col gap-5">
+          <div>
+            <label for="nombre" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
+              Nombre
+            </label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              required
+              class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-corporativo-gray placeholder:text-gray-400 focus:border-corporativo-blue focus:outline-none focus:ring-1 focus:ring-corporativo-blue"
+            />
+          </div>
+
+          <div>
+            <label for="email" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-corporativo-gray placeholder:text-gray-400 focus:border-corporativo-blue focus:outline-none focus:ring-1 focus:ring-corporativo-blue"
+            />
+          </div>
+
+          <div>
+            <label for="asunto" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
+              Asunto
+            </label>
+            <input
+              type="text"
+              id="asunto"
+              name="asunto"
+              class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-corporativo-gray placeholder:text-gray-400 focus:border-corporativo-blue focus:outline-none focus:ring-1 focus:ring-corporativo-blue"
+            />
+          </div>
+
+          <div>
+            <label for="mensaje" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
+              Mensaje
+            </label>
+            <textarea
+              id="mensaje"
+              name="mensaje"
+              rows="5"
+              required
+              class="w-full resize-none rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-corporativo-gray placeholder:text-gray-400 focus:border-corporativo-blue focus:outline-none focus:ring-1 focus:ring-corporativo-blue"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-lg bg-corporativo-blue px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90"
+          >
+            Enviar
+          </button>
+        </form>
+      </div>
+
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-corporativo-blue">
+          Más información
+        </p>
+        <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl mb-8">
+          Preguntas Frecuentes
+        </h2>
+
+        <FAQAccordion faqs={faqs} client:visible />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
