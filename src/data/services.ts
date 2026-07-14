@@ -105,7 +105,7 @@ export const services: Service[] = [
   },
   {
     slug: "envasados",
-    title: "Envasados (Latas)",
+    title: "Envasados",
     shortDescription:
       "Fabricación y distribución de envases de aluminio de alta calidad para la industria alimentaria y de bebidas.",
     fullDescription: [

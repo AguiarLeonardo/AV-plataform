@@ -5,6 +5,7 @@ import Footer from "../../components/sections/Footer.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import { services } from "../../data/services";
+import { Download } from "lucide-react";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -28,12 +29,36 @@ const { service } = Astro.props;
         {service.fullDescription.map((paragraph) => (
           <p class="mb-6 leading-relaxed">{paragraph}</p>
         ))}
-        <a
-          href="/#contacto"
-          class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
-        >
-          Solicitar Cotización &rarr;
-        </a>
+        {service.slug === "tecnologia" ? (
+          <>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+            >
+              <Download className="h-4 w-4" />
+              Descargar Catálogo
+            </a>
+
+            <div class="mt-8 rounded-xl border border-gray-200 bg-gray-50 p-6">
+              <p class="mb-3 font-semibold text-corporativo-gray">
+                ¿Posees uno de nuestros equipos?
+              </p>
+              <a
+                href="/soporte-tecnico"
+                class="inline-flex items-center gap-2 rounded-lg border-2 border-corporativo-blue px-5 py-2.5 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+              >
+                Ir a Soporte Técnico &rarr;
+              </a>
+            </div>
+          </>
+        ) : (
+          <a
+            href="/#contacto"
+            class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+          >
+            Solicitar Cotización &rarr;
+          </a>
+        )}
       </div>
     </div>
   </main>

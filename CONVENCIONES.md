@@ -62,7 +62,7 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 * **Nombre Oficial:** Grupo Asiaven (F. 1 de enero de 2010).
 * **Slogan Principal:** "La visión se hizo más grande" / "Construye tu sueño".
 * **Slogan Secundario:** "El camino hacia el éxito siempre está en construcción".
-* **Propuesta de Valor Integral:** "Más que un lujo es una necesidad. Asiaven está compuesto por diversas filiales que abarcan desde la construcción de infraestructuras hasta la implementación de sistemas de ascensores y motores. Ofrecemos servicios de construcción, maquinaria pesada e importación y distribución de productos traídos desde el continente asiático."
+* **Propuesta de Valor Integral:** "Más que un lujo es una necesidad. Asiaven está compuesto por diversas filiales que abarcan desde la construcción de infraestructuras hasta la implementación de sistemas de ascensores y motores. Ofrecemos servicios de construcción, maquinaria pesada e importación y distribución de productos con estándares de calidad global."
 * **Misión:** Utilizar tecnologías innovadoras dependiendo de las necesidades del cliente a nivel empresarial con el objetivo de incrementar su competitividad mediante soluciones creativas adaptadas al entorno práctico del mismo.
 * **Visión:** Poder ser referente mundial con nuestros principales productos elevadores Asiaven y solventar todos los problemas de nuestros clientes dándole soluciones a medida para convertirnos en la mejor alternativa de las empresas en esta área.
 
@@ -80,8 +80,14 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 4. Mantenimiento
 5. Tecnología
 6. Construcción
-7. Envasados (Latas)
+7. Envasados
 8. Recipientes de Gas Licuado
+
+### División Tecnológica (Equipos AV)
+* **Portafolio:** Laptops, All-in-One, Mini-PCs, Workstations y Monitores corporativos.
+* **Procesadores:** Intel y AMD de última generación.
+* **Garantía:** 3 años de garantía post-venta con soporte integral tipo swap (reemplazo) a nivel nacional.
+* **Conectividad:** Integración 4G LTE en equipos portátiles.
 
 ### Beneficios Clave (Value Props)
 * **Horario Flexible:** Consulta en la hora que mejor sea ideal para ti.
@@ -92,6 +98,8 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 * **Sede Principal:** C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela.
 * **Teléfono:** +58 212-9924333
 * **Email:** proyectos@asiaven.com
+* **Director Comercial:** Jackson Barroso | jb@asiaven.com
+* **Soporte:** soporte@asiaven.com
 
 ### Client Roster (Cartera de Clientes)
 * Fundación Propatria
@@ -102,3 +110,11 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 * Asian Commerce. LTD
 * Telecomunicaciones Asiaven
 * Belcor Diseño Construcción
+* PDVSA
+* Corpoelec
+* Metro de Caracas
+* Despacho de la Presidencia
+* Ministerios
+* Estadio Monumental Simón Bolívar
+* Bolipuertos
+* INEA

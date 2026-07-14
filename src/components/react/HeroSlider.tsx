@@ -1,30 +1,52 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const slides = [
+interface Cta {
+  text: string;
+  href: string;
+  primary: boolean;
+}
+
+interface Slide {
+  overline?: string;
+  title: string;
+  subtitle: string;
+  ctas: Cta[];
+  image: string;
+}
+
+const slides: Slide[] = [
   {
+    overline: "MÁS QUE UN LUJO, UNA NECESIDAD",
     title: "La visión se hizo más grande",
-    subtext:
-      "Más que un lujo es una necesidad. Ofrecemos servicios de construcción, maquinaria pesada e importación y distribución de productos traídos desde el continente asiático.",
-    cta: "Conócenos",
-    href: "#nosotros",
+    subtitle:
+      "Ofrecemos soluciones integrales en construcción, suministro de maquinaria pesada y distribución de tecnología de punta con estándares globales.",
+    ctas: [
+      { text: "Conoce nuestros servicios", href: "/servicios", primary: true },
+      { text: "Nuestra Historia", href: "/#about", primary: false },
+    ],
     image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=1920",
   },
   {
-    title: "Construye tu sueño",
-    subtext:
-      "Desde la construcción de infraestructuras hasta la implementación de sistemas de ascensores y motores: 8 servicios especializados para cubrir cada necesidad de tu empresa.",
-    cta: "Ver Catálogo",
-    href: "/servicios",
+    title: "Innovación en Soluciones de Envasado",
+    subtitle:
+      "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
+    ctas: [{ text: "Ver Catálogo", href: "/servicios/envasados", primary: true }],
     image: "https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80&w=1920",
   },
   {
-    title: "El camino hacia el éxito siempre está en construcción",
-    subtext:
-      "18+ años en el mercado, 802+ proyectos exitosos y más de 50 empresas nacionales e internacionales confían en nosotros.",
-    cta: "Nuestra Experiencia",
-    href: "/proyectos",
-    image: "https://images.unsplash.com/photo-1524638431109-93d95c968f03?auto=format&fit=crop&q=80&w=1920",
+    title: "Ingeniería de Precisión en Movilidad Vertical",
+    subtitle:
+      "Especialistas en la instalación, modernización y mantenimiento de sistemas de ascensores y escaleras mecánicas con estándares internacionales.",
+    ctas: [{ text: "Soluciones en Elevación", href: "/servicios/ascensores", primary: true }],
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=1920",
+  },
+  {
+    title: "Vanguardia en Equipamiento Tecnológico",
+    subtitle:
+      "Suministro de hardware corporativo, servidores e infraestructura de redes. Equipos de última generación respaldados por 3 años de garantía integral.",
+    ctas: [{ text: "División Tecnológica", href: "/servicios/tecnologia", primary: true }],
+    image: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&q=80&w=1920",
   },
 ];
 
@@ -32,11 +54,11 @@ export default function HeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, [currentIndex]);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -66,27 +88,34 @@ export default function HeroSlider() {
           <div className="absolute inset-0 bg-black/65" />
 
           <div className="relative z-10 mx-auto flex h-full w-full max-w-7xl flex-col justify-center px-4 py-12 text-left sm:px-8 lg:px-16">
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            {slide.overline && (
+              <p className="text-sm font-semibold uppercase tracking-widest text-white/80">
+                {slide.overline}
+              </p>
+            )}
+
+            <h1 className="mt-2 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               {slide.title}
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-gray-200 sm:text-xl md:max-w-3xl">
-              {slide.subtext}
+              {slide.subtitle}
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
-              <a
-                href={slide.href}
-                className="rounded-lg bg-corporativo-blue px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-corporativo-blue/90 hover:shadow-xl"
-              >
-                {slide.cta}
-              </a>
-              <a
-                href="#servicios"
-                className="rounded-lg border-2 border-white bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-white hover:text-corporativo-gray"
-              >
-                Servicios
-              </a>
+              {slide.ctas.map((cta) => (
+                <a
+                  key={cta.text}
+                  href={cta.href}
+                  className={
+                    cta.primary
+                      ? "rounded-lg bg-corporativo-blue px-8 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-corporativo-blue/90 hover:shadow-xl"
+                      : "rounded-lg border-2 border-white bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-white hover:text-corporativo-gray"
+                  }
+                >
+                  {cta.text}
+                </a>
+              ))}
             </div>
           </div>
         </div>
