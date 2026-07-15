@@ -23,7 +23,7 @@ const slides: Slide[] = [
       "Ofrecemos soluciones integrales en construcción, suministro de maquinaria pesada y distribución de tecnología de punta con estándares globales.",
     ctas: [
       { text: "Conoce nuestros servicios", href: "/servicios", primary: true },
-      { text: "Nuestra Historia", href: "/#about", primary: false },
+      { text: "Ver Proyectos", href: "/proyectos", primary: false },
     ],
     image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=1920",
   },
