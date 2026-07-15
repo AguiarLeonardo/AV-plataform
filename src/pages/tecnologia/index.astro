@@ -1,0 +1,55 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/sections/Navbar.astro";
+import Footer from "../../components/sections/Footer.astro";
+import PageHeader from "../../components/ui/PageHeader.astro";
+import { techProducts } from "../../data/techCatalog";
+
+const categories = [...new Set(techProducts.map((product) => product.category))];
+---
+
+<Layout title="Catálogo Tecnológico - Asiaven">
+  <Navbar />
+  <PageHeader
+    title="Catálogo Tecnológico"
+    bgImage="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1920"
+  />
+
+  <main class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+    {
+      categories.map((category) => (
+        <section class="mb-20 last:mb-0">
+          <h2 class="text-2xl font-extrabold tracking-tight text-corporativo-gray sm:text-3xl mb-8">
+            {category}
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {techProducts
+              .filter((product) => product.category === category)
+              .map((product) => (
+                <a
+                  href={`/tecnologia/${product.slug}`}
+                  class="group overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="p-4">
+                    <h3 class="font-bold text-corporativo-gray transition-colors duration-200 group-hover:text-corporativo-blue">
+                      {product.title}
+                    </h3>
+                  </div>
+                </a>
+              ))}
+          </div>
+        </section>
+      ))
+    }
+  </main>
+
+  <Footer />
+</Layout>
