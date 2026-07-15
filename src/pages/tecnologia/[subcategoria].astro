@@ -1,0 +1,70 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/sections/Navbar.astro";
+import Footer from "../../components/sections/Footer.astro";
+import PageHeader from "../../components/ui/PageHeader.astro";
+import { techProducts } from "../../data/techCatalog";
+
+export function getStaticPaths() {
+  const subcategorySlugs = [...new Set(techProducts.map((product) => product.subcategorySlug))];
+
+  return subcategorySlugs.map((subcategorySlug) => {
+    const subcategoryName = techProducts.find(
+      (product) => product.subcategorySlug === subcategorySlug
+    )!.subcategoryName;
+
+    return {
+      params: { subcategoria: subcategorySlug },
+      props: {
+        subcategoryName,
+        products: techProducts.filter((product) => product.subcategorySlug === subcategorySlug),
+      },
+    };
+  });
+}
+
+const { subcategoryName, products } = Astro.props;
+---
+
+<Layout title={`Modelos de ${subcategoryName} - Asiaven`}>
+  <Navbar />
+  <PageHeader
+    title={`Modelos de ${subcategoryName}`}
+    bgImage={products[0].image}
+  />
+
+  <main class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+    <a
+      href="/tecnologia"
+      class="inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline mb-10"
+    >
+      &larr; Volver al Catálogo
+    </a>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {
+        products.map((product) => (
+          <a
+            href={`/tecnologia/producto/${product.slug}`}
+            class="group overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <img
+              src={product.image}
+              alt={product.title}
+              class="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="p-4">
+              <h3 class="font-bold text-corporativo-gray transition-colors duration-200 group-hover:text-corporativo-blue">
+                {product.title}
+              </h3>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,8 +1,8 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/sections/Navbar.astro";
-import Footer from "../../components/sections/Footer.astro";
-import { techProducts } from "../../data/techCatalog";
+import Layout from "../../../layouts/Layout.astro";
+import Navbar from "../../../components/sections/Navbar.astro";
+import Footer from "../../../components/sections/Footer.astro";
+import { techProducts } from "../../../data/techCatalog";
 import { ArrowLeft, Check } from "lucide-react";
 
 export function getStaticPaths() {
@@ -20,7 +20,7 @@ const { product } = Astro.props;
 
   <main class="max-w-7xl mx-auto px-4 py-16">
     <a
-      href="/tecnologia"
+      href={`/tecnologia/${product.subcategorySlug}`}
       class="inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
     >
       <ArrowLeft className="h-4 w-4" />
@@ -38,7 +38,7 @@ const { product } = Astro.props;
 
       <div>
         <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-blue">
-          {product.category}
+          {product.subcategoryName}
         </span>
 
         <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl">
