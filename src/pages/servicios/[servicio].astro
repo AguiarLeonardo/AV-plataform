@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import PageHeader from "../../components/ui/PageHeader.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
 import { services } from "../../data/services";
@@ -100,38 +99,32 @@ const escalatorsData = [
 ---
 
 <Layout title={`${service.title} - Asiaven`}>
-  <PageHeader title={service.title} bgImage={service.images[0]} />
-  <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+  <div class="max-w-7xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <ServiceSlider images={service.images} client:visible />
 
-      <div class="prose prose-lg flex h-full flex-col text-gray-700">
+      <div class="prose prose-lg text-gray-700">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          {service.title}
+        </h1>
         {service.fullDescription.map((paragraph) => (
           <p class="mb-6 leading-relaxed">{paragraph}</p>
         ))}
         {service.slug === "tecnologia-y-telecomunicaciones" ? (
-          <>
-            <div class="w-full rounded-xl bg-corporativo-blue p-6 text-center">
-              <p class="mb-4 font-semibold text-white">
-                Explora nuestro portafolio tecnológico
-              </p>
-              <a
-                href="/store"
-                class="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-gray-100 no-underline"
-              >
-                Ir a la tienda &rarr;
-              </a>
-            </div>
-
-            <div class="mt-auto flex justify-end pt-10">
-              <a
-                href="/soporte-tecnico"
-                class="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-[#F8F9FA] px-5 py-2.5 text-sm font-medium text-corporativo-gray transition-colors hover:bg-gray-100 no-underline"
-              >
-                Ir a Soporte Técnico &rarr;
-              </a>
-            </div>
-          </>
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+            <a
+              href="/store"
+              class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+            >
+              Ir a la tienda &rarr;
+            </a>
+            <a
+              href="/soporte-tecnico"
+              class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+            >
+              Soporte Técnico &rarr;
+            </a>
+          </div>
         ) : service.slug === "envases" ? (
           <div class="flex flex-wrap items-center gap-4">
             <a
