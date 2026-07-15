@@ -4,6 +4,7 @@ import PageHeader from "../../components/ui/PageHeader.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
 import { services } from "../../data/services";
+import { Download } from "lucide-react";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -115,10 +116,10 @@ const escalatorsData = [
                 Explora nuestro portafolio tecnológico
               </p>
               <a
-                href="/tecnologia"
+                href="/store"
                 class="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-gray-100 no-underline"
               >
-                Ver Nuestros Productos &rarr;
+                Ir a la tienda &rarr;
               </a>
             </div>
 
@@ -131,10 +132,26 @@ const escalatorsData = [
               </a>
             </div>
           </>
+        ) : service.slug === "envases" ? (
+          <div class="flex flex-wrap items-center gap-4">
+            <a
+              href="/envases"
+              class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+            >
+              Ver catálogo completo &rarr;
+            </a>
+            <a
+              href="#"
+              class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+            >
+              <Download className="h-4 w-4" />
+              Descargar catálogo (PDF)
+            </a>
+          </div>
         ) : (
           <a
             href="/contactanos"
-            class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+            class="inline-flex w-fit items-center self-start gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
           >
             Solicitar Cotización &rarr;
           </a>

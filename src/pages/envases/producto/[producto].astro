@@ -1,0 +1,66 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { packagingCategories } from "../../../data/packagingCatalog";
+import { ArrowLeft } from "lucide-react";
+
+export function getStaticPaths() {
+  return packagingCategories.flatMap((category) =>
+    category.products.map((product) => ({
+      params: { producto: product.slug },
+      props: { product, category },
+    }))
+  );
+}
+
+const { product, category } = Astro.props;
+const specEntries = Object.entries(product.specs);
+---
+
+<Layout title={`${product.title} - ${category.title} - Asiaven`}>
+  <div class="max-w-5xl mx-auto px-4 py-16">
+    <a
+      href="/envases"
+      class="inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
+    >
+      <ArrowLeft className="h-4 w-4" />
+      Volver al Catálogo
+    </a>
+
+    <div class="mt-8">
+      <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-blue">
+        {category.title}
+      </span>
+      {product.group && (
+        <span class="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-gray">
+          {product.group}
+        </span>
+      )}
+
+      <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl">
+        {product.title}
+      </h1>
+
+      <div class="mt-8 overflow-hidden rounded-xl border border-gray-200">
+        <table class="w-full border-collapse text-left">
+          <tbody>
+            {specEntries.map(([label, value], index) => (
+              <tr class={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <th class="w-1/3 px-6 py-4 text-sm font-semibold text-corporativo-gray">
+                  {label}
+                </th>
+                <td class="px-6 py-4 text-sm text-gray-600">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <a
+        href="/contactanos"
+        class="mt-10 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+      >
+        Solicitar Cotización &rarr;
+      </a>
+    </div>
+  </div>
+</Layout>

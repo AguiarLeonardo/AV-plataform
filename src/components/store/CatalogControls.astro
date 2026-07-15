@@ -1,0 +1,61 @@
+---
+import { ChevronDown } from "lucide-react";
+
+interface Props {
+  resultsCount: number;
+}
+
+const { resultsCount } = Astro.props;
+
+const sortOptions = [
+  "Más vendidos",
+  "Precio: menor a mayor",
+  "Precio: mayor a menor",
+  "Mayores descuentos",
+  "Novedades",
+];
+---
+
+<div class="mb-8 flex flex-col gap-4 border-b border-gray-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
+  <details class="group">
+    <summary class="inline-flex w-fit cursor-pointer list-none items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
+      Mostrar Filtros
+    </summary>
+    <div class="mt-3 max-w-sm rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">
+      Filtros por categoría, precio y marca — próximamente.
+    </div>
+  </details>
+
+  <p class="order-first text-sm text-gray-500 sm:order-none">
+    <span class="text-base font-bold text-gray-900">{resultsCount}</span> Resultados
+  </p>
+
+  <details class="sort-dropdown relative ml-0 sm:ml-auto">
+    <summary
+      class="sort-summary inline-flex w-fit cursor-pointer list-none items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-colors [&::-webkit-details-marker]:hidden"
+    >
+      Ordenar por: <span class="font-semibold">{sortOptions[0]}</span>
+      <ChevronDown className="sort-chevron h-4 w-4 transition-transform" />
+    </summary>
+
+    <ul class="absolute right-0 z-10 mt-2 w-60 rounded-md border border-gray-200 bg-white py-1 text-sm text-gray-700 shadow-lg">
+      {sortOptions.map((option) => (
+        <li>
+          <a href="#" class="block px-4 py-2 no-underline hover:bg-gray-50">{option}</a>
+        </li>
+      ))}
+    </ul>
+  </details>
+</div>
+
+<style>
+  .sort-dropdown[open] .sort-summary {
+    background-color: #111827;
+    border-color: #111827;
+    color: #ffffff;
+  }
+
+  .sort-dropdown[open] .sort-chevron {
+    transform: rotate(180deg);
+  }
+</style>

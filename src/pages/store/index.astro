@@ -1,0 +1,30 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+import StoreProductCard from "../../components/store/StoreProductCard.astro";
+import CatalogControls from "../../components/store/CatalogControls.astro";
+import { techProducts } from "../../data/techCatalog";
+---
+
+<StoreLayout title="Asiaven Store - Equipos Tecnológicos para Empresas">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <CatalogControls resultsCount={techProducts.length} />
+
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        techProducts.map((product) => (
+          <StoreProductCard
+            title={product.title}
+            price="Consultar"
+            image={product.image}
+            specs={product.features.slice(0, 4)}
+            details={product.description}
+            href={`/store/producto/${product.slug}`}
+          />
+        ))
+      }
+    </div>
+  </main>
+</StoreLayout>

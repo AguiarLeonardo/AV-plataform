@@ -1,0 +1,90 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+import StoreProductCard from "../../components/store/StoreProductCard.astro";
+import CatalogControls from "../../components/store/CatalogControls.astro";
+import {
+  storeCategories,
+  productsForItem,
+  productsForGroup,
+  productsForCategory,
+} from "../../data/storeTaxonomy";
+
+export function getStaticPaths() {
+  const paths = [];
+
+  for (const category of storeCategories) {
+    paths.push({
+      params: { categoria: category.slug },
+      props: { label: category.name, products: productsForCategory(category) },
+    });
+
+    for (const group of category.groups) {
+      paths.push({
+        params: { categoria: group.slug },
+        props: { label: group.name, products: productsForGroup(group) },
+      });
+
+      for (const item of group.items) {
+        paths.push({
+          params: { categoria: item.slug },
+          props: { label: item.name, products: productsForItem(item.slug) },
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
+const { label, products } = Astro.props;
+---
+
+<StoreLayout title={`${label} - Asiaven Store`}>
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+    <a
+      href="/store"
+      class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
+    >
+      &larr; Volver a la tienda
+    </a>
+
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">{label}</h1>
+
+    {
+      products.length > 0 ? (
+        <>
+          <CatalogControls resultsCount={products.length} />
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product) => (
+              <StoreProductCard
+                title={product.title}
+                price="Consultar"
+                image={product.image}
+                specs={product.features.slice(0, 4)}
+                details={product.description}
+                href={`/store/producto/${product.slug}`}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div class="rounded-xl border border-gray-200 bg-gray-50 p-10 text-center">
+          <p class="text-lg font-semibold text-gray-900">Cotización a medida</p>
+          <p class="mx-auto mt-2 max-w-md text-sm text-gray-600">
+            Aún no tenemos modelos publicados para "{label}". Contáctanos y te ayudamos a diseñar
+            la solución exacta que tu empresa necesita.
+          </p>
+          <a
+            href="/contactanos"
+            class="mt-6 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+          >
+            Solicitar Cotización &rarr;
+          </a>
+        </div>
+      )
+    }
+  </main>
+</StoreLayout>
