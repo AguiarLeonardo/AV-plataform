@@ -4,7 +4,6 @@ import PageHeader from "../../components/ui/PageHeader.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
 import { services } from "../../data/services";
-import { Download } from "lucide-react";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -102,37 +101,16 @@ const escalatorsData = [
 <Layout title={`${service.title} - Asiaven`}>
   <PageHeader title={service.title} bgImage={service.images[0]} />
   <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
       <ServiceSlider images={service.images} client:visible />
 
-      <div class="prose prose-lg text-gray-700">
-        <h2 class="text-corporativo-gray">{service.title}</h2>
+      <div class="prose prose-lg flex h-full flex-col text-gray-700">
         {service.fullDescription.map((paragraph) => (
           <p class="mb-6 leading-relaxed">{paragraph}</p>
         ))}
         {service.slug === "tecnologia-y-telecomunicaciones" ? (
           <>
-            <a
-              href="#"
-              class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
-            >
-              <Download className="h-4 w-4" />
-              Descargar Catálogo
-            </a>
-
-            <div class="mt-8 rounded-xl border border-gray-200 bg-gray-50 p-6">
-              <p class="mb-3 font-semibold text-corporativo-gray">
-                ¿Posees uno de nuestros equipos?
-              </p>
-              <a
-                href="/soporte-tecnico"
-                class="inline-flex items-center gap-2 rounded-lg border-2 border-corporativo-blue px-5 py-2.5 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
-              >
-                Ir a Soporte Técnico &rarr;
-              </a>
-            </div>
-
-            <div class="mt-8 rounded-xl bg-corporativo-blue p-6 text-center">
+            <div class="w-full rounded-xl bg-corporativo-blue p-6 text-center">
               <p class="mb-4 font-semibold text-white">
                 Explora nuestro portafolio tecnológico
               </p>
@@ -141,6 +119,15 @@ const escalatorsData = [
                 class="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-gray-100 no-underline"
               >
                 Ver Nuestros Productos &rarr;
+              </a>
+            </div>
+
+            <div class="mt-auto flex justify-end pt-10">
+              <a
+                href="/soporte-tecnico"
+                class="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-[#F8F9FA] px-5 py-2.5 text-sm font-medium text-corporativo-gray transition-colors hover:bg-gray-100 no-underline"
+              >
+                Ir a Soporte Técnico &rarr;
               </a>
             </div>
           </>
