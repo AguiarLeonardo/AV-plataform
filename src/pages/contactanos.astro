@@ -1,7 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/sections/Navbar.astro";
-import Footer from "../components/sections/Footer.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
 import FAQAccordion from "../components/react/FAQAccordion.tsx";
 import { MapPin, Phone, Mail } from "lucide-react";
@@ -34,13 +32,12 @@ const faqs = [
 ---
 
 <Layout title="Contáctanos - Asiaven">
-  <Navbar />
   <PageHeader
     title="Detalles de Contacto"
     bgImage="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=1920"
   />
 
-  <main class="max-w-7xl mx-auto px-4 py-16">
+  <div class="max-w-7xl mx-auto px-4 py-16">
     <!-- Sección Superior: Info & Mapa -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
       <div>
@@ -156,7 +153,5 @@ const faqs = [
         <FAQAccordion faqs={faqs} client:visible />
       </div>
     </div>
-  </main>
-
-  <Footer />
+  </div>
 </Layout>

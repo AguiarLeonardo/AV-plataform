@@ -1,7 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/sections/Navbar.astro";
-import Footer from "../../components/sections/Footer.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
@@ -102,11 +100,10 @@ const escalatorsData = [
 ---
 
 <Layout title={`${service.title} - Asiaven`}>
-  <Navbar />
   <PageHeader title={service.title} bgImage={service.images[0]} />
-  <main class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+  <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-      <ServiceSlider images={service.images} client:load />
+      <ServiceSlider images={service.images} client:visible />
 
       <div class="prose prose-lg text-gray-700">
         <h2 class="text-corporativo-gray">{service.title}</h2>
@@ -163,7 +160,7 @@ const escalatorsData = [
         <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
           Nuestras Soluciones en Elevación
         </h2>
-        <ProductFeatureSlider products={elevatorsData} client:load />
+        <ProductFeatureSlider products={elevatorsData} client:visible />
       </div>
     )}
 
@@ -172,9 +169,8 @@ const escalatorsData = [
         <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
           Nuestros Sistemas de Movilidad
         </h2>
-        <ProductFeatureSlider products={escalatorsData} client:load />
+        <ProductFeatureSlider products={escalatorsData} client:visible />
       </div>
     )}
-  </main>
-  <Footer />
+  </div>
 </Layout>

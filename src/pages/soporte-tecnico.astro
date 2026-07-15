@@ -1,7 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Navbar from "../components/sections/Navbar.astro";
-import Footer from "../components/sections/Footer.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
 import { Download, Mail } from "lucide-react";
 
@@ -30,13 +28,12 @@ const faqs = [
 ---
 
 <Layout title="Soporte Técnico y Drivers - Asiaven">
-  <Navbar />
   <PageHeader
     title="Soporte Técnico y Drivers"
     bgImage="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1920"
   />
 
-  <main class="bg-gray-50 pb-20">
+  <div class="bg-gray-50 pb-20">
     <!-- Sección 1: Drivers -->
     <section class="max-w-5xl mx-auto px-4 pt-16">
       <div class="rounded-2xl bg-corporativo-blue px-8 py-12 text-center shadow-lg md:px-16">
@@ -87,7 +84,5 @@ const faqs = [
         soporte@asiaven.com
       </a>
     </section>
-  </main>
-
-  <Footer />
+  </div>
 </Layout>

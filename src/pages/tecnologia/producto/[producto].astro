@@ -1,7 +1,5 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import Navbar from "../../../components/sections/Navbar.astro";
-import Footer from "../../../components/sections/Footer.astro";
 import { techProducts } from "../../../data/techCatalog";
 import { ArrowLeft, Check } from "lucide-react";
 
@@ -16,9 +14,7 @@ const { product } = Astro.props;
 ---
 
 <Layout title={`${product.title} - Catálogo Tecnológico - Asiaven`}>
-  <Navbar />
-
-  <main class="max-w-7xl mx-auto px-4 py-16">
+  <div class="max-w-7xl mx-auto px-4 py-16">
     <a
       href={`/tecnologia/${product.subcategorySlug}`}
       class="inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
@@ -70,7 +66,5 @@ const { product } = Astro.props;
         </a>
       </div>
     </div>
-  </main>
-
-  <Footer />
+  </div>
 </Layout>

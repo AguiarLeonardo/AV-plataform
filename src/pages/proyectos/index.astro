@@ -1,7 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/sections/Navbar.astro";
-import Footer from "../../components/sections/Footer.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import ClientLogosCarousel from "../../components/react/ClientLogosCarousel.tsx";
 import { MapPin } from "lucide-react";
@@ -31,13 +29,12 @@ const clientes = [
 ---
 
 <Layout title="Nuestros Proyectos - Asiaven">
-  <Navbar />
   <PageHeader
     bgImage="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80&w=1920"
     title="Nuestros Proyectos"
   />
 
-  <main class="min-h-screen bg-gray-50 pb-20">
+  <div class="min-h-screen bg-gray-50 pb-20">
     <section class="max-w-5xl mx-auto px-4 py-16">
       <h2
         class="text-3xl md:text-4xl text-corporativo-gray font-bold text-center mb-12"
@@ -72,7 +69,5 @@ const clientes = [
         <ClientLogosCarousel client:visible />
       </div>
     </section>
-  </main>
-
-  <Footer />
+  </div>
 </Layout>

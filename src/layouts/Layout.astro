@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import Navbar from "../components/sections/Navbar.astro";
+import Footer from "../components/sections/Footer.astro";
 import WhatsAppButton from "../components/sections/WhatsAppButton.astro";
 
 interface Props {
@@ -14,13 +16,20 @@ const { title = "Asiaven - B2B" } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Asiaven — Servicios de construcción, maquinaria pesada e importación desde Asia." />
+    <meta
+      name="description"
+      content="Grupo Asiaven - Soluciones corporativas integrales. Especialistas en movilidad vertical, infraestructura tecnológica, y equipamiento industrial de alto nivel."
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
   </head>
   <body class="bg-white text-corporativo-gray antialiased">
-    <slot />
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <Footer />
     <WhatsAppButton />
   </body>
 </html>
