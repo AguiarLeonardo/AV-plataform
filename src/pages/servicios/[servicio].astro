@@ -101,7 +101,7 @@ const escalatorsData = [
 <Layout title={`${service.title} - Asiaven`}>
   <div class="max-w-7xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-      <ServiceSlider images={service.images} client:visible />
+      <ServiceSlider images={service.images} client:load />
 
       <div class="prose prose-lg text-gray-700">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
@@ -157,7 +157,7 @@ const escalatorsData = [
         <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
           Nuestras Soluciones en Elevación
         </h2>
-        <ProductFeatureSlider products={elevatorsData} client:visible />
+        <ProductFeatureSlider products={elevatorsData} client:load />
       </div>
     )}
 
@@ -166,7 +166,7 @@ const escalatorsData = [
         <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
           Nuestros Sistemas de Movilidad
         </h2>
-        <ProductFeatureSlider products={escalatorsData} client:visible />
+        <ProductFeatureSlider products={escalatorsData} client:load />
       </div>
     )}
   </div>
