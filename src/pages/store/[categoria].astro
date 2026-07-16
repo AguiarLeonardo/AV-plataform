@@ -61,7 +61,6 @@ const { label, products } = Astro.props;
             {products.map((product) => (
               <StoreProductCard
                 title={product.title}
-                price="Consultar"
                 image={product.image}
                 specs={product.features.slice(0, 4)}
                 details={product.description}
