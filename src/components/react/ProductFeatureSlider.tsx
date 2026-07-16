@@ -42,12 +42,14 @@ export default function ProductFeatureSlider({ products }: Props) {
               />
             </div>
 
-            <div className="flex flex-col justify-center p-8 lg:p-12">
+            <div className="flex min-h-0 flex-col justify-center p-8 lg:p-12">
               <h3 className="text-2xl font-extrabold tracking-tight text-corporativo-gray lg:text-3xl">
                 {product.title}
               </h3>
 
-              <ul className="mt-6 flex flex-col gap-3">
+              <ul
+                className="mt-6 flex max-h-40 flex-col gap-3 overflow-y-auto pr-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent lg:max-h-none lg:overflow-visible lg:pr-0"
+              >
                 {product.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3 text-gray-600">
                     <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-corporativo-blue" />

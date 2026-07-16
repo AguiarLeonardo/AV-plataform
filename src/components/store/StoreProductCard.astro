@@ -4,14 +4,17 @@ interface Props {
   image: string;
   specs: string[];
   badge?: string;
-  details?: string;
   href?: string;
 }
 
-const { title, image, specs, badge, details, href = "#" } = Astro.props;
+const { title, image, specs, badge, href = "#" } = Astro.props;
+
+const visibleCount = 2;
+const visibleSpecs = specs.slice(0, visibleCount);
+const extraSpecs = specs.slice(visibleCount);
 ---
 
-<div class="relative flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+<div class="store-product-card relative flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
   {badge && (
     <span class="absolute left-3 top-3 z-10 rounded-md bg-corporativo-blue px-2 py-1 text-xs font-semibold text-white">
       {badge}
@@ -27,21 +30,38 @@ const { title, image, specs, badge, details, href = "#" } = Astro.props;
   </div>
 
   <ul class="mt-3 flex flex-col gap-1 text-xs text-gray-500">
-    {specs.slice(0, 4).map((spec) => (
+    {visibleSpecs.map((spec) => (
       <li class="flex items-start gap-1.5">
+        <span class="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-gray-400" />
+        <span>{spec}</span>
+      </li>
+    ))}
+    {extraSpecs.map((spec) => (
+      <li class="spec-extra flex items-start gap-1.5" style="display: none;">
         <span class="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-gray-400" />
         <span>{spec}</span>
       </li>
     ))}
   </ul>
 
-  {details && (
-    <details class="mt-2">
-      <summary class="cursor-pointer list-none text-xs font-semibold text-corporativo-blue [&::-webkit-details-marker]:hidden">
-        Ver más
-      </summary>
-      <p class="mt-2 text-xs leading-relaxed text-gray-500">{details}</p>
-    </details>
+  {extraSpecs.length > 0 && (
+    <button
+      type="button"
+      data-specs-toggle="more"
+      class="specs-toggle-more mt-1 self-start text-xs font-semibold text-corporativo-blue hover:underline"
+    >
+      Ver más
+    </button>
+  )}
+  {extraSpecs.length > 0 && (
+    <button
+      type="button"
+      data-specs-toggle="less"
+      class="specs-toggle-less mt-1 self-start text-xs font-semibold text-corporativo-blue hover:underline"
+      style="display: none;"
+    >
+      Ver menos
+    </button>
   )}
 
   <div class="mt-4 flex flex-col gap-2">
@@ -59,3 +79,22 @@ const { title, image, specs, badge, details, href = "#" } = Astro.props;
     </a>
   </div>
 </div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-specs-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const card = button.closest<HTMLElement>(".store-product-card");
+      if (!card) return;
+
+      const expand = button.dataset.specsToggle === "more";
+
+      card.querySelectorAll<HTMLElement>(".spec-extra").forEach((li) => {
+        li.style.display = expand ? "flex" : "none";
+      });
+      const moreBtn = card.querySelector<HTMLElement>(".specs-toggle-more");
+      const lessBtn = card.querySelector<HTMLElement>(".specs-toggle-less");
+      if (moreBtn) moreBtn.style.display = expand ? "none" : "";
+      if (lessBtn) lessBtn.style.display = expand ? "" : "none";
+    });
+  });
+</script>
