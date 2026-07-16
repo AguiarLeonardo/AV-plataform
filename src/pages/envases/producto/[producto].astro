@@ -5,21 +5,23 @@ import { ArrowLeft } from "lucide-react";
 
 export function getStaticPaths() {
   return packagingCategories.flatMap((category) =>
-    category.products.map((product) => ({
-      params: { producto: product.slug },
-      props: { product, category },
-    }))
+    category.subcategories.flatMap((subcategory) =>
+      subcategory.products.map((product) => ({
+        params: { producto: product.slug },
+        props: { product, category, subcategory },
+      }))
+    )
   );
 }
 
-const { product, category } = Astro.props;
+const { product, category, subcategory } = Astro.props;
 const specEntries = Object.entries(product.specs);
 ---
 
 <Layout title={`${product.title} - ${category.title} - Asiaven`}>
   <div class="max-w-5xl mx-auto px-4 py-16">
     <a
-      href="/envases"
+      href={`/envases/${category.slug}`}
       class="inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
     >
       <ArrowLeft className="h-4 w-4" />
@@ -29,6 +31,9 @@ const specEntries = Object.entries(product.specs);
     <div class="mt-8">
       <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-blue">
         {category.title}
+      </span>
+      <span class="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-gray">
+        {subcategory.title}
       </span>
       {product.group && (
         <span class="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-gray">
