@@ -1,28 +1,122 @@
 ---
 import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
-import StoreProductCard from "../../components/store/StoreProductCard.astro";
-import CatalogControls from "../../components/store/CatalogControls.astro";
+import StoreHeroSlider from "../../components/react/StoreHeroSlider.tsx";
+import StoreShowcaseCard from "../../components/store/StoreShowcaseCard.astro";
 import { techProducts } from "../../data/techCatalog";
+import { ShieldCheck, SlidersHorizontal, Headset, Users } from "lucide-react";
+
+const trustBadges = [
+  {
+    icon: ShieldCheck,
+    title: "Garantía Extendida",
+    text: "Todos nuestros equipos cuentan con 3 años de garantía y soporte swap a nivel nacional.",
+  },
+  {
+    icon: SlidersHorizontal,
+    title: "Configuración a Medida",
+    text: "Personaliza las especificaciones de cada equipo según las necesidades reales de tu empresa.",
+  },
+  {
+    icon: Headset,
+    title: "Respaldo Directo",
+    text: "Nuestro soporte técnico especializado te acompaña durante todo el ciclo de vida del equipo.",
+  },
+  {
+    icon: Users,
+    title: "Asesoría Preventa Especializada",
+    text: "Un equipo consultivo te ayuda a definir la solución correcta antes de comprar, sin compromiso.",
+  },
+];
+
+// Solo equipos físicos (ids 1-81: Equipos de Cómputo, Infraestructura y Redes,
+// Audiovisual, Telecomunicaciones, Energía) — se excluyen los paquetes de
+// servicio para que la vitrina luzca como un e-commerce de hardware real.
+const hardwareProducts = techProducts.filter((product) => product.id <= 81);
+
+function pick(offset: number, count: number) {
+  return Array.from({ length: count }, (_, i) => hardwareProducts[(offset + i) % hardwareProducts.length]);
+}
+
+function fakePrice(id: number) {
+  const value = 250 + ((id * 137) % 4750);
+  return `$${value.toLocaleString("en-US")}`;
+}
+
+const featured = pick(0, 8);
+const deals = pick(8, 8);
+const bestSellers = pick(16, 8);
 ---
 
 <StoreLayout title="Asiaven Store - Equipos Tecnológicos para Empresas">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
+  <StoreHeroSlider client:load />
 
-  <main class="max-w-7xl mx-auto px-6 py-10">
-    <CatalogControls resultsCount={techProducts.length} />
-
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+  <section class="mx-auto max-w-7xl px-6 py-12">
+    <h2 class="mb-6 text-2xl font-bold text-gray-900">Productos Destacados</h2>
+    <div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
       {
-        techProducts.map((product) => (
-          <StoreProductCard
+        featured.map((product, i) => (
+          <StoreShowcaseCard
             title={product.title}
             image={product.image}
-            specs={product.features.slice(0, 4)}
+            price={fakePrice(product.id)}
+            badge={i % 3 === 0 ? "Nuevo" : undefined}
             href={`/store/producto/${product.slug}`}
           />
         ))
       }
     </div>
-  </main>
+  </section>
+
+  <section id="ofertas" class="mx-auto max-w-7xl px-6 pb-12 scroll-mt-24">
+    <h2 class="mb-6 text-2xl font-bold text-gray-900">Ofertas Especiales</h2>
+    <div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
+      {
+        deals.map((product) => (
+          <StoreShowcaseCard
+            title={product.title}
+            image={product.image}
+            price={fakePrice(product.id)}
+            badge="Oferta"
+            href={`/store/producto/${product.slug}`}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 pb-16">
+    <h2 class="mb-6 text-2xl font-bold text-gray-900">Más Vendidos</h2>
+    <div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
+      {
+        bestSellers.map((product, i) => (
+          <StoreShowcaseCard
+            title={product.title}
+            image={product.image}
+            price={fakePrice(product.id)}
+            badge={i < 2 ? "Más Vendido" : undefined}
+            href={`/store/producto/${product.slug}`}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="border-t border-gray-100 bg-gray-50">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-16 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+      {
+        trustBadges.map((badge) => {
+          const Icon = badge.icon;
+          return (
+            <div class="flex flex-col items-center text-center">
+              <Icon className="h-12 w-12 text-corporativo-blue" strokeWidth={1.5} />
+              <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">{badge.title}</h3>
+              <p class="text-sm text-gray-600">{badge.text}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
 </StoreLayout>

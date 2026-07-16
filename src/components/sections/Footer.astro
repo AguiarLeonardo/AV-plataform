@@ -1,47 +1,123 @@
 ---
-import { MapPin, Mail, Phone } from "lucide-react";
+import { MapPin, Mail, Phone, CreditCard } from "lucide-react";
 
 const currentYear = new Date().getFullYear();
+const isStore = Astro.url.pathname.startsWith("/store");
 
-const quickLinks = [
-  { label: "Inicio", href: "/" },
-  { label: "Nosotros", href: "/#nosotros" },
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Servicios", href: "/servicios" },
-  { label: "Contáctanos", href: "/contactanos" },
+// lucide-react@1.24.0 (instalado en este proyecto) ya no incluye íconos de
+// marca (LinkedIn/Twitter/Instagram); se usan trazos de línea genéricos
+// equivalentes en su lugar.
+const socialLinks = [
+  {
+    label: "LinkedIn",
+    href: "#",
+    path: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+  },
+  {
+    label: "Twitter",
+    href: "#",
+    path: "M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z",
+  },
+  {
+    label: "Instagram",
+    href: "#",
+    path: "M2 7a5 5 0 0 1 5-5h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5zm10 1.37a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5h.01",
+  },
 ];
 
-const contactInfo = [
-  { Icon: MapPin, text: "C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela" },
-  { Icon: Mail, text: "proyectos@asiaven.com" },
+// --- Contenido vista CORPORATIVA ---
+const corporateDescription =
+  "Soluciones integrales en infraestructura y tecnología, desde ingeniería civil hasta equipamiento corporativo de última generación.";
+
+const servicesLinks = [
+  { label: "Instalación", href: "/servicios" },
+  { label: "Mantenimiento", href: "/servicios/mantenimiento" },
+  { label: "Modernización", href: "/servicios/ascensores" },
+];
+
+const solutionsLinks = [
+  { label: "Ascensores", href: "/servicios/ascensores" },
+  { label: "Escaleras Mecánicas", href: "/servicios/escaleras-mecanicas" },
+  { label: "Proyectos", href: "/proyectos" },
+];
+
+const corporateContact = [
   { Icon: Phone, text: "+58 212-9924333" },
+  { Icon: Mail, text: "proyectos@asiaven.com" },
+  { Icon: MapPin, text: "C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela" },
+];
+
+// --- Contenido vista TIENDA ---
+const storeDescription = "Equipos a medida y soluciones IT para empresas, respaldados por garantía y soporte técnico especializado.";
+
+const categoryLinks = [
+  { label: "Servidores", href: "/store/servidores" },
+  { label: "Computación", href: "/store/equipos-de-computo" },
+  { label: "Energía", href: "/store/energia-y-climatizacion" },
+  { label: "Equipos a Medida", href: "/contactanos" },
+];
+
+const supportLinks = [
+  { label: "Soporte Técnico", href: "/soporte-tecnico" },
+  { label: "Políticas de Garantía", href: "#" },
+  { label: "Envíos", href: "#" },
+  { label: "Términos y Condiciones", href: "#" },
+];
+
+const salesContact = [
+  { Icon: Phone, text: "+58 212-9924333 (Ventas)" },
+  { Icon: Mail, text: "ventas@asiaven.com" },
+];
+
+const paymentMethods = "Transferencia, Zelle y tarjeta de crédito/débito";
+
+const legalLinks = [
+  { label: "Términos de Servicio", href: "#" },
+  { label: "Política de Privacidad", href: "#" },
 ];
 ---
 
 <footer class="bg-corporativo-gray text-gray-300">
-  <div class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
-    <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
+  <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <a href="/" class="text-2xl font-bold tracking-widest text-white">ASIAVEN</a>
+        <a href={isStore ? "/store" : "/"} class="text-2xl font-bold tracking-widest text-white">
+          ASIAVEN {isStore && <span class="text-corporativo-blue">Store</span>}
+        </a>
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
-          Servicios de construcción, maquinaria pesada e importación y distribución de productos desde el continente asiático.
+          {isStore ? storeDescription : corporateDescription}
         </p>
-        <p class="mt-4 max-w-xs text-sm italic leading-relaxed text-gray-500">
-          "El camino hacia el éxito siempre está en construcción".
-        </p>
+        <div class="mt-6 flex items-center gap-4">
+          {socialLinks.map(({ label, href, path }) => (
+            <a
+              href={href}
+              aria-label={label}
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-gray-300 transition-colors duration-200 hover:border-corporativo-blue hover:text-white"
+            >
+              <svg
+                class="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d={path} />
+              </svg>
+            </a>
+          ))}
+        </div>
       </div>
 
       <div>
         <h4 class="text-sm font-semibold uppercase tracking-widest text-white">
-          Enlaces Rápidos
+          {isStore ? "Categorías Tech" : "Servicios"}
         </h4>
         <ul class="mt-4 flex flex-col gap-3">
-          {quickLinks.map(({ label, href }) => (
+          {(isStore ? categoryLinks : servicesLinks).map(({ label, href }) => (
             <li>
-              <a
-                href={href}
-                class="text-sm text-gray-400 transition-colors duration-200 hover:text-white"
-              >
+              <a href={href} class="text-sm text-gray-400 transition-colors duration-200 hover:text-white">
                 {label}
               </a>
             </li>
@@ -51,23 +127,53 @@ const contactInfo = [
 
       <div>
         <h4 class="text-sm font-semibold uppercase tracking-widest text-white">
-          Contacto
+          {isStore ? "Atención al Cliente" : "Soluciones"}
         </h4>
         <ul class="mt-4 flex flex-col gap-3">
-          {contactInfo.map(({ Icon, text }) => (
-            <li class="flex items-center gap-3 text-sm text-gray-400">
-              <Icon className="h-5 w-5 text-corporativo-blue" />
-              <span>{text}</span>
+          {(isStore ? supportLinks : solutionsLinks).map(({ label, href }) => (
+            <li>
+              <a href={href} class="text-sm text-gray-400 transition-colors duration-200 hover:text-white">
+                {label}
+              </a>
             </li>
           ))}
         </ul>
       </div>
+
+      <div>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">
+          {isStore ? "Contacto de Ventas" : "Contacto Corporativo"}
+        </h4>
+        <ul class="mt-4 flex flex-col gap-3">
+          {(isStore ? salesContact : corporateContact).map(({ Icon, text }) => (
+            <li class="flex items-center gap-3 text-sm text-gray-400">
+              <Icon className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
+              <span>{text}</span>
+            </li>
+          ))}
+          {isStore && (
+            <li class="flex items-center gap-3 text-sm text-gray-400">
+              <CreditCard className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
+              <span>{paymentMethods}</span>
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
 
-    <div class="mt-12 border-t border-white/15 pt-8 text-center">
+    <div class="mt-12 flex flex-col gap-4 border-t border-white/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
       <p class="text-xs text-gray-500">
-        &copy; {currentYear} Asiaven. Todos los derechos reservados.
+        &copy; {currentYear} {isStore ? "Asiaven Store" : "Asiaven"}. Todos los derechos reservados.
       </p>
+      <ul class="flex items-center gap-6">
+        {legalLinks.map(({ label, href }) => (
+          <li>
+            <a href={href} class="text-xs text-gray-500 transition-colors duration-200 hover:text-white">
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </footer>

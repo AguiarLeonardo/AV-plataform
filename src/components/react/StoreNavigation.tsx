@@ -32,6 +32,7 @@ function resolveActiveFromPath(currentPath: string): ActiveState {
 export default function StoreNavigation({ currentPath = "/store" }: Props) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [active, setActive] = useState<ActiveState>(() => resolveActiveFromPath(currentPath));
+  const isStoreRoot = currentPath === "/store" || currentPath === "/store/";
 
   const activeCategory: StoreCategory = storeCategories[active.categoryIndex];
   const activeGroup = active.groupIndex !== null ? activeCategory.groups[active.groupIndex] : null;
@@ -101,13 +102,9 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
             >
               {storeCategories[hoverIndex].groups.map((group, gi) => (
                 <div key={group.slug}>
-                  <a
-                    href={group.href}
-                    onClick={() => selectGroup(hoverIndex, gi)}
-                    className="mb-3 block text-sm font-bold text-gray-900 no-underline hover:text-corporativo-blue"
-                  >
+                  <span className="mb-3 block cursor-default text-sm font-bold text-gray-900 select-none">
                     {group.name}
-                  </a>
+                  </span>
                   <ul className="flex flex-col gap-2">
                     {group.items.map((item) => (
                       <li key={item.slug}>
@@ -128,28 +125,30 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
         )}
       </div>
 
-      <div className="w-full border-y border-gray-100 bg-gray-50">
-        <div className="mx-auto flex max-w-7xl items-center gap-8 overflow-x-auto px-6 py-3">
-          {activeGroup ? (
-            activeGroup.items.map((item) => (
+      {!isStoreRoot && (
+        <div className="w-full border-y border-gray-100 bg-gray-50">
+          <div className="mx-auto flex max-w-7xl items-center gap-8 overflow-x-auto px-6 py-3">
+            {activeGroup ? (
+              activeGroup.items.map((item) => (
+                <a
+                  key={item.slug}
+                  href={item.href}
+                  className="whitespace-nowrap text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                >
+                  {item.name}
+                </a>
+              ))
+            ) : (
               <a
-                key={item.slug}
-                href={item.href}
-                className="whitespace-nowrap text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                href={activeCategory.href}
+                className="whitespace-nowrap text-sm font-semibold text-gray-700 no-underline"
               >
-                {item.name}
+                {activeCategory.name}
               </a>
-            ))
-          ) : (
-            <a
-              href={activeCategory.href}
-              className="whitespace-nowrap text-sm font-semibold text-gray-700 no-underline"
-            >
-              {activeCategory.name}
-            </a>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
