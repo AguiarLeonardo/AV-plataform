@@ -104,23 +104,13 @@ import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
 </StoreLayout>
 
 <script>
-  const submitButton = document.getElementById("sales-contact-submit");
-  const form = document.getElementById("sales-contact-form") as HTMLFormElement | null;
+  import { initSupportForm } from "../../../utils/formSupport";
 
-  submitButton?.addEventListener("click", () => {
-    if (!form?.checkValidity()) {
-      form?.reportValidity();
-      return;
-    }
-    alert("Mensaje enviado al equipo de ventas. Nos contactaremos pronto.");
-  });
-
-  const toggleButton = document.querySelector<HTMLButtonElement>(".toggle-b2b");
-  const businessFields = document.querySelector<HTMLElement>(".business-fields");
-
-  toggleButton?.addEventListener("click", () => {
-    businessFields?.classList.toggle("hidden");
-    const isHidden = businessFields?.classList.contains("hidden");
-    toggleButton.textContent = isHidden ? "¿Compras para una empresa?" : "¿Compra personal?";
+  initSupportForm({
+    formId: "sales-contact-form",
+    submitId: "sales-contact-submit",
+    successMessage: "Mensaje enviado al equipo de ventas. Nos contactaremos pronto.",
+    toggleLabelOn: "¿Compras para una empresa?",
+    toggleLabelOff: "¿Compra personal?",
   });
 </script>

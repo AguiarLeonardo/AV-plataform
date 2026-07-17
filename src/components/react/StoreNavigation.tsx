@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ShoppingCart, User, Search, Menu, X, ChevronDown } from "lucide-react";
+import { ShoppingCart, Search, Menu, X, ChevronDown } from "lucide-react";
 import { storeCategories, type StoreCategory } from "../../data/storeTaxonomy";
 import { CART_EVENT, getCartCount } from "../../store/quoteCart";
 
@@ -198,9 +198,6 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                   </span>
                 )}
               </a>
-              <button type="button" aria-label="Perfil de usuario" className="text-gray-700 transition-colors hover:text-gray-900">
-                <User className="h-5 w-5" strokeWidth={1.5} />
-              </button>
               <form onSubmit={handleSearchSubmit} className="relative hidden sm:block">
                 <input
                   type="text"

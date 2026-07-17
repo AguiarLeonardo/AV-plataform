@@ -95,23 +95,13 @@ import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
 </StoreLayout>
 
 <script>
-  const submitButton = document.getElementById("ticket-submit");
-  const form = document.getElementById("ticket-form") as HTMLFormElement | null;
+  import { initSupportForm } from "../../../utils/formSupport";
 
-  submitButton?.addEventListener("click", () => {
-    if (!form?.checkValidity()) {
-      form?.reportValidity();
-      return;
-    }
-    alert("Ticket generado. Nuestro equipo de soporte te contactará a la brevedad.");
-  });
-
-  const toggleButton = document.querySelector<HTMLButtonElement>(".toggle-b2b");
-  const businessFields = document.querySelector<HTMLElement>(".business-fields");
-
-  toggleButton?.addEventListener("click", () => {
-    businessFields?.classList.toggle("hidden");
-    const isHidden = businessFields?.classList.contains("hidden");
-    toggleButton.textContent = isHidden ? "¿Soporte para tu empresa?" : "¿Soporte personal?";
+  initSupportForm({
+    formId: "ticket-form",
+    submitId: "ticket-submit",
+    successMessage: "Ticket generado. Nuestro equipo de soporte te contactará a la brevedad.",
+    toggleLabelOn: "¿Soporte para tu empresa?",
+    toggleLabelOff: "¿Soporte personal?",
   });
 </script>
