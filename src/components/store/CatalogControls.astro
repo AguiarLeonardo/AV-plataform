@@ -8,11 +8,10 @@ interface Props {
 const { resultsCount } = Astro.props;
 
 const sortOptions = [
-  "Más vendidos",
-  "Precio: menor a mayor",
-  "Precio: mayor a menor",
-  "Mayores descuentos",
-  "Novedades",
+  { value: "default", label: "Más vendidos" },
+  { value: "price_asc", label: "Precio: menor a mayor" },
+  { value: "price_desc", label: "Precio: mayor a menor" },
+  { value: "name_asc", label: "Nombre: A-Z" },
 ];
 ---
 
@@ -30,32 +29,39 @@ const sortOptions = [
     <span class="text-base font-bold text-gray-900">{resultsCount}</span> Resultados
   </p>
 
-  <details class="sort-dropdown relative ml-0 sm:ml-auto">
-    <summary
-      class="sort-summary inline-flex w-fit cursor-pointer list-none items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition-colors [&::-webkit-details-marker]:hidden"
+  <div class="relative ml-0 w-full sm:ml-auto sm:w-56">
+    <select
+      id="sort-select"
+      class="w-full appearance-none rounded-md border border-gray-300 bg-white py-2 pl-4 pr-9 text-sm text-gray-700 transition-colors focus:border-corporativo-blue focus:outline-none"
     >
-      Ordenar por: <span class="font-semibold">{sortOptions[0]}</span>
-      <ChevronDown className="sort-chevron h-4 w-4 transition-transform" />
-    </summary>
-
-    <ul class="absolute right-0 z-10 mt-2 w-60 rounded-md border border-gray-200 bg-white py-1 text-sm text-gray-700 shadow-lg">
       {sortOptions.map((option) => (
-        <li>
-          <a href="#" class="block px-4 py-2 no-underline hover:bg-gray-50">{option}</a>
-        </li>
+        <option value={option.value}>Ordenar por: {option.label}</option>
       ))}
-    </ul>
-  </details>
+    </select>
+    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+  </div>
 </div>
 
-<style>
-  .sort-dropdown[open] .sort-summary {
-    background-color: #111827;
-    border-color: #111827;
-    color: #ffffff;
-  }
+<script>
+  const select = document.getElementById("sort-select") as HTMLSelectElement | null;
 
-  .sort-dropdown[open] .sort-chevron {
-    transform: rotate(180deg);
-  }
-</style>
+  select?.addEventListener("change", () => {
+    const grid = document.getElementById("product-grid");
+    if (!grid) return;
+
+    // Usamos .store-product-card en vez de grid.children porque Astro puede
+    // insertar el <script> deduplicado de StoreProductCard como hijo literal
+    // del contenedor cuando el componente se invoca dentro del .map().
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>(":scope > .store-product-card"));
+    const value = select.value;
+
+    cards.sort((a, b) => {
+      if (value === "price_asc") return Number(a.dataset.price) - Number(b.dataset.price);
+      if (value === "price_desc") return Number(b.dataset.price) - Number(a.dataset.price);
+      if (value === "name_asc") return (a.dataset.name ?? "").localeCompare(b.dataset.name ?? "");
+      return 0;
+    });
+
+    cards.forEach((card) => grid.appendChild(card));
+  });
+</script>

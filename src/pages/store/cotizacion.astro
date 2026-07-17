@@ -1,0 +1,26 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+import QuoteCartList from "../../components/react/QuoteCartList.tsx";
+import QuoteRequestForm from "../../components/react/QuoteRequestForm.tsx";
+---
+
+<StoreLayout title="Solicitud de Cotización - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="mx-auto max-w-7xl px-6 py-10">
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">Solicitud de Cotización</h1>
+
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+      <div>
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">Productos seleccionados</h2>
+        <QuoteCartList client:load />
+      </div>
+
+      <div>
+        <h2 class="mb-4 text-lg font-semibold text-gray-900">Datos de contacto</h2>
+        <QuoteRequestForm client:load />
+      </div>
+    </div>
+  </main>
+</StoreLayout>

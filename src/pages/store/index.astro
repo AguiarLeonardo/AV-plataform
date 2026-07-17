@@ -4,6 +4,7 @@ import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import StoreHeroSlider from "../../components/react/StoreHeroSlider.tsx";
 import StoreShowcaseCard from "../../components/store/StoreShowcaseCard.astro";
 import { techProducts } from "../../data/techCatalog";
+import { fakePrice } from "../../utils/fakePrice";
 import { ShieldCheck, SlidersHorizontal, Headset, Users } from "lucide-react";
 
 const trustBadges = [
@@ -36,11 +37,6 @@ const hardwareProducts = techProducts.filter((product) => product.id <= 81);
 
 function pick(offset: number, count: number) {
   return Array.from({ length: count }, (_, i) => hardwareProducts[(offset + i) % hardwareProducts.length]);
-}
-
-function fakePrice(id: number) {
-  const value = 250 + ((id * 137) % 4750);
-  return `$${value.toLocaleString("en-US")}`;
 }
 
 const featured = pick(0, 8);

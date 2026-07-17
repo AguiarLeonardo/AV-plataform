@@ -1,0 +1,60 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const sections = [
+  {
+    title: "1. Recopilación de Datos",
+    paragraphs: [
+      "En el marco de nuestras relaciones comerciales B2B, Asiaven recopila información de contacto corporativo (nombre, empresa, correo electrónico, teléfono) que usted nos proporciona voluntariamente a través de nuestros formularios de contacto, solicitudes de cotización y catálogo de tienda.",
+      "No recopilamos información financiera sensible ni datos personales que excedan lo necesario para gestionar la relación comercial con su empresa.",
+    ],
+  },
+  {
+    title: "2. Uso de la Información",
+    paragraphs: [
+      "La información recopilada se utiliza exclusivamente para: procesar y dar seguimiento a solicitudes de cotización, contactarlo respecto a productos y servicios de su interés, y mejorar la calidad de nuestra atención comercial y técnica.",
+      "No utilizamos su información para fines distintos a los descritos en esta política sin su consentimiento explícito.",
+    ],
+  },
+  {
+    title: "3. Protección de Datos",
+    paragraphs: [
+      "Asiaven implementa medidas razonables de seguridad técnica y organizativa para proteger la información de nuestros clientes contra accesos no autorizados, pérdida o alteración.",
+      "El acceso a la información de contacto está restringido al personal comercial y técnico que la requiere para cumplir con las funciones descritas en esta política.",
+    ],
+  },
+  {
+    title: "4. No Compartimos Información con Terceros",
+    paragraphs: [
+      "Asiaven no vende, alquila ni comparte la información de contacto de sus clientes con terceros para fines de mercadeo ajenos a nuestra operación.",
+      "Solo compartimos información cuando es estrictamente necesario para completar una transacción solicitada por el cliente (por ejemplo, con proveedores logísticos para coordinar una entrega) o cuando la ley así lo exige.",
+    ],
+  },
+  {
+    title: "5. Contacto",
+    paragraphs: [
+      "Si tiene preguntas sobre esta Política de Privacidad o desea ejercer algún derecho sobre sus datos, puede escribirnos a proyectos@asiaven.com.",
+    ],
+  },
+];
+---
+
+<Layout title="Política de Privacidad - Asiaven">
+  <div class="max-w-4xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Política de Privacidad</h1>
+    <p class="text-sm text-gray-500 mb-10">Última actualización: enero de 2026</p>
+
+    <div class="space-y-10">
+      {sections.map((section) => (
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">{section.title}</h2>
+          <div class="space-y-4">
+            {section.paragraphs.map((paragraph) => (
+              <p class="text-base leading-relaxed text-gray-700">{paragraph}</p>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</Layout>

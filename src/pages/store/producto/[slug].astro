@@ -1,9 +1,29 @@
 ---
 import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import StoreProductCard from "../../../components/store/StoreProductCard.astro";
 import { techProducts } from "../../../data/techCatalog";
-import { hrefForRealSubcategory } from "../../../data/storeTaxonomy";
-import { ArrowLeft, Check } from "lucide-react";
+import { hrefForRealSubcategory, findTaxonomyPath } from "../../../data/storeTaxonomy";
+import { fakePriceValue } from "../../../utils/fakePrice";
+import {
+  ChevronRight,
+  ChevronLeft,
+  Star,
+  Cpu,
+  MemoryStick,
+  HardDrive,
+  MonitorSmartphone,
+  Battery,
+  Wifi,
+  Ruler,
+  Gauge,
+  Settings2,
+  Heart,
+  GitCompare,
+  Headset,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 
 export function getStaticPaths() {
   return techProducts.map((product) => ({
@@ -14,60 +34,341 @@ export function getStaticPaths() {
 
 const { product } = Astro.props;
 const backHref = hrefForRealSubcategory(product.subcategorySlug);
+const taxonomyPath = findTaxonomyPath(product.subcategorySlug);
+
+// Precio ficticio (misma fórmula que la vitrina) + "precio original" simulado
+// 20% más alto para armar la Buy Box estilo Lenovo/HP con descuento.
+const price = fakePriceValue(product.id);
+const originalPrice = Math.round(price * 1.2);
+const savings = originalPrice - price;
+
+// Cada feature viene como "Etiqueta: Valor" (ej. "Procesador: Intel Core i5...").
+// Se parsean para el Specs Grid, eligiendo un ícono según palabras clave de la etiqueta.
+const specIconByKeyword: [string, unknown][] = [
+  ["procesador", Cpu],
+  ["memoria", MemoryStick],
+  ["almacenamiento", HardDrive],
+  ["pantalla", MonitorSmartphone],
+  ["panel", MonitorSmartphone],
+  ["batería", Battery],
+  ["autonomía", Battery],
+  ["conectividad", Wifi],
+  ["puertos", Wifi],
+  ["capacidad", Gauge],
+  ["potencia", Gauge],
+  ["velocidad", Gauge],
+  ["peso", Ruler],
+  ["altura", Ruler],
+  ["diámetro", Ruler],
+];
+
+function getSpecIcon(label: string) {
+  const lower = label.toLowerCase();
+  const match = specIconByKeyword.find(([keyword]) => lower.includes(keyword));
+  return (match?.[1] as typeof Settings2) ?? Settings2;
+}
+
+const specs = product.features.map((feature) => {
+  const separatorIndex = feature.indexOf(":");
+  const hasLabel = separatorIndex > -1;
+  const label = hasLabel ? feature.slice(0, separatorIndex).trim() : "Detalle";
+  const value = hasLabel ? feature.slice(separatorIndex + 1).trim() : feature;
+  return { label, value, Icon: getSpecIcon(label) };
+});
+
+// Placeholder de galería: no hay fotos adicionales reales por producto todavía,
+// así que se arman 4 miniaturas distintas combinando la imagen real del producto
+// con otras fotos tech de Unsplash (rotadas según el id, para que no se repitan
+// siempre las mismas entre productos vecinos).
+const galleryPool = [
+  "photo-1517336714731-489689fd1ca8",
+  "photo-1593642702821-c8da6771f0c6",
+  "photo-1587202372775-e229f172b9d7",
+  "photo-1496181133206-80ce9b88a853",
+  "photo-1521791136064-7986c2920216",
+  "photo-1614064641938-3bbee52942c7",
+  "photo-1601972602288-3be527b4f18a",
+  "photo-1526406915894-7bcd65f60845",
+];
+
+function poolImage(offset: number) {
+  const photoId = galleryPool[(product.id + offset) % galleryPool.length];
+  return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=80&w=800`;
+}
+
+const galleryThumbs = [product.image, poolImage(1), poolImage(2), poolImage(3)];
+
+// El catálogo actual solo tiene 3 productos por subcategoría exacta, así que
+// se completa con productos de la misma categoría amplia (ej. "Equipos de
+// Cómputo") para llegar a 4-5 recomendados como pide el diseño.
+const sameSubcategory = techProducts.filter(
+  (p) => p.subcategorySlug === product.subcategorySlug && p.id !== product.id
+);
+const sameCategory = techProducts.filter(
+  (p) => p.category === product.category && p.id !== product.id && !sameSubcategory.includes(p)
+);
+const relatedProducts = [...sameSubcategory, ...sameCategory].slice(0, 5);
+
+const brandPromise = [
+  {
+    Icon: Headset,
+    title: "Soporte Técnico VIP",
+    text: "Acompañamiento especializado durante todo el ciclo de vida de tu equipo.",
+    href: "/soporte-tecnico",
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Garantía Extendida",
+    text: "3 años de garantía y soporte swap a nivel nacional en todos los equipos.",
+    href: "/contactanos",
+  },
+  {
+    Icon: Truck,
+    title: "Logística Segura",
+    text: "Entrega e instalación coordinada por nuestro equipo en todo el país.",
+    href: "/contactanos",
+  },
+];
 ---
 
 <StoreLayout title={`${product.title} - Asiaven Store`}>
   <StoreNavigation client:load currentPath={backHref} />
 
-  <main class="max-w-6xl mx-auto px-6 py-12">
-    <a
-      href={backHref}
-      class="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
-    >
-      <ArrowLeft className="h-4 w-4" />
-      Volver a {product.subcategoryName}
-    </a>
+  <main class="mx-auto max-w-7xl px-6 py-10">
+    <nav aria-label="Breadcrumb" class="mb-6 flex flex-wrap items-center gap-1 text-xs text-gray-500">
+      <a href="/" class="hover:text-gray-900">Inicio</a>
+      <ChevronRight className="h-3 w-3 flex-shrink-0" />
+      <a href="/store" class="hover:text-gray-900">Tienda</a>
+      {taxonomyPath && (
+        <>
+          <ChevronRight className="h-3 w-3 flex-shrink-0" />
+          <a href={taxonomyPath.group.href} class="hover:text-gray-900">{taxonomyPath.group.name}</a>
+          <ChevronRight className="h-3 w-3 flex-shrink-0" />
+          <a href={taxonomyPath.item.href} class="hover:text-gray-900">{taxonomyPath.item.name}</a>
+        </>
+      )}
+      <ChevronRight className="h-3 w-3 flex-shrink-0" />
+      <span class="font-medium text-gray-700">{product.title}</span>
+    </nav>
 
+    <!-- Buy Box -->
     <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
-      <div class="flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 p-10">
-        <img
-          src={product.image}
-          alt={product.title}
-          class="max-h-96 w-full object-contain"
-          loading="eager"
-          decoding="async"
-        />
+      <div>
+        <div class="flex items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-10">
+          <img
+            id="main-product-image"
+            src={product.image}
+            alt={product.title}
+            class="max-h-96 w-full object-contain"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+
+        <div class="mt-4 grid grid-cols-4 gap-3">
+          {galleryThumbs.map((thumb, index) => (
+            <button
+              type="button"
+              class:list={[
+                "thumbnail-trigger aspect-square overflow-hidden rounded-md border bg-gray-50 p-1 transition-colors hover:border-corporativo-blue",
+                index === 0 ? "border-corporativo-blue ring-2 ring-corporativo-blue" : "border-gray-200",
+              ]}
+              data-image-src={thumb}
+              aria-label={`Ver imagen ${index + 1}`}
+            >
+              <img src={thumb} alt={`${product.title} miniatura ${index + 1}`} class="h-full w-full object-contain" loading="lazy" decoding="async" />
+            </button>
+          ))}
+        </div>
       </div>
 
       <div>
         <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-blue">
-          {product.subcategoryName}
+          Configurable
         </span>
 
-        <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-          {product.title}
-        </h1>
+        <h1 class="mt-4 text-3xl font-bold text-gray-900">{product.title}</h1>
 
-        <p class="mt-4 text-base leading-relaxed text-gray-600">
-          {product.description}
-        </p>
+        <div class="mt-2 flex items-center gap-2">
+          <div class="flex items-center gap-0.5">
+            {Array.from({ length: 5 }).map(() => (
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            ))}
+          </div>
+          <span class="text-sm text-gray-500">(4.8) 24 reseñas</span>
+        </div>
 
-        <ul class="mt-6 flex flex-col gap-2">
-          {product.features.map((feature) => (
-            <li class="flex items-start gap-3 text-sm text-gray-600">
-              <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-corporativo-blue" />
-              <span>{feature}</span>
-            </li>
-          ))}
-        </ul>
+        <div class="mt-4 flex flex-wrap items-end gap-3">
+          <span class="text-3xl font-bold text-gray-900">${price.toLocaleString("en-US")}</span>
+          <span class="text-lg text-gray-400 line-through">${originalPrice.toLocaleString("en-US")}</span>
+          <span class="rounded-md bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+            Ahorra ${savings.toLocaleString("en-US")}
+          </span>
+        </div>
 
-        <a
-          href="/contactanos"
-          class="mt-8 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-8 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+        <p class="mt-4 text-base leading-relaxed text-gray-600">{product.description}</p>
+
+        <button
+          type="button"
+          id="pdp-add-to-quote"
+          data-product-id={product.id}
+          data-product-name={product.title}
+          data-product-price={price}
+          class="mt-6 w-full rounded-lg bg-corporativo-blue py-4 text-center text-base font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90"
         >
-          Solicitar Cotización &rarr;
-        </a>
+          Agregar a Cotización
+        </button>
+
+        <div class="mt-4 flex items-center justify-center gap-8 border-t border-gray-100 pt-4">
+          <button type="button" class="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900">
+            <GitCompare className="h-4 w-4" strokeWidth={1.5} />
+            Comparar
+          </button>
+          <button type="button" class="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900">
+            <Heart className="h-4 w-4" strokeWidth={1.5} />
+            Guardar
+          </button>
+        </div>
+
+        <!-- Specs Grid -->
+        <div class="mt-10">
+          <h2 class="mb-4 text-lg font-semibold text-gray-900">Especificaciones</h2>
+          <div class="grid grid-cols-2 gap-4">
+            {specs.map(({ label, value, Icon }) => (
+              <div class="rounded-md border border-gray-200 p-3">
+                <Icon className="h-5 w-5 text-corporativo-blue" strokeWidth={1.5} />
+                <p class="mt-2 text-xs font-medium uppercase tracking-wide text-gray-500">{label}</p>
+                <p class="mt-0.5 text-sm font-semibold text-gray-900">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Cross-selling -->
+    {relatedProducts.length > 0 && (
+      <section class="mt-16">
+        <h2 class="mb-6 text-2xl font-bold text-gray-900">Recomendados para ti</h2>
+        <div class="group relative">
+          <div
+            id="recomendados-scroll"
+            class="-mx-6 flex gap-6 overflow-x-auto px-6 pb-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {relatedProducts.map((related) => (
+              <div class="w-72 flex-shrink-0 snap-start">
+                <StoreProductCard
+                  title={related.title}
+                  image={related.image}
+                  specs={related.features.slice(0, 4)}
+                  href={`/store/producto/${related.slug}`}
+                  dataPrice={fakePriceValue(related.id)}
+                  productId={related.id}
+                />
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            id="recomendados-prev"
+            aria-label="Ver recomendados anteriores"
+            class="absolute left-0 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            id="recomendados-next"
+            aria-label="Ver más recomendados"
+            class="absolute right-0 top-1/2 z-10 -translate-y-1/2 translate-x-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      </section>
+    )}
+
+    <!-- Promesa de Marca -->
+    <section class="mt-20 border-t border-gray-100 pb-24 pt-16">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-gray-900">La Promesa Asiaven</h2>
+        <p class="mt-2 text-sm text-gray-500">Tu inversión, protegida</p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-1 gap-10 md:grid-cols-3">
+        {brandPromise.map(({ Icon, title, text, href }) => (
+          <div class="flex flex-col items-center text-center">
+            <Icon className="h-10 w-10 text-corporativo-blue" strokeWidth={1.5} />
+            <h3 class="mt-4 text-base font-semibold text-gray-900">{title}</h3>
+            <p class="mt-2 max-w-xs text-sm text-gray-600">{text}</p>
+            <a href={href} class="mt-3 text-sm font-semibold text-corporativo-blue hover:underline">
+              Saber más &rarr;
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
   </main>
 </StoreLayout>
+
+<script>
+  import { addToCart } from "../../../store/quoteCart";
+
+  const button = document.getElementById("pdp-add-to-quote") as HTMLButtonElement | null;
+  if (button) {
+    const originalLabel = button.textContent ?? "Agregar a Cotización";
+    let feedbackTimer: ReturnType<typeof setTimeout> | undefined;
+
+    button.addEventListener("click", () => {
+      addToCart({
+        id: Number(button.dataset.productId),
+        name: button.dataset.productName ?? "",
+        fakePrice: Number(button.dataset.productPrice),
+      });
+
+      button.textContent = "¡Agregado!";
+      button.disabled = true;
+      clearTimeout(feedbackTimer);
+      feedbackTimer = setTimeout(() => {
+        button.textContent = originalLabel;
+        button.disabled = false;
+      }, 2000);
+    });
+  }
+</script>
+
+<script>
+  const scrollContainer = document.getElementById("recomendados-scroll");
+  const prevBtn = document.getElementById("recomendados-prev");
+  const nextBtn = document.getElementById("recomendados-next");
+
+  prevBtn?.addEventListener("click", () => {
+    scrollContainer?.scrollBy({ left: -300, behavior: "smooth" });
+  });
+  nextBtn?.addEventListener("click", () => {
+    scrollContainer?.scrollBy({ left: 300, behavior: "smooth" });
+  });
+</script>
+
+<script>
+  const mainImage = document.getElementById("main-product-image") as HTMLImageElement | null;
+  const thumbnails = document.querySelectorAll<HTMLButtonElement>(".thumbnail-trigger");
+  const activeClasses = ["border-corporativo-blue", "ring-2", "ring-corporativo-blue"];
+
+  thumbnails.forEach((thumbnail) => {
+    thumbnail.addEventListener("click", () => {
+      const newSrc = thumbnail.dataset.imageSrc;
+      if (!mainImage || !newSrc) return;
+
+      mainImage.src = newSrc;
+
+      thumbnails.forEach((t) => {
+        t.classList.remove(...activeClasses, "border-gray-200");
+        t.classList.add("border-gray-200");
+      });
+      thumbnail.classList.remove("border-gray-200");
+      thumbnail.classList.add(...activeClasses);
+    });
+  });
+</script>

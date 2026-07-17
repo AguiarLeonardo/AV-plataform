@@ -1,0 +1,10 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+import SearchResults from "../../components/react/SearchResults.tsx";
+---
+
+<StoreLayout title="Resultados de Búsqueda - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+  <SearchResults client:load />
+</StoreLayout>

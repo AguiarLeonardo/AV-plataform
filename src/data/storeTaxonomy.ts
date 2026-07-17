@@ -142,3 +142,16 @@ export function hrefForRealSubcategory(realSlug: string): string {
   }
   return "/store";
 }
+
+export function findTaxonomyPath(
+  realSlug: string
+): { category: StoreCategory; group: StoreGroup; item: StoreItem } | null {
+  for (const category of storeCategories) {
+    for (const group of category.groups) {
+      for (const item of group.items) {
+        if (resolveRealSlug(item.slug) === realSlug) return { category, group, item };
+      }
+    }
+  }
+  return null;
+}

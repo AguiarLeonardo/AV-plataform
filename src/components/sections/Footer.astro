@@ -4,6 +4,32 @@ import { MapPin, Mail, Phone, CreditCard } from "lucide-react";
 const currentYear = new Date().getFullYear();
 const isStore = Astro.url.pathname.startsWith("/store");
 
+// Esquema de color condicional: la Tienda usa un tono gris claro elegante,
+// el sitio corporativo conserva el fondo oscuro original.
+const theme = isStore
+  ? {
+      footer: "bg-gray-50 text-gray-600",
+      brand: "text-gray-900",
+      body: "text-gray-600",
+      heading: "text-gray-900",
+      link: "text-gray-600 hover:text-corporativo-blue",
+      social: "border-gray-300 text-gray-500 hover:border-corporativo-blue hover:text-corporativo-blue",
+      divider: "border-gray-200",
+      small: "text-gray-500",
+      smallLink: "text-gray-500 hover:text-corporativo-blue",
+    }
+  : {
+      footer: "bg-corporativo-gray text-gray-300",
+      brand: "text-white",
+      body: "text-gray-400",
+      heading: "text-white",
+      link: "text-gray-400 hover:text-white",
+      social: "border-white/15 text-gray-300 hover:border-corporativo-blue hover:text-white",
+      divider: "border-white/15",
+      small: "text-gray-500",
+      smallLink: "text-gray-500 hover:text-white",
+    };
+
 // lucide-react@1.24.0 (instalado en este proyecto) ya no incluye íconos de
 // marca (LinkedIn/Twitter/Instagram); se usan trazos de línea genéricos
 // equivalentes en su lugar.
@@ -59,9 +85,9 @@ const categoryLinks = [
 
 const supportLinks = [
   { label: "Soporte Técnico", href: "/soporte-tecnico" },
-  { label: "Políticas de Garantía", href: "#" },
-  { label: "Envíos", href: "#" },
-  { label: "Términos y Condiciones", href: "#" },
+  { label: "Políticas de Garantía", href: "/store/garantia" },
+  { label: "Envíos", href: "/store/envios" },
+  { label: "Términos y Condiciones", href: "/terminos" },
 ];
 
 const salesContact = [
@@ -72,19 +98,19 @@ const salesContact = [
 const paymentMethods = "Transferencia, Zelle y tarjeta de crédito/débito";
 
 const legalLinks = [
-  { label: "Términos de Servicio", href: "#" },
-  { label: "Política de Privacidad", href: "#" },
+  { label: "Términos de Servicio", href: "/terminos" },
+  { label: "Política de Privacidad", href: "/privacidad" },
 ];
 ---
 
-<footer class="bg-corporativo-gray text-gray-300">
+<footer class={theme.footer}>
   <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
     <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <a href={isStore ? "/store" : "/"} class="text-2xl font-bold tracking-widest text-white">
+        <a href={isStore ? "/store" : "/"} class={`text-2xl font-bold tracking-widest ${theme.brand}`}>
           ASIAVEN {isStore && <span class="text-corporativo-blue">Store</span>}
         </a>
-        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
+        <p class={`mt-4 max-w-xs text-sm leading-relaxed ${theme.body}`}>
           {isStore ? storeDescription : corporateDescription}
         </p>
         <div class="mt-6 flex items-center gap-4">
@@ -92,7 +118,7 @@ const legalLinks = [
             <a
               href={href}
               aria-label={label}
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-gray-300 transition-colors duration-200 hover:border-corporativo-blue hover:text-white"
+              class={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-200 ${theme.social}`}
             >
               <svg
                 class="h-4 w-4"
@@ -111,13 +137,13 @@ const legalLinks = [
       </div>
 
       <div>
-        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">
+        <h4 class={`text-sm font-semibold uppercase tracking-widest ${theme.heading}`}>
           {isStore ? "Categorías Tech" : "Servicios"}
         </h4>
         <ul class="mt-4 flex flex-col gap-3">
           {(isStore ? categoryLinks : servicesLinks).map(({ label, href }) => (
             <li>
-              <a href={href} class="text-sm text-gray-400 transition-colors duration-200 hover:text-white">
+              <a href={href} class={`text-sm transition-colors duration-200 ${theme.link}`}>
                 {label}
               </a>
             </li>
@@ -126,13 +152,13 @@ const legalLinks = [
       </div>
 
       <div>
-        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">
+        <h4 class={`text-sm font-semibold uppercase tracking-widest ${theme.heading}`}>
           {isStore ? "Atención al Cliente" : "Soluciones"}
         </h4>
         <ul class="mt-4 flex flex-col gap-3">
           {(isStore ? supportLinks : solutionsLinks).map(({ label, href }) => (
             <li>
-              <a href={href} class="text-sm text-gray-400 transition-colors duration-200 hover:text-white">
+              <a href={href} class={`text-sm transition-colors duration-200 ${theme.link}`}>
                 {label}
               </a>
             </li>
@@ -141,18 +167,18 @@ const legalLinks = [
       </div>
 
       <div>
-        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">
+        <h4 class={`text-sm font-semibold uppercase tracking-widest ${theme.heading}`}>
           {isStore ? "Contacto de Ventas" : "Contacto Corporativo"}
         </h4>
         <ul class="mt-4 flex flex-col gap-3">
           {(isStore ? salesContact : corporateContact).map(({ Icon, text }) => (
-            <li class="flex items-center gap-3 text-sm text-gray-400">
+            <li class={`flex items-center gap-3 text-sm ${theme.body}`}>
               <Icon className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
               <span>{text}</span>
             </li>
           ))}
           {isStore && (
-            <li class="flex items-center gap-3 text-sm text-gray-400">
+            <li class={`flex items-center gap-3 text-sm ${theme.body}`}>
               <CreditCard className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
               <span>{paymentMethods}</span>
             </li>
@@ -161,14 +187,14 @@ const legalLinks = [
       </div>
     </div>
 
-    <div class="mt-12 flex flex-col gap-4 border-t border-white/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
-      <p class="text-xs text-gray-500">
+    <div class={`mt-12 flex flex-col gap-4 border-t pt-8 sm:flex-row sm:items-center sm:justify-between ${theme.divider}`}>
+      <p class={`text-xs ${theme.small}`}>
         &copy; {currentYear} {isStore ? "Asiaven Store" : "Asiaven"}. Todos los derechos reservados.
       </p>
       <ul class="flex items-center gap-6">
         {legalLinks.map(({ label, href }) => (
           <li>
-            <a href={href} class="text-xs text-gray-500 transition-colors duration-200 hover:text-white">
+            <a href={href} class={`text-xs transition-colors duration-200 ${theme.smallLink}`}>
               {label}
             </a>
           </li>

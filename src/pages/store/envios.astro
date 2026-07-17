@@ -1,0 +1,63 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+
+const sections = [
+  {
+    title: "1. Cobertura Nacional",
+    paragraphs: [
+      "Asiaven Store despacha equipos a nivel nacional a través de una red de logística corporativa con experiencia en el transporte de tecnología, infraestructura y equipamiento sensible.",
+      "Para proyectos de gran volumen o equipos de gran formato (racks, centros de cómputo, videowalls), la entrega se coordina directamente con nuestro equipo de logística para definir el mejor esquema de transporte e instalación.",
+    ],
+  },
+  {
+    title: "2. Tiempos de Procesamiento",
+    paragraphs: [
+      "Una vez confirmada la orden de compra, el tiempo de procesamiento y preparación del pedido es de 24 a 48 horas hábiles antes del despacho.",
+      "Los tiempos de entrega posteriores al despacho varían según la ubicación y el volumen del pedido, y se comunican al cliente durante la confirmación de la orden.",
+    ],
+  },
+  {
+    title: "3. Seguro de Carga",
+    paragraphs: [
+      "Todos los envíos de equipos de alto valor (servidores, infraestructura de centros de cómputo, UPS de gran capacidad, entre otros) incluyen seguro de carga durante el transporte hasta el punto de entrega acordado.",
+      "En caso de daño o pérdida durante el transporte cubierto por el seguro, Asiaven gestiona el reclamo correspondiente y coordina el reemplazo o reparación del equipo afectado.",
+    ],
+  },
+  {
+    title: "4. Logística Corporativa",
+    paragraphs: [
+      "Para clientes corporativos con necesidades logísticas recurrentes o proyectos multi-sede, Asiaven ofrece coordinación de entregas programadas e instalación en sitio a través de nuestro equipo de Gestión de Proyectos.",
+      "Contáctanos para definir un esquema de logística a medida para tu empresa.",
+    ],
+  },
+  {
+    title: "5. Contacto",
+    paragraphs: [
+      "Para consultas sobre el estado de un envío o coordinación logística, escríbenos a ventas@asiaven.com.",
+    ],
+  },
+];
+---
+
+<StoreLayout title="Políticas de Envío - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="max-w-4xl mx-auto px-4 py-16 sm:px-6">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Políticas de Envío</h1>
+    <p class="text-sm text-gray-500 mb-10">Última actualización: enero de 2026</p>
+
+    <div class="space-y-10">
+      {sections.map((section) => (
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">{section.title}</h2>
+          <div class="space-y-4">
+            {section.paragraphs.map((paragraph) => (
+              <p class="text-base leading-relaxed text-gray-700">{paragraph}</p>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+</StoreLayout>

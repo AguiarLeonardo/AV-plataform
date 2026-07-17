@@ -1,0 +1,58 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+
+const sections = [
+  {
+    title: "1. Garantía Estándar",
+    paragraphs: [
+      "Todos los equipos nuevos comercializados por Asiaven Store cuentan con 3 años de garantía estándar contra defectos de fabricación, a partir de la fecha de entrega, salvo que se indique un período distinto en la ficha técnica del producto.",
+      "La garantía cubre reparación o reemplazo de piezas defectuosas y, en los planes de soporte swap, sustitución del equipo mientras dura la reparación.",
+    ],
+  },
+  {
+    title: "2. Proceso de RMA (Return Merchandise Authorization)",
+    paragraphs: [
+      "Para iniciar un reclamo de garantía, el cliente debe contactar a nuestro equipo de soporte técnico o de ventas y proporcionar el número de orden, la descripción de la falla y evidencia fotográfica cuando aplique.",
+      "Una vez autorizado el RMA, el equipo debe enviarse con su empaque original o uno equivalente que garantice su protección durante el transporte. Asiaven coordina la logística de recolección para equipos de alto valor o gran formato.",
+      "El tiempo estimado de diagnóstico y resolución de un RMA es de 5 a 15 días hábiles, dependiendo de la disponibilidad de repuestos y la complejidad del caso.",
+    ],
+  },
+  {
+    title: "3. Exclusiones de la Garantía",
+    paragraphs: [
+      "La garantía no cubre daños derivados de mal uso, instalación inadecuada por terceros no autorizados, exposición a condiciones ambientales fuera de especificación, o modificaciones no autorizadas al equipo.",
+      "Tampoco cubre daños por fluctuaciones eléctricas, descargas, cortocircuitos o falta de protección eléctrica adecuada (se recomienda el uso de UPS o reguladores de voltaje certificados por Asiaven).",
+      "El desgaste normal de consumibles (baterías, tóners, filtros) no está cubierto por esta garantía.",
+    ],
+  },
+  {
+    title: "4. Contacto",
+    paragraphs: [
+      "Para consultas o inicio de un proceso de garantía, contáctanos a través de nuestro Soporte Técnico o escríbenos a ventas@asiaven.com.",
+    ],
+  },
+];
+---
+
+<StoreLayout title="Políticas de Garantía - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="max-w-4xl mx-auto px-4 py-16 sm:px-6">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Políticas de Garantía</h1>
+    <p class="text-sm text-gray-500 mb-10">Última actualización: enero de 2026</p>
+
+    <div class="space-y-10">
+      {sections.map((section) => (
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">{section.title}</h2>
+          <div class="space-y-4">
+            {section.paragraphs.map((paragraph) => (
+              <p class="text-base leading-relaxed text-gray-700">{paragraph}</p>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+</StoreLayout>

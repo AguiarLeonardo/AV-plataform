@@ -1,0 +1,60 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const sections = [
+  {
+    title: "1. Condiciones de Uso del Portal",
+    paragraphs: [
+      "El acceso y uso del sitio web y la tienda en línea de Asiaven implica la aceptación plena de estos Términos de Servicio. Este portal está dirigido a clientes corporativos (B2B) interesados en nuestros servicios de infraestructura, tecnología y equipamiento industrial.",
+      "Asiaven se reserva el derecho de modificar, suspender o discontinuar cualquier parte del portal sin previo aviso, incluyendo el catálogo de productos y sus especificaciones.",
+    ],
+  },
+  {
+    title: "2. Naturaleza de la Información del Catálogo",
+    paragraphs: [
+      "Los precios, especificaciones y disponibilidad mostrados en la tienda son referenciales y están sujetos a confirmación mediante cotización formal. La solicitud de cotización a través del portal no constituye una orden de compra ni un contrato vinculante.",
+      "Toda transacción comercial se formaliza mediante los canales de venta oficiales de Asiaven, sujeta a los términos comerciales acordados entre las partes.",
+    ],
+  },
+  {
+    title: "3. Propiedad Intelectual",
+    paragraphs: [
+      "Todo el contenido de este portal (textos, imágenes, logotipos, diseño y estructura) es propiedad de Asiaven o de sus licenciantes, y está protegido por las leyes de propiedad intelectual aplicables.",
+      "Queda prohibida la reproducción, distribución o modificación total o parcial del contenido de este sitio sin autorización expresa y por escrito de Asiaven.",
+    ],
+  },
+  {
+    title: "4. Limitación de Responsabilidad",
+    paragraphs: [
+      "Asiaven no garantiza que el portal esté libre de interrupciones o errores, y no se hace responsable por daños derivados del uso o la imposibilidad de uso del sitio.",
+      "La información técnica publicada se ofrece de buena fe, pero puede contener imprecisiones; las especificaciones finales de cada producto o servicio se confirman durante el proceso de cotización.",
+    ],
+  },
+  {
+    title: "5. Contacto",
+    paragraphs: [
+      "Para consultas relacionadas con estos Términos de Servicio, puede escribirnos a proyectos@asiaven.com.",
+    ],
+  },
+];
+---
+
+<Layout title="Términos de Servicio - Asiaven">
+  <div class="max-w-4xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">Términos de Servicio</h1>
+    <p class="text-sm text-gray-500 mb-10">Última actualización: enero de 2026</p>
+
+    <div class="space-y-10">
+      {sections.map((section) => (
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">{section.title}</h2>
+          <div class="space-y-4">
+            {section.paragraphs.map((paragraph) => (
+              <p class="text-base leading-relaxed text-gray-700">{paragraph}</p>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</Layout>

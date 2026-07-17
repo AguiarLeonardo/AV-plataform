@@ -3,6 +3,7 @@ import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import StoreProductCard from "../../components/store/StoreProductCard.astro";
 import CatalogControls from "../../components/store/CatalogControls.astro";
+import { fakePriceValue } from "../../utils/fakePrice";
 import {
   storeCategories,
   productsForItem,
@@ -57,13 +58,15 @@ const { label, products } = Astro.props;
       products.length > 0 ? (
         <>
           <CatalogControls resultsCount={products.length} />
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div id="product-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
               <StoreProductCard
                 title={product.title}
                 image={product.image}
                 specs={product.features.slice(0, 4)}
                 href={`/store/producto/${product.slug}`}
+                dataPrice={fakePriceValue(product.id)}
+                productId={product.id}
               />
             ))}
           </div>
