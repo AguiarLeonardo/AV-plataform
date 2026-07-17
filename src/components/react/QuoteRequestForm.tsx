@@ -3,6 +3,7 @@ import { clearCart } from "../../store/quoteCart";
 
 export default function QuoteRequestForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [isBusiness, setIsBusiness] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,6 +29,17 @@ export default function QuoteRequestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold">Tus Datos</h3>
+        <button
+          type="button"
+          onClick={() => setIsBusiness(!isBusiness)}
+          className="text-sm text-gray-500 hover:text-blue-600 underline transition-colors"
+        >
+          {isBusiness ? "¿Compra personal?" : "¿Compras para una empresa?"}
+        </button>
+      </div>
+
       <div>
         <label htmlFor="quote-name" className="mb-1 block text-sm font-medium text-gray-700">
           Nombre
@@ -41,18 +53,20 @@ export default function QuoteRequestForm() {
         />
       </div>
 
-      <div>
-        <label htmlFor="quote-company" className="mb-1 block text-sm font-medium text-gray-700">
-          Empresa
-        </label>
-        <input
-          id="quote-company"
-          name="company"
-          type="text"
-          required
-          className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 focus:border-corporativo-blue focus:outline-none"
-        />
-      </div>
+      {isBusiness && (
+        <div>
+          <label htmlFor="quote-company" className="mb-1 block text-sm font-medium text-gray-700">
+            Empresa
+          </label>
+          <input
+            id="quote-company"
+            name="company"
+            type="text"
+            required={isBusiness}
+            className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 focus:border-corporativo-blue focus:outline-none"
+          />
+        </div>
+      )}
 
       <div>
         <label htmlFor="quote-email" className="mb-1 block text-sm font-medium text-gray-700">

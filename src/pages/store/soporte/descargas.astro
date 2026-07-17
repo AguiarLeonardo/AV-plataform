@@ -1,0 +1,97 @@
+---
+import StoreLayout from "../../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import { Search, Download, Server, Laptop, ShieldCheck } from "lucide-react";
+
+const downloads = [
+  {
+    Icon: Server,
+    category: "Servidores Serie AV-Pro",
+    title: "Firmware v2.4",
+    meta: "Actualización · 84 MB · Publicado ene 2026",
+  },
+  {
+    Icon: Laptop,
+    category: "Laptops Ejecutivas",
+    title: "Drivers de Red",
+    meta: "Controlador Wi-Fi/Ethernet · 42 MB",
+  },
+  {
+    Icon: ShieldCheck,
+    category: "UPS",
+    title: "Manual de Usuario (PDF)",
+    meta: "Guía de instalación y configuración · 6 MB",
+  },
+  {
+    Icon: Laptop,
+    category: "Equipos de Cómputo",
+    title: "Utilidad de Diagnóstico",
+    meta: "Herramienta de diagnóstico de hardware · 118 MB",
+  },
+  {
+    Icon: Server,
+    category: "Infraestructura y Redes",
+    title: "Firmware de Switches Gestionados",
+    meta: "Actualización de seguridad · 36 MB",
+  },
+  {
+    Icon: ShieldCheck,
+    category: "Audiovisual y Señalización",
+    title: "Software de Gestión de Contenido",
+    meta: "Instalador CMS · 210 MB",
+  },
+];
+---
+
+<StoreLayout title="Centro de Descargas - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <section class="bg-gray-50 border-b border-gray-100">
+    <div class="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6">
+      <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Centro de Descargas</h1>
+      <p class="mt-3 text-base text-gray-600">
+        Encuentra drivers, manuales y firmware para tus equipos Asiaven.
+      </p>
+
+      <div class="relative mx-auto mt-8 max-w-xl">
+        <input
+          type="text"
+          disabled
+          placeholder="Ingresa el modelo o número de serie..."
+          class="w-full cursor-not-allowed rounded-full border border-gray-300 bg-white py-3 pl-5 pr-12 text-sm text-gray-700 placeholder:text-gray-400"
+        />
+        <Search className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" strokeWidth={1.5} />
+      </div>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <h2 class="mb-6 text-lg font-semibold text-gray-900">Descargas más solicitadas</h2>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {downloads.map(({ Icon, category, title, meta }) => (
+        <div class="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div class="flex items-start gap-3">
+            <Icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">{category}</p>
+              <p class="mt-0.5 text-sm font-semibold text-gray-900">{title}</p>
+              <p class="mt-1 text-xs text-gray-500">{meta}</p>
+            </div>
+          </div>
+          <a
+            href="#"
+            aria-label={`Descargar ${title}`}
+            class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-corporativo-blue text-corporativo-blue no-underline transition-colors hover:bg-corporativo-blue hover:text-white"
+          >
+            <Download className="h-4 w-4" strokeWidth={1.5} />
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <p class="mt-8 text-center text-sm text-gray-500">
+      ¿No encuentras el archivo que buscas? <a href="/soporte-tecnico" class="font-semibold text-corporativo-blue hover:underline">Abre un ticket de soporte</a>.
+    </p>
+  </main>
+</StoreLayout>

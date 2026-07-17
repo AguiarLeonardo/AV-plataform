@@ -1,0 +1,58 @@
+---
+import StoreLayout from "../../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+
+const faqs = [
+  {
+    question: "¿Cómo proceso una garantía RMA?",
+    answer:
+      "Debes enviar el equipo con su caja original (o un empaque equivalente) y el número de factura de compra a nuestro equipo de soporte técnico. Una vez autorizado el RMA, coordinamos el diagnóstico y, según el caso, la reparación o el reemplazo del equipo. Consulta el detalle completo en nuestras Políticas de Garantía.",
+  },
+  {
+    question: "¿Puedo pedir equipos con configuraciones personalizadas?",
+    answer:
+      "Sí, usamos la modalidad Build to Order para proyectos corporativos: puedes definir procesador, memoria, almacenamiento y otros componentes según las necesidades específicas de tu empresa. Contáctanos a través de \"Equipo a Medida\" para iniciar una solicitud.",
+  },
+  {
+    question: "¿Los servidores incluyen instalación física?",
+    answer:
+      "Sí, el equipo de Asiaven realiza la instalación on-premise de servidores, racks e infraestructura de centro de cómputo, incluyendo cableado estructurado y puesta en marcha, coordinada directamente con tu equipo técnico.",
+  },
+  {
+    question: "¿Cuál es el tiempo de entrega para lotes grandes?",
+    answer:
+      "El tiempo de entrega para pedidos de gran volumen está sujeto a procesos de importación y disponibilidad de inventario, con un rango estimado de 15 a 45 días hábiles. Nuestro equipo de Procura y Suministro te dará un cronograma específico durante la cotización.",
+  },
+];
+---
+
+<StoreLayout title="Preguntas Frecuentes - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <section class="bg-gray-50 border-b border-gray-100">
+    <div class="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6">
+      <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">Preguntas Frecuentes</h1>
+      <p class="mt-3 text-base text-gray-600">
+        Respuestas rápidas sobre garantías, configuraciones e instalación para clientes corporativos.
+      </p>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div class="flex flex-col gap-4">
+      {faqs.map(({ question, answer }) => (
+        <details class="group rounded-xl border border-gray-200 bg-white p-5 open:shadow-sm">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-gray-900 [&::-webkit-details-marker]:hidden">
+            {question}
+            <span class="flex-shrink-0 text-corporativo-blue transition-transform duration-200 group-open:rotate-45">+</span>
+          </summary>
+          <p class="mt-4 text-sm leading-relaxed text-gray-600">{answer}</p>
+        </details>
+      ))}
+    </div>
+
+    <p class="mt-10 text-center text-sm text-gray-500">
+      ¿No encontraste lo que buscabas? <a href="/soporte-tecnico" class="font-semibold text-corporativo-blue hover:underline">Contáctanos directamente</a>.
+    </p>
+  </main>
+</StoreLayout>

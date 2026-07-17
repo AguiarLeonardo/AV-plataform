@@ -3,6 +3,33 @@ import { ShoppingCart, User, Search } from "lucide-react";
 import { storeCategories, type StoreCategory } from "../../data/storeTaxonomy";
 import { CART_EVENT, getCartCount } from "../../store/quoteCart";
 
+// El mega menú de "Equipo a Medida" no agrupa por título de categoría — es
+// una fila horizontal simple de 4 tarjetas.
+const btoItems = [
+  { name: "Laptops Corporativas", href: "/store/medida/laptops" },
+  { name: "PCs de Escritorio", href: "/store/medida/desktops" },
+  { name: "Workstations", href: "/store/medida/workstations" },
+  { name: "Servidores", href: "/store/medida/servidores" },
+];
+
+const supportGroups: { name: string; items: { name: string; href?: string }[] }[] = [
+  {
+    name: "Recursos de Ayuda",
+    items: [
+      { name: "Software y Drivers", href: "/store/soporte/descargas" },
+      { name: "Consultar la garantía", href: "/store/garantia" },
+      { name: "Preguntas frecuentes", href: "/store/soporte/faq" },
+    ],
+  },
+  {
+    name: "Asistencia Directa",
+    items: [
+      { name: "Soporte y solución de problemas", href: "/store/soporte/ticket" },
+      { name: "Contactar a Ventas", href: "/store/soporte/contacto-ventas" },
+    ],
+  },
+];
+
 interface Props {
   currentPath?: string;
 }
@@ -32,6 +59,8 @@ function resolveActiveFromPath(currentPath: string): ActiveState {
 
 export default function StoreNavigation({ currentPath = "/store" }: Props) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [supportOpen, setSupportOpen] = useState(false);
+  const [btoOpen, setBtoOpen] = useState(false);
   const [active, setActive] = useState<ActiveState>(() => resolveActiveFromPath(currentPath));
   const [searchTerm, setSearchTerm] = useState("");
   const [cartCount, setCartCount] = useState(0);
@@ -64,7 +93,14 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
 
   return (
     <div className="w-full">
-      <div className="relative" onMouseLeave={() => setHoverIndex(null)}>
+      <div
+        className="relative"
+        onMouseLeave={() => {
+          setHoverIndex(null);
+          setSupportOpen(false);
+          setBtoOpen(false);
+        }}
+      >
         <header className="w-full bg-white">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
             <a href="/store" className="flex-shrink-0 text-xl font-bold tracking-tight text-gray-900 no-underline">
@@ -73,30 +109,58 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
 
             <nav className="hidden items-center gap-6 md:flex">
               {storeCategories.map((category, ci) => (
-                <a
+                <button
                   key={category.slug}
-                  href={category.href}
-                  onMouseEnter={() => setHoverIndex(ci)}
-                  onClick={() => selectGroup(ci, null)}
-                  className={`whitespace-nowrap text-sm no-underline transition-colors ${
+                  type="button"
+                  onMouseEnter={() => {
+                    setHoverIndex(ci);
+                    setSupportOpen(false);
+                    setBtoOpen(false);
+                  }}
+                  onClick={() => {
+                    setHoverIndex((prev) => (prev === ci ? null : ci));
+                    setSupportOpen(false);
+                    setBtoOpen(false);
+                  }}
+                  className={`whitespace-nowrap text-sm transition-colors ${
                     ci === active.categoryIndex ? "font-bold text-black" : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
                   {category.name}
-                </a>
+                </button>
               ))}
-              <a
-                href="/contactanos"
-                className="whitespace-nowrap text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+              <button
+                type="button"
+                onMouseEnter={() => {
+                  setHoverIndex(null);
+                  setSupportOpen(false);
+                  setBtoOpen(true);
+                }}
+                onClick={() => {
+                  setBtoOpen((prev) => !prev);
+                  setHoverIndex(null);
+                  setSupportOpen(false);
+                }}
+                className="whitespace-nowrap text-sm text-gray-600 transition-colors hover:text-gray-900"
               >
                 Equipo a Medida
-              </a>
-              <a
-                href="/soporte-tecnico"
-                className="whitespace-nowrap text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+              </button>
+              <button
+                type="button"
+                onMouseEnter={() => {
+                  setHoverIndex(null);
+                  setSupportOpen(true);
+                  setBtoOpen(false);
+                }}
+                onClick={() => {
+                  setSupportOpen((prev) => !prev);
+                  setHoverIndex(null);
+                  setBtoOpen(false);
+                }}
+                className="whitespace-nowrap text-sm text-gray-600 transition-colors hover:text-gray-900"
               >
                 Soporte Técnico
-              </a>
+              </button>
             </nav>
 
             <div className="flex flex-shrink-0 items-center gap-5">
@@ -159,6 +223,57 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                         </a>
                       </li>
                     ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {btoOpen && (
+          <div className="absolute inset-x-0 top-full z-30 border-t border-gray-100 bg-white shadow-lg">
+            <div className="mx-auto grid max-w-7xl grid-cols-4 gap-6 p-6">
+              {btoItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="rounded-lg bg-gray-50 p-4 text-center text-sm font-semibold text-gray-900 no-underline transition-colors hover:bg-gray-100"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {supportOpen && (
+          <div className="absolute inset-x-0 top-full z-30 border-t border-gray-100 bg-white shadow-lg">
+            <div
+              className="mx-auto grid max-w-7xl gap-8 px-6 py-8"
+              style={{ gridTemplateColumns: `repeat(${supportGroups.length}, minmax(0, 1fr))` }}
+            >
+              {supportGroups.map((group) => (
+                <div key={group.name}>
+                  <span className="mb-3 block cursor-default text-sm font-bold text-gray-900 select-none">
+                    {group.name}
+                  </span>
+                  <ul className="flex flex-col gap-2">
+                    {group.items.map((item) =>
+                      item.href ? (
+                        <li key={item.name}>
+                          <a
+                            href={item.href}
+                            className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                          >
+                            {item.name}
+                          </a>
+                        </li>
+                      ) : (
+                        <li key={item.name}>
+                          <span className="text-sm text-gray-600">{item.name}</span>
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
               ))}

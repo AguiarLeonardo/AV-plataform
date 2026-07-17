@@ -1,0 +1,13 @@
+---
+import StoreLayout from "../../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import { LaptopBTO } from "../../../components/react/BTOForm.tsx";
+---
+
+<StoreLayout title="Configurar Laptop Corporativa - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="max-w-4xl mx-auto py-16 px-4">
+    <LaptopBTO client:load />
+  </main>
+</StoreLayout>
