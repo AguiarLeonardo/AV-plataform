@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import Footer from "../components/sections/Footer.astro";
+import StoreFooter from "../components/store/StoreFooter.astro";
 
 interface Props {
   title?: string;
@@ -21,6 +21,6 @@ const { title = "Asiaven Store" } = Astro.props;
   </head>
   <body class="bg-white text-gray-900 antialiased">
     <slot />
-    <Footer />
+    <StoreFooter />
   </body>
 </html>

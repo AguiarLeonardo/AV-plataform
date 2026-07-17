@@ -1,0 +1,114 @@
+---
+import { MapPin, Mail, Phone, CreditCard } from "lucide-react";
+
+const currentYear = new Date().getFullYear();
+
+// Footer 100% Tienda — ningún enlace apunta al sitio corporativo salvo el
+// único "enlace puente" hacia Asiaven (columna de marca). El equivalente
+// corporativo vive en src/components/sections/Footer.astro.
+
+const storeDescription =
+  "Equipos a medida y soluciones IT para empresas, respaldados por garantía y soporte técnico especializado.";
+
+const categoryLinks = [
+  { label: "Productos", href: "/store/productos" },
+  { label: "Soluciones Empresariales", href: "/store/soluciones-empresariales" },
+  { label: "Equipo a Medida", href: "/store/medida/laptops" },
+];
+
+const supportLinks = [
+  { label: "Abrir un Ticket", href: "/store/soporte/ticket" },
+  { label: "Contactar a Ventas", href: "/store/soporte/contacto-ventas" },
+  { label: "Preguntas Frecuentes", href: "/store/soporte/faq" },
+  { label: "Software y Drivers", href: "/store/soporte/descargas" },
+];
+
+// Solo rutas del ecosistema /store — "Términos" y "Privacidad" son páginas
+// del sitio corporativo (Layout.astro) y no tienen aún una versión propia
+// de la Tienda, así que quedan fuera de este footer por diseño.
+const legalLinks = [
+  { label: "Políticas de Garantía", href: "/store/garantia" },
+  { label: "Envíos", href: "/store/envios" },
+];
+
+const salesContact = [
+  { Icon: Phone, text: "+58 212-9924333 (Ventas)" },
+  { Icon: Mail, text: "ventas@asiaven.com" },
+];
+
+const paymentMethods = "Transferencia, Zelle y tarjeta de crédito/débito";
+---
+
+<footer class="bg-gray-50 text-gray-600">
+  <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <a href="/store" class="text-2xl font-bold tracking-widest text-gray-900">
+          ASIAVEN <span class="text-corporativo-blue">Store</span>
+        </a>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-600">{storeDescription}</p>
+        <a
+          href="/"
+          class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:text-gray-900"
+        >
+          &larr; Sitio Corporativo Asiaven
+        </a>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-gray-900">Categorías Tech</h4>
+        <ul class="mt-4 flex flex-col gap-3">
+          {categoryLinks.map(({ label, href }) => (
+            <li>
+              <a href={href} class="text-sm text-gray-600 transition-colors duration-200 hover:text-corporativo-blue">
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-gray-900">Atención al Cliente</h4>
+        <ul class="mt-4 flex flex-col gap-3">
+          {supportLinks.map(({ label, href }) => (
+            <li>
+              <a href={href} class="text-sm text-gray-600 transition-colors duration-200 hover:text-corporativo-blue">
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-gray-900">Contacto de Ventas</h4>
+        <ul class="mt-4 flex flex-col gap-3">
+          {salesContact.map(({ Icon, text }) => (
+            <li class="flex items-center gap-3 text-sm text-gray-600">
+              <Icon className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
+              <span>{text}</span>
+            </li>
+          ))}
+          <li class="flex items-center gap-3 text-sm text-gray-600">
+            <CreditCard className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
+            <span>{paymentMethods}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-4 border-t border-gray-200 pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-xs text-gray-500">&copy; {currentYear} Asiaven Store. Todos los derechos reservados.</p>
+      <ul class="flex items-center gap-6">
+        {legalLinks.map(({ label, href }) => (
+          <li>
+            <a href={href} class="text-xs text-gray-500 transition-colors duration-200 hover:text-corporativo-blue">
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>
