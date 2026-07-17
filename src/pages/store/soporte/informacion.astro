@@ -1,0 +1,65 @@
+---
+import StoreLayout from "../../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import { Settings2, Zap, Users } from "lucide-react";
+
+const pillars = [
+  {
+    Icon: Settings2,
+    title: "Despliegue y Configuración",
+    text: "Ayuda experta en la instalación de drivers, configuración inicial y puesta en marcha para que tus equipos entren en producción de inmediato, sin fricciones ni tiempo perdido.",
+  },
+  {
+    Icon: Zap,
+    title: "Resolución Ágil de Hardware",
+    text: "Diagnóstico y solución de problemas físicos con tiempos de respuesta SLA diseñados para minimizar el tiempo de inactividad de tu empresa.",
+  },
+  {
+    Icon: Users,
+    title: "Asesoría Continua",
+    text: "Nuestro equipo técnico no solo repara: asesora sobre las mejores prácticas de uso y mantenimiento para extender la vida útil de tu infraestructura.",
+  },
+];
+---
+
+<StoreLayout title="Soporte Técnico VIP - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <section class="bg-gray-50">
+    <div class="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6">
+      <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">Soporte Técnico VIP Asiaven</h1>
+      <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-gray-600">
+        Acompañamiento especializado activo durante todo el ciclo de vida de tu infraestructura tecnológica.
+      </p>
+    </div>
+  </section>
+
+  <main class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-3">
+      {
+        pillars.map(({ Icon, title, text }) => (
+          <div class="flex flex-col items-center rounded-xl border border-gray-100 p-8 text-center shadow-sm">
+            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
+              <Icon className="h-7 w-7 text-corporativo-blue" strokeWidth={1.5} />
+            </span>
+            <h3 class="mt-5 text-lg font-semibold text-gray-900">{title}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-gray-600">{text}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-20 rounded-2xl bg-corporativo-blue px-8 py-12 text-center shadow-lg sm:px-16">
+      <h2 class="text-2xl font-bold text-white sm:text-3xl">¿Necesitas asistencia con tu equipo?</h2>
+      <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-blue-100 sm:text-base">
+        Abre un ticket en nuestro centro de soporte y un técnico especializado se pondrá en contacto contigo a la brevedad.
+      </p>
+      <a
+        href="/store/soporte/ticket"
+        class="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-corporativo-blue no-underline shadow-lg transition-colors hover:bg-gray-100"
+      >
+        Ir al Centro de Soporte &rarr;
+      </a>
+    </div>
+  </main>
+</StoreLayout>

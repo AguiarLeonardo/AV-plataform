@@ -19,6 +19,7 @@ const supportGroups: { name: string; items: { name: string; href?: string }[] }[
       { name: "Software y Drivers", href: "/store/soporte/descargas" },
       { name: "Consultar la garantía", href: "/store/garantia" },
       { name: "Preguntas frecuentes", href: "/store/soporte/faq" },
+      { name: "Soporte VIP", href: "/store/soporte/informacion" },
     ],
   },
   {
