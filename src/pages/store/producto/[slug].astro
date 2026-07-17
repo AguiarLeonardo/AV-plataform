@@ -134,7 +134,7 @@ const brandPromise = [
 <StoreLayout title={`${product.title} - Asiaven Store`}>
   <StoreNavigation client:load currentPath={backHref} />
 
-  <main class="mx-auto max-w-7xl px-6 py-10">
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
     <nav aria-label="Breadcrumb" class="mb-6 flex flex-wrap items-center gap-1 text-xs text-gray-500">
       <a href="/" class="hover:text-gray-900">Inicio</a>
       <ChevronRight className="h-3 w-3 flex-shrink-0" />
@@ -152,25 +152,25 @@ const brandPromise = [
     </nav>
 
     <!-- Buy Box -->
-    <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+    <div class="flex flex-col gap-8 md:grid md:grid-cols-2 md:gap-12">
       <div>
-        <div class="flex items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-10">
+        <div class="flex w-full items-center justify-center rounded-lg border border-gray-100 bg-gray-50 p-6 sm:p-10">
           <img
             id="main-product-image"
             src={product.image}
             alt={product.title}
-            class="max-h-96 w-full object-contain"
+            class="max-h-80 w-full object-contain sm:max-h-96"
             loading="eager"
             decoding="async"
           />
         </div>
 
-        <div class="mt-4 grid grid-cols-4 gap-3">
+        <div class="mt-4 flex gap-3 overflow-x-auto pb-2 snap-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {galleryThumbs.map((thumb, index) => (
             <button
               type="button"
               class:list={[
-                "thumbnail-trigger aspect-square overflow-hidden rounded-md border bg-gray-50 p-1 transition-colors hover:border-corporativo-blue",
+                "thumbnail-trigger aspect-square w-20 flex-shrink-0 snap-start overflow-hidden rounded-md border bg-gray-50 p-1 transition-colors hover:border-corporativo-blue sm:w-24",
                 index === 0 ? "border-corporativo-blue ring-2 ring-corporativo-blue" : "border-gray-200",
               ]}
               data-image-src={thumb}
@@ -253,7 +253,7 @@ const brandPromise = [
         <div class="group relative">
           <div
             id="recomendados-scroll"
-            class="-mx-6 flex gap-6 overflow-x-auto px-6 pb-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            class="-mx-4 flex gap-6 overflow-x-auto px-4 pb-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden"
           >
             {relatedProducts.map((related) => (
               <div class="w-72 flex-shrink-0 snap-start">
@@ -273,7 +273,7 @@ const brandPromise = [
             type="button"
             id="recomendados-prev"
             aria-label="Ver recomendados anteriores"
-            class="absolute left-0 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100"
+            class="absolute left-0 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100 md:flex"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -281,7 +281,7 @@ const brandPromise = [
             type="button"
             id="recomendados-next"
             aria-label="Ver más recomendados"
-            class="absolute right-0 top-1/2 z-10 -translate-y-1/2 translate-x-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100"
+            class="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 translate-x-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100 md:flex"
           >
             <ChevronRight className="h-5 w-5" />
           </button>

@@ -35,7 +35,8 @@ interface Props {
 }
 
 interface ActiveState {
-  categoryIndex: number;
+  // null = la URL actual no pertenece a ninguna categoría (ej. /store, /store/soporte/*, /store/medida/*).
+  categoryIndex: number | null;
   groupIndex: number | null;
 }
 
@@ -54,7 +55,7 @@ function resolveActiveFromPath(currentPath: string): ActiveState {
     }
   }
 
-  return { categoryIndex: 0, groupIndex: null };
+  return { categoryIndex: null, groupIndex: null };
 }
 
 export default function StoreNavigation({ currentPath = "/store" }: Props) {
@@ -85,8 +86,11 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
     };
   }, []);
 
-  const activeCategory: StoreCategory = storeCategories[active.categoryIndex];
-  const activeGroup = active.groupIndex !== null ? activeCategory.groups[active.groupIndex] : null;
+  const activeCategory: StoreCategory | null =
+    active.categoryIndex !== null ? storeCategories[active.categoryIndex] : null;
+  const activeGroup = active.groupIndex !== null ? activeCategory?.groups[active.groupIndex] ?? null : null;
+  const isBtoActive = currentPath.startsWith("/store/medida");
+  const isSupportActive = currentPath.startsWith("/store/soporte");
 
   const selectGroup = (categoryIndex: number, groupIndex: number | null) => {
     setActive({ categoryIndex, groupIndex });
@@ -131,7 +135,9 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                     setBtoOpen(false);
                   }}
                   className={`whitespace-nowrap text-sm transition-colors ${
-                    ci === active.categoryIndex ? "font-bold text-black" : "text-gray-600 hover:text-gray-900"
+                    ci === active.categoryIndex
+                      ? "font-bold text-black"
+                      : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
                   }`}
                 >
                   {category.name}
@@ -149,7 +155,11 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                   setHoverIndex(null);
                   setSupportOpen(false);
                 }}
-                className="whitespace-nowrap text-sm text-gray-600 transition-colors hover:text-gray-900"
+                className={`whitespace-nowrap text-sm transition-colors ${
+                  isBtoActive
+                    ? "font-bold text-black"
+                    : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                }`}
               >
                 Equipo a Medida
               </button>
@@ -165,7 +175,11 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                   setHoverIndex(null);
                   setBtoOpen(false);
                 }}
-                className="whitespace-nowrap text-sm text-gray-600 transition-colors hover:text-gray-900"
+                className={`whitespace-nowrap text-sm transition-colors ${
+                  isSupportActive
+                    ? "font-bold text-black"
+                    : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                }`}
               >
                 Soporte Técnico
               </button>
@@ -445,7 +459,7 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
         </div>
       )}
 
-      {!isStoreRoot && (
+      {!isStoreRoot && activeCategory && (
         <div className="w-full border-y border-gray-100 bg-gray-50">
           <div className="mx-auto flex max-w-7xl items-center gap-8 overflow-x-auto px-6 py-3">
             {activeGroup ? (

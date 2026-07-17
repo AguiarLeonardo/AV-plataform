@@ -66,7 +66,7 @@ function BTOFormBase({ title, subtitle, basePrice, specs }: BTOConfig) {
       <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">{title}</h1>
       <p className="mt-3 text-base text-gray-600">{subtitle}</p>
 
-      <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-8 pb-28">
+      <form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-8 pb-32">
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold">Tus Datos</h3>
@@ -78,7 +78,7 @@ function BTOFormBase({ title, subtitle, basePrice, specs }: BTOConfig) {
               {isBusiness ? "¿Compra personal?" : "¿Compras para una empresa?"}
             </button>
           </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div>
               <label htmlFor="bto-name" className="mb-1 block text-sm font-medium text-gray-700">
                 Nombre
@@ -139,7 +139,7 @@ function BTOFormBase({ title, subtitle, basePrice, specs }: BTOConfig) {
 
         <div>
           <h2 className="mb-4 text-lg font-semibold text-gray-900">Especificaciones</h2>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {specs.map((spec, index) => (
               <div key={spec.label}>
                 <label htmlFor={`bto-spec-${index}`} className="mb-1 block text-sm font-medium text-gray-700">
@@ -173,8 +173,8 @@ function BTOFormBase({ title, subtitle, basePrice, specs }: BTOConfig) {
         </button>
       </form>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-gray-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+      <div className="fixed inset-x-0 bottom-0 left-0 z-40 w-full border-t border-gray-200 bg-white p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+        <div className="mx-auto flex max-w-4xl flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <span className="text-sm text-gray-600">
             Precio unitario: <span className="font-semibold text-gray-900">${formatUSD(unitPrice)} USD</span>
           </span>
