@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ShoppingCart, User, Search } from "lucide-react";
+import { ShoppingCart, User, Search, Menu, X, ChevronDown } from "lucide-react";
 import { storeCategories, type StoreCategory } from "../../data/storeTaxonomy";
 import { CART_EVENT, getCartCount } from "../../store/quoteCart";
 
@@ -64,7 +64,15 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
   const [active, setActive] = useState<ActiveState>(() => resolveActiveFromPath(currentPath));
   const [searchTerm, setSearchTerm] = useState("");
   const [cartCount, setCartCount] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Acordeón móvil: identifica la sección expandida por su slug ("bto", "support" o el slug de la categoría).
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const isStoreRoot = currentPath === "/store" || currentPath === "/store/";
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setMobileExpanded(null);
+  };
 
   useEffect(() => {
     const syncCartCount = () => setCartCount(getCartCount());
@@ -196,6 +204,18 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                   <Search className="h-4 w-4" strokeWidth={1.5} />
                 </button>
               </form>
+              <button
+                type="button"
+                aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+                aria-expanded={mobileMenuOpen}
+                onClick={() => {
+                  setMobileMenuOpen((prev) => !prev);
+                  setMobileExpanded(null);
+                }}
+                className="text-gray-700 transition-colors hover:text-gray-900 md:hidden"
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" strokeWidth={1.5} /> : <Menu className="h-6 w-6" strokeWidth={1.5} />}
+              </button>
             </div>
           </div>
         </header>
@@ -281,6 +301,149 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
           </div>
         )}
       </div>
+
+      {mobileMenuOpen && (
+        <div className="w-full border-t border-gray-100 bg-white md:hidden">
+          <form onSubmit={handleSearchSubmit} className="px-4 pt-4 sm:hidden">
+            <div className="relative">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="¿Qué estás buscando?"
+                aria-label="Buscar productos"
+                className="w-full rounded-full border border-gray-200 bg-gray-50 py-2 pl-4 pr-9 text-sm text-gray-700 placeholder:text-gray-400 focus:border-corporativo-blue focus:outline-none"
+              />
+              <button
+                type="submit"
+                aria-label="Buscar"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-700"
+              >
+                <Search className="h-4 w-4" strokeWidth={1.5} />
+              </button>
+            </div>
+          </form>
+
+          <div className="flex flex-col divide-y divide-gray-100 px-4 py-2">
+            {storeCategories.map((category, ci) => {
+              const expanded = mobileExpanded === category.slug;
+              return (
+                <div key={category.slug}>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded((prev) => (prev === category.slug ? null : category.slug))}
+                    aria-expanded={expanded}
+                    className={`flex w-full items-center justify-between py-3 text-left text-sm ${
+                      ci === active.categoryIndex ? "font-bold text-black" : "text-gray-700"
+                    }`}
+                  >
+                    {category.name}
+                    {category.groups.length > 0 && (
+                      <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${expanded ? "rotate-180" : ""}`} strokeWidth={1.5} />
+                    )}
+                  </button>
+                  {expanded && category.groups.length > 0 && (
+                    <div className="flex flex-col gap-4 pb-4 pl-4">
+                      {category.groups.map((group, gi) => (
+                        <div key={group.slug}>
+                          <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
+                            {group.name}
+                          </span>
+                          <ul className="flex flex-col gap-2">
+                            {group.items.map((item) => (
+                              <li key={item.slug}>
+                                <a
+                                  href={item.href}
+                                  onClick={() => {
+                                    selectGroup(ci, gi);
+                                    closeMobileMenu();
+                                  }}
+                                  className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                                >
+                                  {item.name}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileExpanded((prev) => (prev === "bto" ? null : "bto"))}
+                aria-expanded={mobileExpanded === "bto"}
+                className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
+              >
+                Equipo a Medida
+                <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "bto" ? "rotate-180" : ""}`} strokeWidth={1.5} />
+              </button>
+              {mobileExpanded === "bto" && (
+                <ul className="flex flex-col gap-2 pb-4 pl-4">
+                  {btoItems.map((item) => (
+                    <li key={item.name}>
+                      <a
+                        href={item.href}
+                        onClick={closeMobileMenu}
+                        className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileExpanded((prev) => (prev === "support" ? null : "support"))}
+                aria-expanded={mobileExpanded === "support"}
+                className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
+              >
+                Soporte Técnico
+                <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "support" ? "rotate-180" : ""}`} strokeWidth={1.5} />
+              </button>
+              {mobileExpanded === "support" && (
+                <div className="flex flex-col gap-4 pb-4 pl-4">
+                  {supportGroups.map((group) => (
+                    <div key={group.name}>
+                      <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
+                        {group.name}
+                      </span>
+                      <ul className="flex flex-col gap-2">
+                        {group.items.map((item) =>
+                          item.href ? (
+                            <li key={item.name}>
+                              <a
+                                href={item.href}
+                                onClick={closeMobileMenu}
+                                className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                              >
+                                {item.name}
+                              </a>
+                            </li>
+                          ) : (
+                            <li key={item.name}>
+                              <span className="text-sm text-gray-600">{item.name}</span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {!isStoreRoot && (
         <div className="w-full border-y border-gray-100 bg-gray-50">
