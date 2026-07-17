@@ -65,6 +65,12 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                 </a>
               ))}
               <a
+                href="/contactanos"
+                className="whitespace-nowrap text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+              >
+                Equipo a Medida
+              </a>
+              <a
                 href="/soporte-tecnico"
                 className="whitespace-nowrap text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
               >
