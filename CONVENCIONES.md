@@ -11,7 +11,7 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 | Tecnología          | Rol en el Proyecto        | Justificación                                                                                              |
 | ------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Astro**           | Framework Principal (MPA) | Enrutamiento basado en archivos, generación estática, ligereza extrema sin lógica de estado global pesada. |
-| **React**           | Interactividad UI (Islas) | Utilizado exclusivamente donde se requiere estado del lado del cliente (ej. `ServicesCarousel.tsx`).       |
+| **React**           | Interactividad UI (Islas) | Utilizado donde se requiere estado del lado del cliente. En el sitio corporativo son islas puntuales (ej. `ServicesCarousel.tsx`); en el ecosistema `/store` maneja estados de UI considerablemente más complejos (filtros de catálogo, formularios BTO) y un carrito de cotización global persistido en `localStorage`. |
 | **Tailwind CSS v4** | Sistema de Estilos        | Utilidades atómicas estrictas, sin hojas de estilo externas, garantizando consistencia y rendimiento.      |
 | **Lucide React**    | Sistema de Íconos         | Íconos vectoriales consistentes, renderizados estáticamente en Astro para no bloquear la carga.            |
 
@@ -42,10 +42,24 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 
 ## Estructura de Rutas y Páginas (MPA)
 
+### Sitio Corporativo
 - `/` **(Landing Page):** Contiene el Hero (peekaboo), franja de estadísticas, Misión/Visión, y el carrusel interactivo de servicios.
 - `/servicios` **(Catálogo):** Muestra el portafolio completo (8 servicios actuales). Implementa una cuadrícula basada en Flexbox centrada.
 - `/servicios/[servicio]` **(Rutas Dinámicas):** Plantilla base para renderizar información específica de cada servicio basándose en un parámetro (slug).
 - `/proyectos` **(Client Roster):** Lista de experiencia y clientes corporativos.
+- `/contactanos`, `/soporte-tecnico`, `/privacidad`, `/terminos` — páginas de soporte institucional.
+- `/envases`, `/envases/[categoria]`, `/envases/producto/[producto]` — catálogo de envases metálicos (taxonomía de 3 niveles).
+
+### Asiaven Store (`/store/*`)
+Ecosistema independiente con su propio layout y navegación (`StoreLayout.astro` + `StoreNavigation.tsx`), sin `<Navbar />`/`<Footer />` corporativos. Incluye:
+- **Catálogo**: `/store/[categoria]` (ruta dinámica de 3 niveles: Categoría/Grupo/Ítem) con sidebar de filtros (`CatalogFilters.tsx`) y grilla de tarjetas de producto.
+- **PDP**: `/store/producto/[slug]` — ficha de producto individual con galería, specs y recomendados.
+- **Carrito y cotización**: `/store/cotizacion` — carrito B2B persistido en `localStorage`.
+- **Configuradores BTO**: `/store/medida/{laptops,desktops,workstations,servidores}` — calculadoras de precio en tiempo real.
+- **Soporte**: `/store/soporte/{ticket,contacto-ventas,faq,descargas,informacion}` — centro de soporte técnico VIP.
+- **Políticas y búsqueda**: `/store/garantia`, `/store/envios`, `/store/busqueda`.
+
+Ver [`ESTADO_PROYECTO.md`](./ESTADO_PROYECTO.md) para el detalle completo y actualizado de cada ruta y componente.
 
 ---
 
@@ -67,7 +81,7 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 * **Visión:** Poder ser referente mundial con nuestros principales productos elevadores Asiaven y solventar todos los problemas de nuestros clientes dándole soluciones a medida para convertirnos en la mejor alternativa de las empresas en esta área.
 
 ### Cifras Oficiales (Estadísticas)
-* **18+** Años en el mercado / Éxito Invicto.
+* **15+** Años en el mercado / Éxito Invicto.
 * **802** Proyectos Exitosos / Realizados.
 * **50+** Empresas Internacionales y Nacionales.
 * **30+** Trabajadores y sumando.

@@ -1,43 +1,27 @@
-# Astro Starter Kit: Minimal
+# Asiaven — Plataforma B2B y Sitio Corporativo
+
+Plataforma web de Asiaven, un holding con sede en Venezuela especializado en infraestructura, movilidad vertical, tecnología industrial y manufactura. El proyecto tiene dos ecosistemas independientes bajo un mismo repositorio:
+
+- **Sitio corporativo** (`/`, `/servicios`, `/proyectos`, `/contactanos`, `/envases`, etc.) — presencia institucional orientada a captar clientes corporativos de alto perfil.
+- **Asiaven Store** (`/store/*`) — plataforma de e-commerce B2B para equipos tecnológicos: catálogo con sidebar de filtros, ficha de producto (PDP), carrito de cotización, configuradores Build-to-Order y centro de soporte técnico.
+
+## Stack Tecnológico
+
+- **[Astro](https://astro.build)** — framework principal, arquitectura MPA (Multi-Page App) con generación estática.
+- **React** — islas interactivas (`client:load`) donde se requiere estado del lado del cliente: navegación de la Tienda, filtros de catálogo, formularios BTO, carrito de cotización.
+- **TypeScript** — tipado en componentes React y utilidades compartidas.
+- **Tailwind CSS v4** — sistema de estilos basado en utilidades atómicas.
+- **Lucide React** — sistema de íconos.
+
+## Desarrollo
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev      # servidor local en http://localhost:4321
+npm run build    # build de producción a ./dist/
+npm run preview  # previsualizar el build localmente
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Estado del Proyecto
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+El estado detallado de las tareas, arquitectura, decisiones de diseño y deuda técnica pendiente se documenta en [`ESTADO_PROYECTO.md`](./ESTADO_PROYECTO.md) — es la fuente de verdad para retomar el desarrollo entre sesiones. Las convenciones de negocio, marca y UI/UX del sitio corporativo están en [`CONVENCIONES.md`](./CONVENCIONES.md).
