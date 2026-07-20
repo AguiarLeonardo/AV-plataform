@@ -7,9 +7,9 @@
 ## 🔄 Sincronización de Sesión (última actualización — cierre por límite de contexto)
 
 ### Rama Actual
-`develop` — checkout local al día con `origin/develop` **hasta el commit `888d53d`**. Todo lo listado en "Funcionalidades Completadas" a partir de "Mega Menú de Soporte y BTO" está hecho y validado en el navegador, pero **aún sin commitear**.
+`develop` y `main` sincronizadas en el commit `70553a1` (`feat(store): pagina de Soporte Tecnico VIP y enlaces en mega menu`), ambas al día con `origin` y con el working tree limpio — no hay cambios pendientes de commit.
 
-Estrategia de ramas activa: `main` → `develop` → `staging` (esta última conecta el despliegue automático en Vercel).
+Estrategia de ramas activa: `main` ↔ `develop` (se mantienen sincronizadas commit a commit mediante fast-forward en esta fase del proyecto) → `staging` (conecta el despliegue automático en Vercel; **desactualizada**, sigue en un commit anterior — pendiente de actualizar cuando se decida desplegar).
 
 ### Arquitectura del Navbar de la Tienda (`StoreNavigation.tsx`)
 Los 4 ítems del menú principal — **Productos**, **Soluciones Empresariales**, **Equipo a Medida**, **Soporte Técnico** — son ahora `<button type="button">` **sin `href`**. Ninguno navega directamente: solo son disparadores que abren/cierran su mega menú asociado (`onMouseEnter` en hover de escritorio, `onClick` con toggle para touch/teclado). Tres estados de React controlan qué panel está abierto y se cierran entre sí al abrir cualquiera de los otros:
@@ -24,6 +24,13 @@ Dentro del mega menú de Productos/Soluciones, los "Grupos" (ej. "Equipos de Có
 Las páginas de nivel Categoría (`/store/productos`, `/store/soluciones-empresariales`) siguen existiendo como rutas (generadas por `store/[categoria].astro`) — simplemente no hay ya ningún enlace del navbar que apunte a ellas directamente.
 
 ### Funcionalidades Completadas (histórico consolidado, más reciente primero)
+
+**Consolidación de Catálogo, Soporte VIP y Limpieza Técnica**
+- **Layout del Catálogo** (`store/[categoria].astro`): sidebar de filtros real (`CatalogFilters.tsx`, nuevo componente) con acordeones de Disponibilidad, Precio, Línea de Producto y Especificaciones — `lg:sticky lg:top-24` en escritorio, drawer off-canvas en móvil (`lg:hidden`, disparador con ícono `SlidersHorizontal`). Grilla de productos reubicada a `lg:col-span-3`. `StoreProductCard.astro` con hover B2B estricto (`transition-shadow hover:shadow-xl`, sin `scale`/`translate`) e imagen envuelta en `<a>` hacia la PDP.
+- **Página "Soporte Técnico VIP"** (`/store/soporte/informacion`, nueva): hero + 3 pilares (Despliegue y Configuración, Resolución Ágil de Hardware, Asesoría Continua) + CTA hacia `/store/soporte/ticket`. Enlazada desde el mega menú de Soporte (grupo "Recursos de Ayuda") y desde la tarjeta "Soporte Técnico VIP" de "La Promesa Asiaven" en la PDP.
+- **DRY en formularios de Soporte**: la lógica vanilla duplicada (validación de envío + toggle B2B/B2C) de `ticket.astro` y `contacto-ventas.astro` se extrajo a `src/utils/formSupport.ts` (`initSupportForm()`), parametrizada por IDs y textos propios de cada formulario.
+- **Limpieza de deuda técnica**: eliminado `src/components/ui/CategoryCard.astro` (componente huérfano, sin ninguna referencia en el proyecto). Corregidos enlaces desactualizados en `descargas.astro` y `faq.astro` que apuntaban a `/soporte-tecnico` (página corporativa genérica) en vez de los formularios reales de la Tienda.
+- Reconfirmado tras auditoría de regresión: el Navbar móvil (acordeón en flujo normal + buscador integrado, ver bloque "Auditoría y Optimización Móvil" abajo) sigue intacto y validado en `main`/`develop`.
 
 **Auditoría y Optimización Móvil (Responsive, `< 768px`)**
 - **Navbar** (`StoreNavigation.tsx`): nuevo menú hamburguesa (`Menu`/`X` de lucide-react, `md:hidden`) que despliega un panel en flujo normal del documento (no absoluto) con acordeón vertical — cada disparador raíz (Productos, Soluciones Empresariales, Equipo a Medida, Soporte Técnico) expande/colapsa su propio listado Grupo → Ítem vía el estado `mobileExpanded`, en vez de intentar mostrar los mega menús flotantes de escritorio. Buscador dedicado duplicado dentro del panel móvil (el de escritorio es `hidden sm:block`). Bug de estado activo corregido: `ActiveState.categoryIndex` pasó de `number` a `number | null` — antes el fallback `0` hacía que "Productos" apareciera en negrita por defecto en cualquier página no reconocida (ej. `/store`, `/store/soporte/*`); ahora el resaltado (negrita) solo se aplica si la URL realmente pertenece a esa sección, con `hover:font-semibold`/`focus-visible:font-semibold` como estado interactivo consistente en los 4 botones.
@@ -79,15 +86,16 @@ Los botones "Comprar" en `StoreProductCard.astro` y `SearchResultCard.tsx` ahora
 - **PDP**: las 4 miniaturas de galería, "(4.8) 24 reseñas" y el "precio original" tachado son **datos simulados/estáticos** (no hay reseñas ni fotos reales por producto todavía).
 - **Carrito de cotización es 100% front-end**: `quoteCart.ts` en `localStorage`, sin backend — no persiste entre dispositivos, y el envío del formulario es simulado (no llega correo real a ventas@asiaven.com).
 - El carrito no distingue variantes ni valida stock.
-- **Confirmar despliegue**: todos los commits están en el checkout local de `develop`; verificar que `staging`/Vercel ya los refleje.
+- **Confirmar despliegue**: `main`/`develop` están al día en `origin`, pero `staging` (conectada al despliegue automático de Vercel) sigue varios commits atrás — hacer fast-forward de `staging` cuando se decida publicar.
 - **`lucide-react` instalado es v1.24.0**, no incluye íconos de marca (LinkedIn/Twitter/Instagram) — el Footer usa SVGs custom como workaround.
 - Precios en la vitrina de `/store`, la PDP y las calculadoras BTO son **ficticios** (fórmulas/valores inventados) — no son datos reales de catálogo.
 - Catálogo de 126 productos "AV" sigue siendo **data provisional/placeholder** — pendiente reemplazo por el catálogo real del cliente.
 - Imágenes: 100% placeholders de Unsplash en todo el sitio — ver `INVENTARIO_IMAGENES.md`.
 - Las páginas legales/de soporte/BTO usan texto boilerplate genérico — pendiente revisión y aprobación final del cliente.
-- `CatalogControls.astro`: "Mostrar Filtros" sigue siendo solo UI de referencia sin lógica real (el ordenamiento sí es funcional).
+- **`CatalogFilters.tsx`** (sidebar/drawer de filtros del catálogo): es UI completamente funcional a nivel de interacción (checkboxes, inputs de precio, acordeones), pero **todavía no filtra la grilla de productos real** — el catálogo no tiene campos estructurados de línea/RAM/almacenamiento para cruzar contra las opciones del filtro (el ordenamiento por precio/nombre sí es funcional, vía `CatalogControls.astro`).
+- Quedan varios `href="#"` sin conectar: carrusel de `Affiliates.astro`, botón "Descargar catálogo (PDF)" en `/servicios/[servicio]` (envases), botones de descarga de drivers en `store/soporte/descargas.astro` (además de los íconos sociales del Footer, ya cubiertos en el punto de `lucide-react` arriba).
 
-*(Resueltos y retirados de esta lista en esta sesión: enlaces muertos `href="#"` del Footer → ahora apuntan a páginas reales; botones "Comprar" placeholder → ahora "Agregar a Cotización" funcional; barra de búsqueda sin lógica → ahora funcional.)*
+*(Resueltos y retirados de esta lista en esta sesión: `CatalogControls.astro` ya no tiene el placeholder "Mostrar Filtros" — fue reemplazado por el sidebar real `CatalogFilters.tsx`; componente huérfano `CategoryCard.astro` eliminado; enlaces "Abre un ticket"/"Contáctanos directamente" en `descargas.astro`/`faq.astro` corregidos hacia `/store/soporte/ticket` y `/store/soporte/contacto-ventas`.)*
 
 ### Siguientes Pasos
 *(pendiente de definir con el cliente en la próxima sesión)*
@@ -149,7 +157,8 @@ Nomenclatura placeholder `"<Tipo de Ítem> AV 1/2/3"`, 3 variantes por subcatego
 - `StoreProductCard.astro` — tarjeta de catálogo real: imagen, título, 2 specs + "Ver más/Ver menos", botón **"Agregar a Cotización"** (conectado a `quoteCart.ts`) + "Saber más". Sin precio visible (`TechProduct` no tiene campo `price` real).
 - `StoreShowcaseCard.astro` — tarjeta de la landing (`/store` raíz): precio ficticio, badge opcional. Separado de `StoreProductCard` a propósito.
 - `StoreHeroSlider.tsx` — slider promocional de 3 slides con autoplay.
-- `CatalogControls.astro` — resultados + `<select id="sort-select">` funcional + "Mostrar Filtros" (placeholder).
+- `CatalogControls.astro` — contador de resultados + `<select id="sort-select">` funcional (reordena `#product-grid` por precio/nombre).
+- `CatalogFilters.tsx` — sidebar de filtros del catálogo (Disponibilidad, Precio, Línea de Producto, Especificaciones), sticky en escritorio y drawer off-canvas en móvil. UI funcional pero sin filtrado real todavía (ver "Bugs Conocidos").
 - `SearchResultCard.tsx` — versión React de `StoreProductCard` para `/store/busqueda`.
 - `BTOForm.tsx` — calculadora de configuración a medida (3 variantes: Laptop/Server/Desktop).
 - `QuoteCartList.tsx` / `QuoteRequestForm.tsx` — carrito y formulario de `/store/cotizacion`.
@@ -185,7 +194,7 @@ Páginas de texto legal, diseño limpio `max-w-4xl mx-auto`.
 
 1. **Sin precios reales**: `TechProduct` no tiene campo `price`. La vitrina, la PDP y las calculadoras BTO usan precios ficticios (`fakePrice.ts` y constantes en `BTOForm.tsx`), solo para fines visuales.
 2. **Catálogo 100% placeholder**: los 126 productos "AV" son data provisional — pendiente reemplazo por el catálogo real del cliente (SKUs, specs y precios reales).
-3. **`CatalogControls.astro`**: "Mostrar Filtros" sigue siendo solo UI de referencia sin lógica real.
+3. **`CatalogFilters.tsx`**: sidebar/drawer de filtros con interacción completa (checkboxes, acordeones, drawer móvil) pero sin lógica de filtrado real todavía — falta que `techCatalog.ts` tenga campos estructurados de línea/RAM/almacenamiento para poder cruzarlos.
 4. **`/envases`**: taxonomía de 3 niveles ya migrada y completa (5 categorías, 11 subcategorías, 62 modelos, transcritos íntegros de `catalogo_latas_asiaven.md`). Sin gaps conocidos.
 5. **Botón "Descargar catálogo (PDF)"** en `/servicios/envases` es `href="#"` — no existe un PDF real todavía.
 6. **Contraste de datos entre `services.ts` y `techCatalog.ts`**: catálogos de dos líneas de negocio distintas — mantener sincronizados manualmente.
