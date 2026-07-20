@@ -93,7 +93,7 @@ export const storeCategories: StoreCategory[] = [
       "Suministro",
       "Mantenimiento",
     ]),
-    makeGroup("Seguridad", ["Control de acceso y videovigilancia", "Cyberseguridad"]),
+    makeGroup("Seguridad", ["Control de acceso y videovigilancia", "Ciberseguridad"]),
     makeGroup("Desarrollo Tecnológico", ["Desarrollo de Software y Aplicaciones"]),
     makeGroup("Formación y Capacitación", ["Cursos y Talleres"]),
     makeGroup("Espacios de Trabajo y Eventos", ["Salas de eventos y conferencias", "Coworking", "Metro-Hub"]),

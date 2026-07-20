@@ -2,117 +2,211 @@
 import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import StoreHeroSlider from "../../components/react/StoreHeroSlider.tsx";
-import StoreShowcaseCard from "../../components/store/StoreShowcaseCard.astro";
+import StoreProductCard from "../../components/store/StoreProductCard.astro";
 import { techProducts } from "../../data/techCatalog";
-import { fakePrice } from "../../utils/fakePrice";
-import { ShieldCheck, SlidersHorizontal, Headset, Users } from "lucide-react";
+import { fakePriceValue } from "../../utils/fakePrice";
+import { ShieldCheck, Headset, Truck, Users, ChevronLeft, ChevronRight } from "lucide-react";
 
-const trustBadges = [
-  {
-    icon: ShieldCheck,
-    title: "Garantía Extendida",
-    text: "Todos nuestros equipos cuentan con 3 años de garantía y soporte swap a nivel nacional.",
-  },
-  {
-    icon: SlidersHorizontal,
-    title: "Configuración a Medida",
-    text: "Personaliza las especificaciones de cada equipo según las necesidades reales de tu empresa.",
-  },
-  {
-    icon: Headset,
-    title: "Respaldo Directo",
-    text: "Nuestro soporte técnico especializado te acompaña durante todo el ciclo de vida del equipo.",
-  },
-  {
-    icon: Users,
-    title: "Asesoría Preventa Especializada",
-    text: "Un equipo consultivo te ayuda a definir la solución correcta antes de comprar, sin compromiso.",
-  },
-];
-
-// Solo equipos físicos (ids 1-81: Equipos de Cómputo, Infraestructura y Redes,
-// Audiovisual, Telecomunicaciones, Energía) — se excluyen los paquetes de
-// servicio para que la vitrina luzca como un e-commerce de hardware real.
-const hardwareProducts = techProducts.filter((product) => product.id <= 81);
-
-function pick(offset: number, count: number) {
-  return Array.from({ length: count }, (_, i) => hardwareProducts[(offset + i) % hardwareProducts.length]);
+function unsplash(photoId: string) {
+  return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=500&q=80`;
 }
 
-const featured = pick(0, 8);
-const deals = pick(8, 8);
-const bestSellers = pick(16, 8);
+// Categorías tomadas directamente de storeTaxonomy.ts (grupo "Equipos de
+// Cómputo") y de las rutas BTO reales en /store/medida/*. No se incluye
+// nada que no exista en el código (ej. Gaming, Tintas/Tóners, Accesorios no
+// están en la taxonomía ni en el catálogo — se descartaron). Fotos: pool de
+// Unsplash ya usado en otras partes de la Store (StoreHeroSlider, galería de
+// PDP) — placeholders temporales genéricos, pendientes de fotografía real de
+// producto (ver INVENTARIO_IMAGENES.md).
+const categories = [
+  { name: "Laptops", image: unsplash("photo-1517336714731-489689fd1ca8"), href: "/store/laptops" },
+  { name: "Desktops", image: unsplash("photo-1587202372775-e229f172b9d7"), href: "/store/computadoras-de-escritorio" },
+  { name: "Workstations", image: unsplash("photo-1521791136064-7986c2920216"), href: "/store/medida/workstations" },
+  { name: "Servidores", image: unsplash("photo-1614064641938-3bbee52942c7"), href: "/store/servidores" },
+  { name: "Monitores", image: unsplash("photo-1601972602288-3be527b4f18a"), href: "/store/monitores" },
+  { name: "Mini-PC", image: unsplash("photo-1526406915894-7bcd65f60845"), href: "/store/mini-pc" },
+  { name: "Todo en Uno (AIO)", image: unsplash("photo-1593642702821-c8da6771f0c6"), href: "/store/todo-en-uno-aio" },
+  { name: "Impresoras", image: unsplash("photo-1496181133206-80ce9b88a853"), href: "/store/impresoras" },
+];
+
+// Soluciones de negocio B2B — mezcla de categorías de hardware (Tienda) y
+// servicios de la casa corporativa, cruzados contra las rutas reales que
+// existen hoy. "Ciberseguridad" y "Desarrollo de Software" viven en
+// storeTaxonomy.ts (categoría "Soluciones Empresariales"), no en
+// /servicios/* corporativo (esas rutas no existen todavía ahí). "Infraestructura
+// Cloud" no tiene página propia — se enlaza al servicio corporativo más
+// cercano, Tecnología y Telecomunicaciones (services.ts).
+const discoveryTags = [
+  { label: "Renovación de equipos", href: "/store/equipos-de-computo" },
+  { label: "Equipar nueva oficina", href: "/store/productos" },
+  { label: "Ciberseguridad", href: "/store/ciberseguridad" },
+  { label: "Desarrollo de Software", href: "/store/desarrollo-de-software-y-aplicaciones" },
+  { label: "Infraestructura Cloud", href: "/servicios/tecnologia-y-telecomunicaciones" },
+];
+
+// "Equipos Destacados" — el catálogo real todavía está en construcción, así
+// que en vez de vitrinas automáticas (Destacados/Ofertas/Más Vendidos) usamos
+// una selección curada a mano: IDs reales de techCatalog.ts elegidos para
+// representar la variedad de categorías de arriba. Cuando el catálogo final
+// esté listo, esta lista de IDs es lo único que hay que actualizar.
+const featuredProductIds = [10, 11, 1, 2, 25, 26, 7, 8, 4, 19, 22, 23, 13, 16];
+const featuredProducts = featuredProductIds
+  .map((id) => techProducts.find((product) => product.id === id))
+  .filter((product): product is NonNullable<typeof product> => Boolean(product));
+
+const brandPillars = [
+  {
+    Icon: Headset,
+    title: "Soporte Técnico VIP",
+    text: "Acompañamiento especializado activo durante todo el ciclo de vida de tu infraestructura.",
+    href: "/store/soporte/informacion",
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Garantía Extendida",
+    text: "Todos nuestros equipos cuentan con 3 años de garantía y soporte swap a nivel nacional.",
+    href: "/store/garantia",
+  },
+  {
+    Icon: Truck,
+    title: "Logística Segura",
+    text: "Entrega e instalación coordinada por nuestro equipo en todo el país.",
+    href: "/store/envios",
+  },
+  {
+    Icon: Users,
+    title: "Asesoría Especializada",
+    text: "Un equipo consultivo te ayuda a definir la solución correcta antes de comprar, sin compromiso.",
+    href: "/store/soporte/contacto-ventas",
+  },
+];
 ---
 
 <StoreLayout title="Asiaven Store - Equipos Tecnológicos para Empresas">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
   <StoreHeroSlider client:load />
 
-  <section class="mx-auto max-w-7xl px-6 py-12">
-    <h2 class="mb-6 text-2xl font-bold text-gray-900">Productos Destacados</h2>
-    <div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
+  <!-- Sección 1: Menú de Categorías -->
+  <section class="mx-auto max-w-[1600px] px-4 py-12 sm:px-6 lg:px-12">
+    <div class="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-4">
       {
-        featured.map((product, i) => (
-          <StoreShowcaseCard
-            title={product.title}
-            image={product.image}
-            price={fakePrice(product.id)}
-            badge={i % 3 === 0 ? "Nuevo" : undefined}
-            href={`/store/producto/${product.slug}`}
-          />
-        ))
-      }
-    </div>
-  </section>
-
-  <section id="ofertas" class="mx-auto max-w-7xl px-6 pb-12 scroll-mt-24">
-    <h2 class="mb-6 text-2xl font-bold text-gray-900">Ofertas Especiales</h2>
-    <div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
-      {
-        deals.map((product) => (
-          <StoreShowcaseCard
-            title={product.title}
-            image={product.image}
-            price={fakePrice(product.id)}
-            badge="Oferta"
-            href={`/store/producto/${product.slug}`}
-          />
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-7xl px-6 pb-16">
-    <h2 class="mb-6 text-2xl font-bold text-gray-900">Más Vendidos</h2>
-    <div class="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
-      {
-        bestSellers.map((product, i) => (
-          <StoreShowcaseCard
-            title={product.title}
-            image={product.image}
-            price={fakePrice(product.id)}
-            badge={i < 2 ? "Más Vendido" : undefined}
-            href={`/store/producto/${product.slug}`}
-          />
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="border-t border-gray-200 bg-white">
-    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 pt-20 pb-20 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
-      {
-        trustBadges.map((badge) => {
-          const Icon = badge.icon;
-          return (
-            <div class="flex flex-col items-center text-center">
-              <Icon className="h-12 w-12 text-corporativo-blue" strokeWidth={1.5} />
-              <h3 class="mb-2 mt-4 text-lg font-semibold text-gray-900">{badge.title}</h3>
-              <p class="text-sm text-gray-600">{badge.text}</p>
+        categories.map(({ name, image, href }) => (
+          <a href={href} class="group flex flex-col items-center text-center no-underline">
+            <div class="mb-4 aspect-square w-full overflow-hidden rounded-lg bg-gray-50/50 shadow-sm transition-shadow duration-300 group-hover:shadow-md">
+              <img
+                src={image}
+                alt={name}
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
-          );
-        })
+            <span class="font-bold text-gray-800">{name}</span>
+          </a>
+        ))
       }
+    </div>
+  </section>
+
+  <!-- Sección 2: Banner de Descubrimiento -->
+  <section class="mx-auto my-16 max-w-[1600px] px-4 sm:px-6 lg:px-12">
+    <div class="rounded-3xl bg-gradient-to-r from-orange-100/80 to-purple-100/80 p-8 lg:p-12">
+      <h2 class="mb-8 text-3xl font-bold text-gray-900">Descubre cómo podemos ayudarte</h2>
+      <div class="flex flex-wrap gap-4">
+        {
+          discoveryTags.map(({ label, href }) => (
+            <a
+              href={href}
+              class="rounded-full bg-white px-6 py-3 font-bold text-gray-900 no-underline shadow-sm transition-shadow hover:shadow-md"
+            >
+              {label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección 2.5: Carrusel "Netflix" de Equipos Destacados -->
+  <section class="mx-auto max-w-[1600px] px-4 my-16 sm:px-6 lg:px-12">
+    <h2 class="text-3xl font-bold text-gray-900">Equipos Destacados</h2>
+    <p class="mt-2 text-base text-gray-600">Una selección curada de nuestra línea corporativa, mientras terminamos de cargar el catálogo completo.</p>
+
+    <div class="group relative mt-8">
+      <!-- [&::-webkit-scrollbar]:hidden oculta la barra en Chrome/Safari; el style inline cubre Firefox/IE -->
+      <div
+        id="featured-scroll"
+        class="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-8 scroll-smooth [&::-webkit-scrollbar]:hidden"
+        style="scrollbar-width: none; -ms-overflow-style: none;"
+      >
+        {
+          featuredProducts.map((product) => (
+            <div class="w-[85vw] flex-none snap-start sm:w-[320px] md:w-[380px]">
+              <StoreProductCard
+                title={product.title}
+                image={product.image}
+                specs={product.features.slice(0, 4)}
+                href={`/store/producto/${product.slug}`}
+                dataPrice={fakePriceValue(product.id)}
+                productId={product.id}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <button
+        type="button"
+        id="featured-prev"
+        aria-label="Ver equipos anteriores"
+        class="absolute left-0 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100 md:flex"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <button
+        type="button"
+        id="featured-next"
+        aria-label="Ver más equipos"
+        class="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 translate-x-1/2 rounded-full bg-white p-2 text-gray-700 opacity-0 shadow-md transition-opacity duration-300 hover:bg-gray-50 group-hover:opacity-100 md:flex"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+    </div>
+  </section>
+
+  <!-- Sección 3: Pilares de Marca -->
+  <section class="bg-white py-10">
+    <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-12">
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {
+          brandPillars.map(({ Icon, title, text, href }) => (
+            <div class="flex flex-col items-start text-left">
+              <Icon className="h-10 w-10 text-corporativo-blue" strokeWidth={1.5} />
+              <h3 class="mb-2 mt-4 text-xl font-bold text-gray-900">{title}</h3>
+              <p class="mb-4 leading-relaxed text-gray-600">{text}</p>
+              <a
+                href={href}
+                class="font-bold text-gray-900 underline decoration-red-600/30 decoration-2 hover:decoration-red-600 transition-colors"
+              >
+                Saber más
+              </a>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 </StoreLayout>
+
+<script>
+  const scrollContainer = document.getElementById("featured-scroll");
+  const prevBtn = document.getElementById("featured-prev");
+  const nextBtn = document.getElementById("featured-next");
+
+  prevBtn?.addEventListener("click", () => {
+    scrollContainer?.scrollBy({ left: -400, behavior: "smooth" });
+  });
+  nextBtn?.addEventListener("click", () => {
+    scrollContainer?.scrollBy({ left: 400, behavior: "smooth" });
+  });
+</script>

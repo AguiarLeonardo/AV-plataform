@@ -1739,14 +1739,14 @@ export const techProducts: TechProduct[] = [
     ],
   },
 
-  // Subcategoría: Cyberseguridad
+  // Subcategoría: Ciberseguridad
   {
     id: 103,
-    title: "Paquete de Cyberseguridad AV 1",
-    slug: "cyberseguridad-av-1",
+    title: "Paquete de Ciberseguridad AV 1",
+    slug: "ciberseguridad-av-1",
     category: "Seguridad",
-    subcategoryName: "Cyberseguridad",
-    subcategorySlug: "cyberseguridad",
+    subcategoryName: "Ciberseguridad",
+    subcategorySlug: "ciberseguridad",
     image: "https://images.unsplash.com/photo-1601972602288-3be527b4f18a?auto=format&fit=crop&q=80&w=1200",
     description: "Paquete básico de ciberseguridad perimetral para pequeñas oficinas.",
     features: [
@@ -1758,11 +1758,11 @@ export const techProducts: TechProduct[] = [
   },
   {
     id: 104,
-    title: "Paquete de Cyberseguridad AV 2",
-    slug: "cyberseguridad-av-2",
+    title: "Paquete de Ciberseguridad AV 2",
+    slug: "ciberseguridad-av-2",
     category: "Seguridad",
-    subcategoryName: "Cyberseguridad",
-    subcategorySlug: "cyberseguridad",
+    subcategoryName: "Ciberseguridad",
+    subcategorySlug: "ciberseguridad",
     image: "https://images.unsplash.com/photo-1601972602288-3be527b4f18a?auto=format&fit=crop&q=80&w=1200",
     description: "Paquete integral de ciberseguridad con monitoreo extendido y respuesta a incidentes.",
     features: [
@@ -1774,11 +1774,11 @@ export const techProducts: TechProduct[] = [
   },
   {
     id: 105,
-    title: "Paquete de Cyberseguridad AV 3",
-    slug: "cyberseguridad-av-3",
+    title: "Paquete de Ciberseguridad AV 3",
+    slug: "ciberseguridad-av-3",
     category: "Seguridad",
-    subcategoryName: "Cyberseguridad",
-    subcategorySlug: "cyberseguridad",
+    subcategoryName: "Ciberseguridad",
+    subcategorySlug: "ciberseguridad",
     image: "https://images.unsplash.com/photo-1601972602288-3be527b4f18a?auto=format&fit=crop&q=80&w=1200",
     description: "Plataforma de ciberseguridad empresarial con SOC dedicado y cumplimiento normativo.",
     features: [
