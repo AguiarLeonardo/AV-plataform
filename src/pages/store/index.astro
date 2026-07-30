@@ -12,16 +12,17 @@ function unsplash(photoId: string) {
 }
 
 // Categorías tomadas directamente de storeTaxonomy.ts (grupo "Equipos de
-// Cómputo") y de las rutas BTO reales en /store/medida/*. No se incluye
-// nada que no exista en el código (ej. Gaming, Tintas/Tóners, Accesorios no
-// están en la taxonomía ni en el catálogo — se descartaron). Fotos: pool de
-// Unsplash ya usado en otras partes de la Store (StoreHeroSlider, galería de
-// PDP) — placeholders temporales genéricos, pendientes de fotografía real de
-// producto (ver INVENTARIO_IMAGENES.md).
+// Cómputo"). No se incluye nada que no exista en el código (ej. Gaming,
+// Tintas/Tóners, Accesorios no están en la taxonomía ni en el catálogo — se
+// descartaron; "Workstations" se retiró de este grid por decisión del
+// cliente y reemplazó por "Tabletas", otro ítem real del mismo grupo).
+// Fotos: pool de Unsplash ya usado en otras partes de la Store
+// (StoreHeroSlider, galería de PDP) — placeholders temporales genéricos,
+// pendientes de fotografía real de producto (ver INVENTARIO_IMAGENES.md).
 const categories = [
   { name: "Laptops", image: unsplash("photo-1517336714731-489689fd1ca8"), href: "/store/laptops" },
   { name: "Desktops", image: unsplash("photo-1587202372775-e229f172b9d7"), href: "/store/computadoras-de-escritorio" },
-  { name: "Workstations", image: unsplash("photo-1521791136064-7986c2920216"), href: "/store/medida/workstations" },
+  { name: "Tabletas", image: unsplash("photo-1521791136064-7986c2920216"), href: "/store/tabletas" },
   { name: "Servidores", image: unsplash("photo-1614064641938-3bbee52942c7"), href: "/store/servidores" },
   { name: "Monitores", image: unsplash("photo-1601972602288-3be527b4f18a"), href: "/store/monitores" },
   { name: "Mini-PC", image: unsplash("photo-1526406915894-7bcd65f60845"), href: "/store/mini-pc" },

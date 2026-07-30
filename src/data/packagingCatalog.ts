@@ -21,15 +21,19 @@ export interface PackagingCategory {
   subcategories: PackagingSubcategory[];
 }
 
-const CAN_IMAGE_1 = "https://images.unsplash.com/photo-1568992687947-868a62a9f521?auto=format&fit=crop&q=80&w=1200";
-const CAN_IMAGE_2 = "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=1200";
-const CAN_IMAGE_3 = "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1200";
+// Cada categoría tiene ahora su propia foto local distintiva (antes se
+// reciclaban solo 3 fotos de Unsplash entre las 5 categorías).
+const CATEGORY_IMAGE_LATAS_TRES_PIEZAS = "/images/envases/categorias/linea-latas-tres-piezas.jpg";
+const CATEGORY_IMAGE_LATAS_ALUMINIO = "/images/envases/categorias/linea-latas-aluminio.jpg";
+const CATEGORY_IMAGE_BOTELLAS_ALUMINIO = "/images/envases/categorias/linea-botellas-aluminio.jpg";
+const CATEGORY_IMAGE_CUBIERTA_ALUMINIO = "/images/envases/categorias/linea-cubierta-aluminio.jpg";
+const CATEGORY_IMAGE_TAPAS_GIRATORIAS = "/images/envases/categorias/linea-tapas-giratorias-tipo-garra.jpg";
 
 export const packagingCategories: PackagingCategory[] = [
   {
     slug: "latas-tres-piezas",
     title: "Línea de Latas de Tres Piezas",
-    image: CAN_IMAGE_1,
+    image: CATEGORY_IMAGE_LATAS_TRES_PIEZAS,
     shortDescription: "Alimentos secos, bebidas y tanques especiales en construcción de tres piezas.",
     description:
       "Latas de tres partes (cuerpo del tanque, tapa de aluminio fácil de abrir y cubierta inferior) con excelente hermeticidad y bloqueo de luz. Cubre desde alimentos secos hasta bebidas y presentaciones especiales de tanque.",
@@ -217,7 +221,7 @@ export const packagingCategories: PackagingCategory[] = [
   {
     slug: "latas-de-aluminio",
     title: "Línea Latas de Aluminio",
-    image: CAN_IMAGE_2,
+    image: CATEGORY_IMAGE_LATAS_ALUMINIO,
     shortDescription: "Latas de dos piezas: tanque estándar, de fibra delgada y de cuerpo delgado, 100% reciclables.",
     description:
       "Latas de dos piezas — construcción distinta a las de tres piezas, aunque también se usan para bebidas. Ventajas sobre las latas de tres piezas para esterilización a alta temperatura: 100% reciclables, bajo consumo energético, buena resistencia a corrosión, ligeras y de alta eficiencia de producción.",
@@ -335,7 +339,7 @@ export const packagingCategories: PackagingCategory[] = [
   {
     slug: "botellas-de-aluminio",
     title: "Línea Botellas de Aluminio",
-    image: CAN_IMAGE_3,
+    image: CATEGORY_IMAGE_BOTELLAS_ALUMINIO,
     shortDescription: "Alcohol, refrescos y condimentos líquidos en formato premium antifalsificación.",
     description:
       "Adecuadas para servir alcohol, refrescos y condimentos líquidos. Apariencia delicada, material ligero, agarre excelente. Alta resistencia a corrosión, difícil de romper o reventar, alta seguridad. Tecnología antifalsificación de alta calidad, recomendada para productos premium. Proceso de moldeado integrado, excelente sellado. Cumple normas ambientales, 100% reciclable.",
@@ -371,7 +375,7 @@ export const packagingCategories: PackagingCategory[] = [
   {
     slug: "cubierta-de-aluminio",
     title: "Línea Cubierta de Aluminio",
-    image: CAN_IMAGE_1,
+    image: CATEGORY_IMAGE_CUBIERTA_ALUMINIO,
     shortDescription: "Cubiertas superiores e inferiores en distintos calibres y sistemas de apertura.",
     description:
       "Cubiertas superiores (con sistemas abre-fácil, completo abierto o cerrado) e inferiores para las líneas de latas de tres piezas. Cada calibre está diseñado para garantizar el sellado hermético requerido según el tipo de producto contenido.",
@@ -467,7 +471,7 @@ export const packagingCategories: PackagingCategory[] = [
   {
     slug: "tapas-giratorias",
     title: "Línea Tapas Giratorias Tipo Garra",
-    image: CAN_IMAGE_2,
+    image: CATEGORY_IMAGE_TAPAS_GIRATORIAS,
     shortDescription: "Modelos X30 a X82 en variantes de cubierta normal, media y alta.",
     description:
       "Modelos de tapas metálicas giratorias (roscadas a presión) en distintos calibres (X30 a X82), disponibles en variantes de cubierta normal (RTO/RTB/RTS/RSB), media (FTB/FSB) y alta (MTO/MTB/DTO/DTB), con diferentes acabados de color (ej. 30MTB, 30MTO, 38RTB, 66FTB, 66FTO, 82FSB).",

@@ -27,6 +27,7 @@ const supportGroups: { name: string; items: { name: string; href?: string }[] }[
     items: [
       { name: "Soporte y solución de problemas", href: "/store/soporte/ticket" },
       { name: "Contactar a Ventas", href: "/store/soporte/contacto-ventas" },
+      { name: "Asesoría de Compra", href: "/store/soporte/asesoria-compra" },
     ],
   },
 ];

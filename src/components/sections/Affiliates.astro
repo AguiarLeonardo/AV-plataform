@@ -1,27 +1,22 @@
 ---
-import { Building2, ArrowUpDown, Cpu } from "lucide-react";
-
 const affiliates = [
   {
     name: "División de Infraestructura",
     description:
       "Ejecución de proyectos civiles, arquitectura industrial y soluciones de envasado de alta resistencia.",
-    Icon: Building2,
-    image: "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?auto=format&fit=crop&q=80&w=800",
+    image: "/images/corporativo/afiliadas/division-infraestructura.jpg",
   },
   {
     name: "División de Movilidad Vertical",
     description:
       "Especialistas en la ingeniería, instalación y mantenimiento de ascensores y escaleras mecánicas.",
-    Icon: ArrowUpDown,
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=800",
+    image: "/images/corporativo/afiliadas/division-movilidad-vertical.jpg",
   },
   {
     name: "División Tecnológica y Maquinaria",
     description:
       "Suministro de hardware corporativo (Equipos AV), telecomunicaciones y maquinaria pesada.",
-    Icon: Cpu,
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+    image: "/images/corporativo/afiliadas/division-tecnologica-maquinaria.jpg",
   },
 ];
 ---
@@ -41,7 +36,7 @@ const affiliates = [
     </div>
 
     <div class="mt-14 grid grid-cols-1 gap-8 md:grid-cols-3">
-      {affiliates.map(({ name, description, Icon, image }) => (
+      {affiliates.map(({ name, description, image }) => (
         <a href="#" class="group overflow-hidden rounded-xl bg-white shadow-md transition-shadow duration-300 hover:shadow-xl">
           <div class="relative overflow-hidden">
             <img
@@ -51,9 +46,6 @@ const affiliates = [
               loading="lazy"
               decoding="async"
             />
-            <div class="absolute left-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-md">
-              <Icon className="h-5 w-5 text-corporativo-blue" />
-            </div>
           </div>
           <div class="p-6">
             <h3 class="text-lg font-bold text-corporativo-gray transition-colors duration-200 group-hover:text-corporativo-blue">

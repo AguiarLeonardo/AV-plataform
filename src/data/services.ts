@@ -18,9 +18,9 @@ export const services: Service[] = [
       "Nuestro servicio de mantenimiento preventivo y correctivo asegura la continuidad operativa, con tiempos de respuesta rápidos y personal especializado disponible para atender cualquier eventualidad en la infraestructura vertical de nuestros clientes.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
+      "/images/corporativo/servicios/ascensores/ascensor-panel.jpg",
+      "/images/corporativo/servicios/ascensores/ascensor-cuarto-maquinas.jpg",
+      "/images/corporativo/servicios/ascensores/ascensor-cabina.jpg",
     ],
   },
   {
@@ -34,9 +34,9 @@ export const services: Service[] = [
       "El plan de mantenimiento preventivo que ofrecemos está diseñado para maximizar la vida útil de los equipos, minimizando interrupciones operativas y garantizando el cumplimiento de las normativas técnicas vigentes en cada país donde operamos.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1555529771-7888783a18d3?auto=format&fit=crop&w=1200&q=80",
+      "/images/corporativo/servicios/escaleras-mecanicas/escalera-centro-comercial.jpg",
+      "/images/corporativo/servicios/escaleras-mecanicas/escalera-peldanos.jpg",
+      "/images/corporativo/servicios/escaleras-mecanicas/rampa-mecanica.jpg",
     ],
   },
   {
@@ -50,9 +50,9 @@ export const services: Service[] = [
       "Acompañamos a cada organización en su hoja de ruta tecnológica, desde el diagnóstico inicial hasta la implementación y soporte continuo, asegurando escalabilidad y seguridad en cada solución desplegada.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+      "/images/corporativo/servicios/tecnologia-y-telecomunicaciones/sala-servidores-racks.jpg",
+      "/images/corporativo/servicios/tecnologia-y-telecomunicaciones/pantalla-led.jpg",
+      "/images/corporativo/servicios/tecnologia-y-telecomunicaciones/switch-redes.jpg",
     ],
   },
   {
@@ -66,9 +66,9 @@ export const services: Service[] = [
       "Ofrecemos soluciones de envasado flexibles y escalables, adaptadas al volumen y requerimientos específicos de cada cliente, con tiempos de entrega competitivos y trazabilidad completa del producto.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1568992687947-868a62a9f521?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1000",
+      "/images/corporativo/servicios/envases/linea-produccion-latas-1.jpg",
+      "/images/corporativo/servicios/envases/linea-produccion-latas-2.jpg",
+      "/images/corporativo/servicios/envases/linea-produccion-latas-3.jpg",
     ],
   },
   {
@@ -82,9 +82,9 @@ export const services: Service[] = [
       "Priorizamos la seguridad ocupacional y el cumplimiento normativo en cada obra, ofreciendo a nuestros clientes la tranquilidad de trabajar con un socio confiable y con experiencia comprobada en proyectos de gran envergadura.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80",
+      "/images/corporativo/servicios/construccion/obra-en-construccion.jpg",
+      "/images/corporativo/servicios/construccion/estructura-metalica.jpg",
+      "/images/corporativo/servicios/construccion/maquinaria-pesada.jpg",
     ],
   },
   {
@@ -98,9 +98,9 @@ export const services: Service[] = [
       "Contamos con capacidad de producción a gran escala y asesoría técnica especializada, acompañando a nuestros clientes en la selección de la solución más adecuada para sus necesidades de almacenamiento y transporte de gas.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1531973576160-7125cd663d86?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1605152276897-4f618f831968?auto=format&fit=crop&q=80&w=1000",
-      "https://images.unsplash.com/photo-1567789884554-0b844b597180?auto=format&fit=crop&q=80&w=1000",
+      "/images/corporativo/servicios/recipientes-gas-licuado/cilindro-gas-industrial.jpg",
+      "/images/corporativo/servicios/recipientes-gas-licuado/tanque-gas-industrial.jpg",
+      "/images/corporativo/servicios/recipientes-gas-licuado/cilindros-gas.jpg",
     ],
   },
   {
@@ -114,9 +114,9 @@ export const services: Service[] = [
       "El equipo técnico de Asiaven combina experiencia de campo con herramientas de diagnóstico modernas, asegurando intervenciones precisas y un historial documentado del estado de cada activo bajo mantenimiento.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80",
+      "/images/corporativo/servicios/mantenimiento/tecnico-realizando-mantenimiento.jpg",
+      "/images/corporativo/servicios/mantenimiento/taller-de-mantenimiento.jpg",
+      "/images/corporativo/servicios/mantenimiento/almacen-de-mantenimiento.jpg",
     ],
   },
   {
@@ -130,9 +130,9 @@ export const services: Service[] = [
       "Trabajamos con una red consolidada de proveedores en Asia, lo que nos permite ofrecer condiciones comerciales competitivas y garantizar la continuidad del suministro para proyectos industriales y comerciales de gran escala.",
     ],
     images: [
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=1200&q=80",
+      "/images/corporativo/servicios/compras-internacionales/puerto-contenedores.jpg",
+      "/images/corporativo/servicios/compras-internacionales/logistica-importacion.jpg",
+      "/images/corporativo/servicios/compras-internacionales/camion-puerto.jpg",
     ],
   },
 ];
