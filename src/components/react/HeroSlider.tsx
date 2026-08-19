@@ -25,28 +25,28 @@ const slides: Slide[] = [
       { text: "Conoce nuestros servicios", href: "/servicios", primary: true },
       { text: "Ver Proyectos", href: "/proyectos", primary: false },
     ],
-    image: "/images/corporativo/banners/hero/banner-vision-realidad.jpg",
+    image: "/images/corporativo/banners/hero/banner-vision-realidad.webp",
   },
   {
     title: "Ingeniería de Precisión en Movilidad Vertical",
     subtitle:
       "Especialistas en la instalación, modernización y mantenimiento de sistemas de ascensores y escaleras mecánicas con estándares internacionales.",
     ctas: [{ text: "Soluciones en Elevación", href: "/servicios/ascensores", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-movilidad-vertical.jpg",
+    image: "/images/corporativo/banners/hero/banner-movilidad-vertical.webp",
   },
   {
     title: "Innovación en Soluciones de Envasado",
     subtitle:
       "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
     ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-envasado-innovacion.jpg",
+    image: "/images/corporativo/banners/hero/banner-envasado-innovacion.webp",
   },
   {
     title: "Vanguardia en Equipamiento Tecnológico",
     subtitle:
       "Suministro de hardware corporativo, servidores e infraestructura de redes. Equipos de última generación respaldados por 3 años de garantía integral.",
     ctas: [{ text: "División Tecnológica", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.jpg",
+    image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.webp",
   },
 ];
 

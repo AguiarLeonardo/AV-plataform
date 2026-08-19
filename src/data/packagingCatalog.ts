@@ -23,11 +23,11 @@ export interface PackagingCategory {
 
 // Cada categoría tiene ahora su propia foto local distintiva (antes se
 // reciclaban solo 3 fotos de Unsplash entre las 5 categorías).
-const CATEGORY_IMAGE_LATAS_TRES_PIEZAS = "/images/envases/categorias/linea-latas-tres-piezas.jpg";
-const CATEGORY_IMAGE_LATAS_ALUMINIO = "/images/envases/categorias/linea-latas-aluminio.jpg";
-const CATEGORY_IMAGE_BOTELLAS_ALUMINIO = "/images/envases/categorias/linea-botellas-aluminio.jpg";
-const CATEGORY_IMAGE_CUBIERTA_ALUMINIO = "/images/envases/categorias/linea-cubierta-aluminio.jpg";
-const CATEGORY_IMAGE_TAPAS_GIRATORIAS = "/images/envases/categorias/linea-tapas-giratorias-tipo-garra.jpg";
+const CATEGORY_IMAGE_LATAS_TRES_PIEZAS = "/images/envases/categorias/linea-latas-tres-piezas.webp";
+const CATEGORY_IMAGE_LATAS_ALUMINIO = "/images/envases/categorias/linea-latas-aluminio.webp";
+const CATEGORY_IMAGE_BOTELLAS_ALUMINIO = "/images/envases/categorias/linea-botellas-aluminio.webp";
+const CATEGORY_IMAGE_CUBIERTA_ALUMINIO = "/images/envases/categorias/linea-cubierta-aluminio.webp";
+const CATEGORY_IMAGE_TAPAS_GIRATORIAS = "/images/envases/categorias/linea-tapas-giratorias-tipo-garra.webp";
 
 export const packagingCategories: PackagingCategory[] = [
   {
