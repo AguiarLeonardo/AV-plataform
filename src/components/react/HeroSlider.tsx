@@ -28,18 +28,18 @@ const slides: Slide[] = [
     image: "/images/corporativo/banners/hero/banner-vision-realidad.jpg",
   },
   {
-    title: "Innovación en Soluciones de Envasado",
-    subtitle:
-      "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
-    ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-envasado-innovacion.jpg",
-  },
-  {
     title: "Ingeniería de Precisión en Movilidad Vertical",
     subtitle:
       "Especialistas en la instalación, modernización y mantenimiento de sistemas de ascensores y escaleras mecánicas con estándares internacionales.",
     ctas: [{ text: "Soluciones en Elevación", href: "/servicios/ascensores", primary: true }],
     image: "/images/corporativo/banners/hero/banner-movilidad-vertical.jpg",
+  },
+  {
+    title: "Innovación en Soluciones de Envasado",
+    subtitle:
+      "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
+    ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
+    image: "/images/corporativo/banners/hero/banner-envasado-innovacion.jpg",
   },
   {
     title: "Vanguardia en Equipamiento Tecnológico",
