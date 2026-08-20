@@ -12,6 +12,29 @@ const btoItems = [
   { name: "Servidores", href: "/store/medida/servidores" },
 ];
 
+// "Recipientes" sigue el mismo patrón que "Soporte Técnico": array local de
+// grupos (no viene de storeTaxonomy.ts). "Envases de Aluminio" vive 100%
+// dentro de la Tienda (src/pages/store/envases/[slug].astro, datos tomados
+// de packagingCatalog.ts) — ya no enlaza al sitio corporativo.
+// "Recipientes de Gas Licuado" es un único ítem sin submenú, con su propia
+// página dentro de /store.
+const recipientesGroups: { name: string; items: { name: string; href?: string }[] }[] = [
+  {
+    name: "Envases de Aluminio",
+    items: [
+      { name: "Línea de Latas de Tres Piezas", href: "/store/envases/latas-tres-piezas" },
+      { name: "Línea Latas de Aluminio", href: "/store/envases/latas-de-aluminio" },
+      { name: "Línea Botellas de Aluminio", href: "/store/envases/botellas-de-aluminio" },
+      { name: "Línea Cubierta de Aluminio", href: "/store/envases/cubierta-de-aluminio" },
+      { name: "Línea Tapas Giratorias Tipo Garra", href: "/store/envases/tapas-giratorias" },
+    ],
+  },
+  {
+    name: "Recipientes de Gas Licuado",
+    items: [{ name: "Recipientes de Gas Licuado", href: "/store/recipientes/gas-licuado" }],
+  },
+];
+
 const supportGroups: { name: string; items: { name: string; href?: string }[] }[] = [
   {
     name: "Recursos de Ayuda",
@@ -64,6 +87,7 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [supportOpen, setSupportOpen] = useState(false);
   const [btoOpen, setBtoOpen] = useState(false);
+  const [recipientesOpen, setRecipientesOpen] = useState(false);
   const [active, setActive] = useState<ActiveState>(() => resolveActiveFromPath(currentPath));
   const [searchTerm, setSearchTerm] = useState("");
   const [cartCount, setCartCount] = useState(0);
@@ -92,6 +116,8 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
     active.categoryIndex !== null ? storeCategories[active.categoryIndex] : null;
   const activeGroup = active.groupIndex !== null ? activeCategory?.groups[active.groupIndex] ?? null : null;
   const isBtoActive = currentPath.startsWith("/store/medida");
+  const isRecipientesActive =
+    currentPath.startsWith("/store/recipientes") || currentPath.startsWith("/store/envases");
   const isSupportActive = currentPath.startsWith("/store/soporte");
 
   const selectGroup = (categoryIndex: number, groupIndex: number | null) => {
@@ -113,6 +139,7 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
           setHoverIndex(null);
           setSupportOpen(false);
           setBtoOpen(false);
+          setRecipientesOpen(false);
         }}
       >
         <header className="w-full bg-white">
@@ -130,11 +157,13 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                     setHoverIndex(ci);
                     setSupportOpen(false);
                     setBtoOpen(false);
+                    setRecipientesOpen(false);
                   }}
                   onClick={() => {
                     setHoverIndex((prev) => (prev === ci ? null : ci));
                     setSupportOpen(false);
                     setBtoOpen(false);
+                    setRecipientesOpen(false);
                   }}
                   className={`whitespace-nowrap text-sm transition-colors ${
                     ci === active.categoryIndex
@@ -151,11 +180,13 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                   setHoverIndex(null);
                   setSupportOpen(false);
                   setBtoOpen(true);
+                  setRecipientesOpen(false);
                 }}
                 onClick={() => {
                   setBtoOpen((prev) => !prev);
                   setHoverIndex(null);
                   setSupportOpen(false);
+                  setRecipientesOpen(false);
                 }}
                 className={`whitespace-nowrap text-sm transition-colors ${
                   isBtoActive
@@ -169,13 +200,37 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                 type="button"
                 onMouseEnter={() => {
                   setHoverIndex(null);
+                  setSupportOpen(false);
+                  setBtoOpen(false);
+                  setRecipientesOpen(true);
+                }}
+                onClick={() => {
+                  setRecipientesOpen((prev) => !prev);
+                  setHoverIndex(null);
+                  setSupportOpen(false);
+                  setBtoOpen(false);
+                }}
+                className={`whitespace-nowrap text-sm transition-colors ${
+                  isRecipientesActive
+                    ? "font-bold text-black"
+                    : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                }`}
+              >
+                Recipientes
+              </button>
+              <button
+                type="button"
+                onMouseEnter={() => {
+                  setHoverIndex(null);
                   setSupportOpen(true);
                   setBtoOpen(false);
+                  setRecipientesOpen(false);
                 }}
                 onClick={() => {
                   setSupportOpen((prev) => !prev);
                   setHoverIndex(null);
                   setBtoOpen(false);
+                  setRecipientesOpen(false);
                 }}
                 className={`whitespace-nowrap text-sm transition-colors ${
                   isSupportActive
@@ -274,6 +329,41 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                 >
                   {item.name}
                 </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {recipientesOpen && (
+          <div className="absolute inset-x-0 top-full z-30 border-t border-gray-100 bg-white shadow-lg">
+            <div
+              className="mx-auto grid max-w-7xl gap-8 px-6 py-8"
+              style={{ gridTemplateColumns: `repeat(${recipientesGroups.length}, minmax(0, 1fr))` }}
+            >
+              {recipientesGroups.map((group) => (
+                <div key={group.name}>
+                  <span className="mb-3 block cursor-default text-sm font-bold text-gray-900 select-none">
+                    {group.name}
+                  </span>
+                  <ul className="flex flex-col gap-2">
+                    {group.items.map((item) =>
+                      item.href ? (
+                        <li key={item.name}>
+                          <a
+                            href={item.href}
+                            className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                          >
+                            {item.name}
+                          </a>
+                        </li>
+                      ) : (
+                        <li key={item.name}>
+                          <span className="text-sm text-gray-600">{item.name}</span>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
               ))}
             </div>
           </div>
@@ -410,6 +500,48 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
                     </li>
                   ))}
                 </ul>
+              )}
+            </div>
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setMobileExpanded((prev) => (prev === "recipientes" ? null : "recipientes"))}
+                aria-expanded={mobileExpanded === "recipientes"}
+                className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
+              >
+                Recipientes
+                <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "recipientes" ? "rotate-180" : ""}`} strokeWidth={1.5} />
+              </button>
+              {mobileExpanded === "recipientes" && (
+                <div className="flex flex-col gap-4 pb-4 pl-4">
+                  {recipientesGroups.map((group) => (
+                    <div key={group.name}>
+                      <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
+                        {group.name}
+                      </span>
+                      <ul className="flex flex-col gap-2">
+                        {group.items.map((item) =>
+                          item.href ? (
+                            <li key={item.name}>
+                              <a
+                                href={item.href}
+                                onClick={closeMobileMenu}
+                                className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                              >
+                                {item.name}
+                              </a>
+                            </li>
+                          ) : (
+                            <li key={item.name}>
+                              <span className="text-sm text-gray-600">{item.name}</span>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 

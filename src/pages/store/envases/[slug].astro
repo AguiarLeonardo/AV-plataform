@@ -1,0 +1,128 @@
+---
+import StoreLayout from "../../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import { packagingCategories } from "../../../data/packagingCatalog";
+import { ChevronLeft } from "lucide-react";
+
+// Vista dedicada de Envases dentro de la Tienda — no participa del catálogo
+// general (techCatalog.ts) ni del sidebar de filtros. Una sola ruta dinámica
+// cubre dos niveles, igual que el par [categoria].astro / producto/[producto].astro
+// del sitio corporativo, pero unificados aquí en un solo archivo:
+//   - slug de categoría (5) -> hub con las subcategorías y sus productos.
+//   - slug de producto (62) -> ficha individual con specs y CTA de cotización.
+// Los slugs de categoría y de producto no se solapan (formatos distintos),
+// así que un único parámetro [slug] alcanza para ambos niveles.
+export function getStaticPaths() {
+  const categoryPaths = packagingCategories.map((category) => ({
+    params: { slug: category.slug },
+    props: { kind: "category" as const, category },
+  }));
+
+  const productPaths = packagingCategories.flatMap((category) =>
+    category.subcategories.flatMap((subcategory) =>
+      subcategory.products.map((product) => ({
+        params: { slug: product.slug },
+        props: { kind: "product" as const, category, subcategory, product },
+      }))
+    )
+  );
+
+  return [...categoryPaths, ...productPaths];
+}
+
+const { kind, category } = Astro.props;
+const pageTitle =
+  kind === "category" ? category.title : `${Astro.props.product.title} - ${category.title}`;
+---
+
+<StoreLayout title={`${pageTitle} - Asiaven Store`}>
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+    {
+      kind === "category" ? (
+        <>
+          <a
+            href="/store"
+            class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Volver a la tienda
+          </a>
+
+          <h1 class="mb-4 text-3xl font-bold text-gray-900">{category.title}</h1>
+          <p class="max-w-3xl text-base text-gray-600">{category.shortDescription}</p>
+
+          <div class="mt-12">
+            {category.subcategories.map((subcategory) => (
+              <section class="mb-14 last:mb-0">
+                <h2 class="mb-1 text-xl font-bold text-gray-900">{subcategory.title}</h2>
+                {subcategory.description && (
+                  <p class="mb-5 max-w-2xl text-sm text-gray-500">{subcategory.description}</p>
+                )}
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                  {subcategory.products.map((product) => (
+                    <a
+                      href={`/store/envases/${product.slug}`}
+                      class="rounded-xl border border-gray-200 bg-white p-4 no-underline shadow-sm transition-shadow duration-300 hover:shadow-xl hover:shadow-gray-200/50"
+                    >
+                      <h3 class="text-sm font-semibold text-gray-900">{product.title}</h3>
+                      {product.group && <p class="mt-1 text-xs text-gray-500">{product.group}</p>}
+                    </a>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <a
+            href={`/store/envases/${category.slug}`}
+            class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Volver a {category.title}
+          </a>
+
+          <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-corporativo-blue">
+            {category.title}
+          </span>
+          <span class="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-700">
+            {Astro.props.subcategory.title}
+          </span>
+          {Astro.props.product.group && (
+            <span class="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-700">
+              {Astro.props.product.group}
+            </span>
+          )}
+
+          <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            {Astro.props.product.title}
+          </h1>
+
+          <div class="mt-8 max-w-3xl overflow-hidden rounded-xl border border-gray-200">
+            <table class="w-full border-collapse text-left">
+              <tbody>
+                {Object.entries(Astro.props.product.specs).map(([label, value], index) => (
+                  <tr class={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <th class="w-1/3 px-6 py-4 text-sm font-semibold text-gray-900">{label}</th>
+                    <td class="px-6 py-4 text-sm text-gray-600">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <a
+            href="/store/soporte/contacto-ventas"
+            class="mt-10 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white no-underline shadow-lg transition-colors hover:bg-corporativo-blue/90"
+          >
+            Solicitar Cotización &rarr;
+          </a>
+        </>
+      )
+    }
+  </main>
+</StoreLayout>

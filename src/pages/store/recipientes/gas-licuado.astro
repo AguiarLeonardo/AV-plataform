@@ -1,0 +1,34 @@
+---
+import StoreLayout from "../../../layouts/StoreLayout.astro";
+import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+---
+
+<StoreLayout title="Recipientes de Gas Licuado - Asiaven Store">
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+    <a
+      href="/store"
+      class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
+    >
+      &larr; Volver a la tienda
+    </a>
+
+    <h1 class="mb-8 text-3xl font-bold text-gray-900">Recipientes de Gas Licuado</h1>
+
+    <div class="rounded-xl border border-gray-200 bg-gray-50 p-10 text-center">
+      <p class="text-lg font-semibold text-gray-900">Cotización a medida</p>
+      <p class="mx-auto mt-2 max-w-md text-sm text-gray-600">
+        Fabricamos y suministramos cilindros industriales certificados para el almacenamiento y distribución de gas
+        licuado. Aún no tenemos modelos publicados en el catálogo — contáctanos y te ayudamos a diseñar la solución
+        exacta que tu empresa necesita.
+      </p>
+      <a
+        href="/store/soporte/contacto-ventas"
+        class="mt-6 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+      >
+        Solicitar Cotización &rarr;
+      </a>
+    </div>
+  </main>
+</StoreLayout>
