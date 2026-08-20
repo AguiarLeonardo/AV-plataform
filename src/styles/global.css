@@ -3,4 +3,17 @@
 @theme {
     --color-corporativo-blue: #1E3A8A;
     --color-corporativo-gray: #4A5056;
+    --animate-marquee: marquee 40s linear infinite;
+}
+
+/* Carrusel infinito de logos (ClientLogosCarousel.tsx): la fila se duplica
+   al renderizar y esta animación desplaza exactamente el 50% del ancho
+   total (un set completo), quedando el clon ya alineado para el loop. */
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }

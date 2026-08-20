@@ -1,6 +1,3 @@
-import { useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
 const clients = [
   { name: "PDVSA", logoUrl: "/images/logos/clientes/pdvsa.webp" },
   { name: "Corpoelec", logoUrl: "/images/logos/clientes/corpoelec.webp" },
@@ -13,7 +10,6 @@ const clients = [
   { name: "Distribuidora Adelina C.A", logoUrl: "/images/logos/clientes/distribuidora-adelina.webp" },
   { name: "Landscape Vision Corp.", logoUrl: "/images/logos/clientes/landscape-vision-corp.webp" },
   { name: "Asian Commerce LTD", logoUrl: "/images/logos/clientes/asian-commerce-ltd.webp" },
-  { name: "Telecomunicaciones Asiaven", logoUrl: "/images/logos/clientes/telecomunicaciones-asiaven.webp" },
   { name: "Belcor Diseño Construcción", logoUrl: "/images/logos/clientes/belcor-diseno-construccion.webp" },
   { name: "Despacho de la Presidencia", logoUrl: "/images/logos/clientes/despacho-de-la-presidencia.webp" },
   { name: "Ministerios", logoUrl: "/images/logos/clientes/ministerios.webp" },
@@ -22,25 +18,21 @@ const clients = [
   { name: "INEA", logoUrl: "/images/logos/clientes/inea.webp" },
 ];
 
+// Fila duplicada para que el marquee sea continuo: la animación (definida en
+// global.css, --animate-marquee) recorre exactamente -50% del ancho total,
+// es decir, un set completo — cuando el primero termina de salir por la
+// izquierda, su clon ya está entrando por la derecha, sin corte visible.
+const loopedClients = [...clients, ...clients];
+
 export default function ClientLogosCarousel() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const scrollLeft = () => {
-    scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" });
-  };
-
-  const scrollRight = () => {
-    scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" });
-  };
-
   return (
-    <div className="relative group">
-      <div
-        ref={scrollRef}
-        className="flex overflow-x-auto gap-8 snap-x snap-mandatory scroll-smooth px-4 py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-      >
-        {clients.map((client) => (
-          <div key={client.name} className="relative flex h-24 w-48 flex-shrink-0 snap-start items-center justify-center">
+    <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+      <div className="flex w-max animate-marquee gap-8 py-4 motion-reduce:animate-none hover:[animation-play-state:paused]">
+        {loopedClients.map((client, index) => (
+          <div
+            key={`${client.name}-${index}`}
+            className="relative flex h-24 w-48 flex-shrink-0 items-center justify-center"
+          >
             <img
               src={client.logoUrl}
               alt={client.name}
@@ -54,22 +46,6 @@ export default function ClientLogosCarousel() {
           </div>
         ))}
       </div>
-
-      <button
-        onClick={scrollLeft}
-        className="absolute left-0 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-corporativo-gray opacity-0 shadow-md transition-opacity duration-300 group-hover:opacity-100 hover:bg-corporativo-blue hover:text-white"
-        aria-label="Desplazar a la izquierda"
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-
-      <button
-        onClick={scrollRight}
-        className="absolute right-0 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-corporativo-gray opacity-0 shadow-md transition-opacity duration-300 group-hover:opacity-100 hover:bg-corporativo-blue hover:text-white"
-        aria-label="Desplazar a la derecha"
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
     </div>
   );
 }

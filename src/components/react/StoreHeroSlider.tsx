@@ -53,6 +53,13 @@ export default function StoreHeroSlider() {
 
   return (
     <div className="group relative h-[60vh] w-full overflow-hidden md:h-[70vh]">
+      <a
+        href="/"
+        className="absolute left-4 top-4 z-50 text-sm font-semibold text-white transition-colors hover:text-blue-500"
+      >
+        Volver al sitio corporativo
+      </a>
+
       {slides.map((slide, index) => (
         <div
           key={slide.image}
