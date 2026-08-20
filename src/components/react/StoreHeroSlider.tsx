@@ -55,8 +55,9 @@ export default function StoreHeroSlider() {
     <div className="group relative h-[60vh] w-full overflow-hidden md:h-[70vh]">
       <a
         href="/"
-        className="absolute left-4 top-4 z-50 text-sm font-semibold text-white transition-colors hover:text-blue-500"
+        className="absolute left-4 top-4 z-50 flex items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-blue-500"
       >
+        <ChevronLeft className="h-[18px] w-[18px]" strokeWidth={2} />
         Volver al sitio corporativo
       </a>
 
