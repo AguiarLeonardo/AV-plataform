@@ -8,23 +8,30 @@ const currentYear = new Date().getFullYear();
 // para la Tienda vive en src/components/store/StoreFooter.astro.
 
 // lucide-react@1.24.0 (instalado en este proyecto) ya no incluye íconos de
-// marca (LinkedIn/Twitter/Instagram); se usan trazos de línea genéricos
-// equivalentes en su lugar.
+// marca (LinkedIn/Instagram/TikTok/Facebook); se usan trazos de línea
+// genéricos equivalentes en su lugar. Se retiró Twitter/X: el cliente no
+// proporcionó un handle real para esa red, y dejar un enlace "#" muerto
+// mezclado con las demás (ya todas reales) sería inconsistente.
 const socialLinks = [
   {
     label: "LinkedIn",
-    href: "#",
+    href: "https://www.linkedin.com/company/grupo-asiaven/",
     path: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
   },
   {
-    label: "Twitter",
-    href: "#",
-    path: "M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z",
+    label: "Instagram",
+    href: "https://www.instagram.com/grupoasiaven?igsi=MW45ZjhjcGtrd2ViNQ==",
+    path: "M2 7a5 5 0 0 1 5-5h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5zm10 1.37a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5h.01",
   },
   {
-    label: "Instagram",
-    href: "#",
-    path: "M2 7a5 5 0 0 1 5-5h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5zm10 1.37a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5h.01",
+    label: "TikTok",
+    href: "https://www.tiktok.com/@grupoasiaven?_r=1&_t=ZS-99BZAPFjviT",
+    path: "M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5",
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/share/1DScmxRC2x/?mibextid=wwXIfr",
+    path: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z",
   },
 ];
 
@@ -39,10 +46,23 @@ const quickLinks = [
   { label: "Contáctanos", href: "/contactanos" },
 ];
 
-const corporateContact = [
-  { Icon: Phone, text: "+58 212-9924333" },
-  { Icon: Mail, text: "proyectos@asiaven.com" },
-  { Icon: MapPin, text: "C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela" },
+const offices = [
+  {
+    name: "Oficina en Venezuela",
+    items: [
+      { Icon: Phone, text: "+58 212-9924333" },
+      { Icon: Mail, text: "proyectos@asiaven.com" },
+      { Icon: MapPin, text: "C.C Paseo Las Mercedes, Piso 2, Caracas, Venezuela" },
+    ],
+  },
+  {
+    name: "Oficina en Estados Unidos",
+    items: [
+      { Icon: Phone, text: "+1 (305) 555-0198" },
+      { Icon: Mail, text: "ventas@asiaven.com" },
+      { Icon: MapPin, text: "1234 Miami Ave, Suite 100, Miami, FL 33132, EE. UU." },
+    ],
+  },
 ];
 
 const legalLinks = [
@@ -62,7 +82,7 @@ const legalLinks = [
             <a
               href={href}
               aria-label={label}
-              class="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-gray-300 transition-colors duration-200 hover:border-corporativo-blue hover:text-white"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-gray-300 transition-colors duration-200 hover:border-white hover:text-white"
             >
               <svg
                 class="h-4 w-4"
@@ -93,7 +113,7 @@ const legalLinks = [
           <li>
             <a
               href="/store"
-              class="inline-flex items-center gap-1.5 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:text-white"
+              class="inline-flex items-center gap-1.5 text-sm font-semibold text-white transition-colors duration-200 hover:text-gray-300"
             >
               AV Store &rarr;
             </a>
@@ -103,14 +123,23 @@ const legalLinks = [
 
       <div>
         <h4 class="text-sm font-semibold uppercase tracking-widest text-white">Contacto</h4>
-        <ul class="mt-4 flex flex-col gap-3">
-          {corporateContact.map(({ Icon, text }) => (
-            <li class="flex items-center gap-3 text-sm text-gray-400">
-              <Icon className="h-5 w-5 flex-shrink-0 text-corporativo-blue" strokeWidth={1.5} />
-              <span>{text}</span>
-            </li>
+        <div class="mt-4 flex flex-col gap-6">
+          {offices.map((office) => (
+            <div>
+              <span class="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-300">
+                {office.name}
+              </span>
+              <ul class="flex flex-col gap-3">
+                {office.items.map(({ Icon, text }) => (
+                  <li class="flex items-center gap-3 text-sm text-gray-400">
+                    <Icon className="h-5 w-5 flex-shrink-0 text-gray-300" strokeWidth={1.5} />
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
       <div>
