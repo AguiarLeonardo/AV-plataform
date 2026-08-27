@@ -1,9 +1,14 @@
 # Inventario Maestro de Imágenes — Asiaven
 
 Documento de control para el equipo de contenido/fotografía. Lista **todas** las
-imágenes reales (fotografías o renders) que deben producirse o conseguirse para
-reemplazar los placeholders actuales (100% Unsplash/placehold.co en este momento)
-en el sitio corporativo, el catálogo de Envases y la Store de tecnología.
+imágenes reales (fotografías o renders) necesarias en el sitio corporativo, el
+catálogo de Envases y la Store de tecnología.
+
+**Estado actual (actualizado):** el sitio corporativo (sección 1) y el catálogo
+de Envases (sección 2) ya fueron migrados a fotografía real del cliente en
+`.webp` — sus checkboxes reflejan ese trabajo completado. La Store de
+tecnología (sección 3) es la única área que **sigue 100% en placeholders de
+Unsplash**, pendiente de fotografía real de producto.
 
 **Cómo usar este documento:** marca el checkbox `- [x]` cuando la imagen final
 esté producida, aprobada e integrada en el código.
@@ -16,84 +21,84 @@ establecida, esas tarjetas son y seguirán siendo tipográficas, sin fotos.
 
 ## 1. Sitio Principal (Corporativo)
 
-### 1.1 Hero Slider (`HeroSlider.tsx` — landing page)
+### 1.1 Hero Slider (`HeroSlider.tsx` — landing page) ✅ completado
 Formato: **Panorámica / 16:9 a 21:9** (banner full-screen, `object-cover`, `h-[82dvh]`+).
 
-- [ ] Slide 1 — "La visión se hizo realidad": fachada/obra corporativa de Asiaven (construcción, maquinaria, tecnología).
-- [ ] Slide 2 — "Innovación en Soluciones de Envasado": línea de fabricación de latas/envases metálicos.
-- [ ] Slide 3 — "Ingeniería de Precisión en Movilidad Vertical": ascensor o escalera mecánica en operación.
-- [ ] Slide 4 — "Vanguardia en Equipamiento Tecnológico": hardware/servidores/data center.
+- [x] Slide 1 — "La visión se hizo realidad": fachada/obra corporativa de Asiaven (construcción, maquinaria, tecnología).
+- [x] Slide 2 — "Innovación en Soluciones de Envasado": línea de fabricación de latas/envases metálicos.
+- [x] Slide 3 — "Ingeniería de Precisión en Movilidad Vertical": ascensor o escalera mecánica en operación.
+- [x] Slide 4 — "Vanguardia en Equipamiento Tecnológico": hardware/servidores/data center.
 
-### 1.2 Sección "Nosotros" (`About.astro`)
+### 1.2 Sección "Nosotros" (`About.astro`) ✅ completado
 Formato: **Vertical/libre** (columna del grid 2 columnas, `object-cover`).
 
-- [ ] 1x foto de oficina o equipo corporativo real de Asiaven.
+- [x] 1x foto de oficina o equipo corporativo real de Asiaven.
 
-### 1.3 Misión y Visión (`MissionVision.astro`)
+### 1.3 Misión y Visión (`MissionVision.astro`) ✅ completado
 Formato: **Vertical / bloque alto** (`min-h-[50–60dvh]`, `object-cover` + overlay de color).
 
-- [ ] "Misión": personas/equipo Asiaven en operación de campo.
-- [ ] "Visión": imagen aspiracional de horizonte/futuro tecnológico corporativo.
+- [x] "Misión": personas/equipo Asiaven en operación de campo.
+- [x] "Visión": imagen aspiracional de horizonte/futuro tecnológico corporativo.
 
-### 1.4 Divisiones / Afiliadas (`Affiliates.astro`)
-Formato: **Horizontal (banda)** — `h-52`, `object-cover`.
+### 1.4 Divisiones / Afiliadas (`Affiliates.astro`) ✅ completado
+Formato: **Vertical / tarjeta**, `h-80 sm:h-96`, `object-cover` (rediseño con hover card, ya no banda horizontal). El rediseño pasó de 3 a **4 divisiones** con nombres comerciales propios:
 
-- [ ] "División de Infraestructura": obra civil / envasado industrial.
-- [ ] "División de Movilidad Vertical": ascensores/escaleras mecánicas.
-- [ ] "División Tecnológica y Maquinaria": hardware, telecom, equipos.
+- [x] "AV Constructora" (`division-infraestructura.webp`).
+- [x] "AV Elevators" (`division-movilidad-vertical.webp`).
+- [x] "AV Maquinarias Pesadas" (`division-maquinaria.webp`).
+- [x] "AV Tecnología" (`division-tecnologia.webp`).
 
-### 1.5 Banners de cabecera — `PageHeader.astro` (usado en varias páginas internas)
+### 1.5 Banners de cabecera — `PageHeader.astro` (usado en varias páginas internas) ✅ completado
 Formato: **Panorámica / 16:9** (`h-[35vh]`, `object-cover`, overlay `bg-black/65`).
 
-- [ ] `/servicios` — banner "Nuestros Servicios" (instalación/mantenimiento genérico).
-- [ ] `/proyectos` — banner "Nuestros Proyectos" (nota: solo el banner de cabecera necesita foto; las 6 tarjetas del listado NO — ver exclusión arriba).
-- [ ] `/contactanos` — banner "Detalles de Contacto" (oficina/recepción de Asiaven).
-- [ ] `/soporte-tecnico` — banner "Soporte Técnico y Drivers" (hardware/telecom).
+- [x] `/servicios` — banner "Nuestros Servicios" (instalación/mantenimiento genérico).
+- [x] `/proyectos` — banner "Nuestros Proyectos" (nota: solo el banner de cabecera necesita foto; las 6 tarjetas del listado NO — ver exclusión arriba).
+- [x] `/contactanos` — banner "Detalles de Contacto" (oficina/recepción de Asiaven).
+- [x] `/soporte-tecnico` — banner "Soporte Técnico y Drivers" (hardware/telecom).
 
-### 1.6 Sliders de Servicios (`src/data/services.ts` — `ServiceSlider.tsx`, cuadrado 1:1)
+### 1.6 Sliders de Servicios (`src/data/services.ts` — `ServiceSlider.tsx`, cuadrado 1:1) ✅ completado
 Formato: **Cuadrada / 1:1** por cada una de las 3 imágenes de cada servicio.
 
-- [ ] **Ascensores** (3 fotos): ascensor en edificio, cabina de ascensor, instalación/mantenimiento.
-- [ ] **Escaleras mecánicas** (3 fotos): escalera en centro comercial/metro, vista de peldaños, rampa mecánica.
-- [ ] **Tecnología y Telecomunicaciones** (3 fotos): sala de servidores/racks, oficina con equipos, torre de telecomunicaciones.
-- [ ] **Envases** (3 fotos): latas metálicas en línea de producción (pueden reutilizar las mismas fotos de producto de envases, sección 2).
-- [ ] **Construcción** (3 fotos): obra en construcción, estructura metálica, maquinaria pesada.
-- [ ] **Recipientes de gas licuado** (3 fotos): cilindros/tanques de gas industrial.
-- [ ] **Mantenimiento** (3 fotos): técnico realizando mantenimiento, taller, inspección de equipos.
-- [ ] **Compras internacionales** (3 fotos): puerto/contenedores, logística de importación, oficina de comercio.
+- [x] **Ascensores** (3 fotos): ascensor en edificio, cabina de ascensor, instalación/mantenimiento.
+- [x] **Escaleras mecánicas** (3 fotos): escalera en centro comercial/metro, vista de peldaños, rampa mecánica.
+- [x] **Tecnología y Telecomunicaciones** (3 fotos): sala de servidores/racks, oficina con equipos, torre de telecomunicaciones.
+- [x] **Envases** (3 fotos): latas metálicas en línea de producción (pueden reutilizar las mismas fotos de producto de envases, sección 2).
+- [x] **Construcción** (3 fotos): obra en construcción, estructura metálica, maquinaria pesada.
+- [x] **Recipientes de gas licuado** (3 fotos): cilindros/tanques de gas industrial.
+- [x] **Mantenimiento** (3 fotos): técnico realizando mantenimiento, taller, inspección de equipos.
+- [x] **Compras internacionales** (3 fotos): puerto/contenedores, logística de importación, oficina de comercio.
 
-### 1.7 Sliders de producto adicionales (`ProductFeatureSlider.tsx`, dentro de `[servicio].astro`)
+### 1.7 Sliders de producto adicionales (`ProductFeatureSlider.tsx`, dentro de `[servicio].astro`) ✅ completado
 Formato: **Vertical/libre** (`h-64` mobile, `h-full` desktop).
 
-- [ ] Ascensores Residenciales — cabina/interior residencial.
-- [ ] Ascensores para Oficina — hall de oficina con ascensor.
-- [ ] Ascensores Panorámicos — cabina de vidrio panorámica.
-- [ ] Ascensores para Hospitales — ascensor de camillas en hospital.
-- [ ] Escaleras Mecánicas — tramo de escalera en uso.
-- [ ] Rampas Mecánicas — rampa mecánica horizontal/inclinada.
+- [x] Ascensores Residenciales — cabina/interior residencial.
+- [x] Ascensores para Oficina — hall de oficina con ascensor.
+- [x] Ascensores Panorámicos — cabina de vidrio panorámica.
+- [x] Ascensores para Hospitales — ascensor de camillas en hospital.
+- [x] Escaleras Mecánicas — tramo de escalera en uso.
+- [x] Rampas Mecánicas — rampa mecánica horizontal/inclinada.
 
-### 1.8 Logos de Clientes (`ClientLogosCarousel.tsx` en `/proyectos`)
-Formato: **Logo PNG/SVG, fondo transparente**, banda `h-24 w-48`, `object-contain`.
-Actualmente son cajas grises `placehold.co` con el nombre en texto — máxima prioridad visual por lo notorio del placeholder.
+### 1.8 Logos de Clientes (`ClientLogosCarousel.tsx` en `/proyectos`) ✅ completado (17/18)
+Formato: **Logo PNG/SVG, fondo transparente**, ahora en marquee CSS infinito (`animate-marquee`), `object-contain`.
 
-- [ ] PDVSA
-- [ ] Corpoelec
-- [ ] Metro de Caracas
-- [ ] Asamblea Nacional
-- [ ] Banco Industrial
-- [ ] Pequiven
-- [ ] Hotel Humboldt
-- [ ] Fundación Propatria
-- [ ] Distribuidora Adelina C.A
-- [ ] Landscape Vision Corp.
-- [ ] Asian Commerce LTD
-- [ ] Telecomunicaciones Asiaven
-- [ ] Belcor Diseño Construcción
-- [ ] Despacho de la Presidencia
-- [ ] Ministerios
-- [ ] Estadio Monumental Simón Bolívar
-- [ ] Bolipuertos
-- [ ] INEA
+- [x] PDVSA
+- [x] Corpoelec
+- [x] Metro de Caracas
+- [x] Asamblea Nacional
+- [x] Banco Industrial
+- [x] Pequiven
+- [x] Hotel Humboldt
+- [x] Fundación Propatria
+- [x] Distribuidora Adelina C.A
+- [x] Landscape Vision Corp.
+- [x] Asian Commerce LTD
+- [ ] Telecomunicaciones Asiaven — **retirado del carrusel** (nunca se recibió el logo real; se eliminó la entrada en vez de dejar un placeholder roto).
+- [x] Belcor Diseño Construcción
+- [x] Despacho de la Presidencia
+- [x] Ministerios
+- [x] Estadio Monumental Simón Bolívar
+- [x] Bolipuertos
+- [x] INEA
 
 ---
 
@@ -105,12 +110,12 @@ Actualmente son cajas grises `placehold.co` con el nombre en texto — máxima p
 
 Formato: **Panorámica / 16:9** (`aspect-video` en tarjetas de `/envases/[categoria]`) y **Horizontal amplia** para el fondo del acordeón del hub (`h-[70–80vh]`, `object-cover`).
 
-### 2.1 Mínimo recomendado — 1 foto por categoría (uso actual del código)
-- [ ] Línea de Latas de Tres Piezas
-- [ ] Línea Latas de Aluminio
-- [ ] Línea Botellas de Aluminio
-- [ ] Línea Cubierta de Aluminio
-- [ ] Línea Tapas Giratorias Tipo Garra
+### 2.1 Mínimo recomendado — 1 foto por categoría (uso actual del código) ✅ completado
+- [x] Línea de Latas de Tres Piezas
+- [x] Línea Latas de Aluminio
+- [x] Línea Botellas de Aluminio
+- [x] Línea Cubierta de Aluminio
+- [x] Línea Tapas Giratorias Tipo Garra
 
 ### 2.2 Recomendado (calidad premium) — 1 foto por subcategoría, mostrando el modelo representativo
 - [ ] Alimentos Secos (5 modelos: 209/211/209x309, x400, x408, x413, x507)
@@ -186,10 +191,10 @@ Nota: estos 4 ítems son paquetes de servicio, no hardware — considerar reempl
 
 | Área | Ítems que requieren imagen | Estado |
 |---|---|---|
-| Sitio Principal — banners, secciones y sliders de servicios | ~30 fotos + 18 logos | 0% real |
-| Envases — mínimo por categoría | 5 fotos | 0% real |
-| Envases — recomendado por subcategoría | 11 fotos | 0% real |
-| Envases — ideal por modelo | 62 fotos | 0% real |
+| Sitio Principal — banners, secciones y sliders de servicios | ~30 fotos + 18 logos | ✅ 100% real (17/18 logos; 1 retirado) |
+| Envases — mínimo por categoría (uso actual del código) | 5 fotos | ✅ 100% real |
+| Envases — recomendado por subcategoría | 11 fotos | 0% real (mejora futura opcional, no usada por el código actual) |
+| Envases — ideal por modelo | 62 fotos | 0% real (mejora futura opcional, no usada por el código actual) |
 | Store — producto individual | 32 fotos | 0% real |
 
-**Total de placeholders activos en el proyecto: 100% Unsplash/placehold.co.** Ninguna imagen real existe todavía en `/public` ni `/src/assets`.
+**Estado real:** sitio corporativo y catálogo de Envases (nivel categoría) migrados a fotografía real en `/public/images/{corporativo,envases}` (`.webp`). La Store de tecnología (`techCatalog.ts`) sigue **100% en placeholders de Unsplash** — es la única área pendiente de este inventario.

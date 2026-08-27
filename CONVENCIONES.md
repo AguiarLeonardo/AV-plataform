@@ -23,7 +23,7 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 
 - **Colores Base:** Uso estricto de una paleta profesional basada en _Titanium Gray_ (grises oscuros/metálicos) y _Navy Blue_ (azul corporativo para acentos y llamadas a la acción).
 - **Tipografía:** Limpia, sin serifas. Títulos imponentes (`font-extrabold`, `tracking-tight`) y textos legibles con buen contraste.
-- **Imágenes:** Fotografías de stock _premium_ (Unsplash) orientadas a la ingeniería, arquitectura y maquinaria.
+- **Imágenes:** Sitio corporativo y catálogo de Envases usan fotografía real del cliente (WebP, `public/images/{corporativo,envases}/...`). El catálogo de la Store (`/store/*`, productos "AV") sigue usando fotos de stock de Unsplash como placeholder pendiente de reemplazo.
 - **Efecto Scrim:** Toda imagen de fondo que lleve texto encima debe usar un overlay oscuro (gradiente o `bg-black/65`) para garantizar un contraste de accesibilidad AAA.
 
 ### 2. Estructura y Responsividad
@@ -48,15 +48,17 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 - `/servicios/[servicio]` **(Rutas Dinámicas):** Plantilla base para renderizar información específica de cada servicio basándose en un parámetro (slug).
 - `/proyectos` **(Client Roster):** Lista de experiencia y clientes corporativos.
 - `/contactanos`, `/soporte-tecnico`, `/privacidad`, `/terminos` — páginas de soporte institucional.
-- `/envases`, `/envases/[categoria]`, `/envases/producto/[producto]` — catálogo de envases metálicos (taxonomía de 3 niveles).
+- `/envases`, `/envases/[categoria]`, `/envases/producto/[producto]` — catálogo de envases metálicos (taxonomía de 3 niveles). El CTA de cada producto ("Ver producto en la tienda") enlaza a su equivalente embebido en `/store/envases/[slug]`.
 
 ### Asiaven Store (`/store/*`)
-Ecosistema independiente con su propio layout y navegación (`StoreLayout.astro` + `StoreNavigation.tsx`), sin `<Navbar />`/`<Footer />` corporativos. Incluye:
+Ecosistema independiente con su propio layout y navegación (`StoreLayout.astro` + `StoreNavigation.tsx`), sin `<Navbar />`/`<Footer />` corporativos (`StoreFooter.astro` propio). Incluye:
 - **Catálogo**: `/store/[categoria]` (ruta dinámica de 3 niveles: Categoría/Grupo/Ítem) con sidebar de filtros (`CatalogFilters.tsx`) y grilla de tarjetas de producto.
 - **PDP**: `/store/producto/[slug]` — ficha de producto individual con galería, specs y recomendados.
+- **Envases embebidos**: `/store/envases/[slug]` — ruta unificada (categoría + producto) para el catálogo de Envases dentro de la Store.
+- **Recipientes**: `/store/recipientes/gas-licuado` — página de cotización a medida.
 - **Carrito y cotización**: `/store/cotizacion` — carrito B2B persistido en `localStorage`.
 - **Configuradores BTO**: `/store/medida/{laptops,desktops,workstations,servidores}` — calculadoras de precio en tiempo real.
-- **Soporte**: `/store/soporte/{ticket,contacto-ventas,faq,descargas,informacion}` — centro de soporte técnico VIP.
+- **Soporte**: `/store/soporte/{ticket,contacto-ventas,faq,descargas,informacion,asesoria-compra}` — centro de soporte técnico VIP.
 - **Políticas y búsqueda**: `/store/garantia`, `/store/envios`, `/store/busqueda`.
 
 Ver [`ESTADO_PROYECTO.md`](./ESTADO_PROYECTO.md) para el detalle completo y actualizado de cada ruta y componente.

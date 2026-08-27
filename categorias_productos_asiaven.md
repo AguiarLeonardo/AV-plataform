@@ -63,7 +63,7 @@
 
 ### Seguridad
 - Control de acceso y videovigilancia
-- Cyberseguridad
+- Ciberseguridad
 
 ### Desarrollo Tecnológico
 - Desarrollo de Software y Aplicaciones
