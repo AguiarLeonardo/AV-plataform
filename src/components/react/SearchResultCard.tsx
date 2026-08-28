@@ -12,7 +12,7 @@ interface Props {
 export default function SearchResultCard({ product }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [added, setAdded] = useState(false);
-  const feedbackTimer = useRef<ReturnType<typeof setTimeout>>();
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const visibleCount = 2;
   const visibleSpecs = product.features.slice(0, visibleCount);
   const extraSpecs = product.features.slice(visibleCount);

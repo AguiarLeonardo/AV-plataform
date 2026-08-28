@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 import { ShoppingCart, Search, Menu, X, ChevronDown } from "lucide-react";
 import { storeCategories, type StoreCategory } from "../../data/storeTaxonomy";
 import { CART_EVENT, getCartCount } from "../../store/quoteCart";
@@ -124,7 +124,7 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
     setActive({ categoryIndex, groupIndex });
   };
 
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSearchSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const term = searchTerm.trim();
     if (!term) return;
