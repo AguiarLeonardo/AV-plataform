@@ -1,0 +1,48 @@
+---
+/**
+ * Server-only, sin JavaScript de cliente. Si la ruta actual no está
+ * traducida (o no se pasó routeKey), no se renderiza nada — nada de caer
+ * a un fallback como el home en inglés, que hoy ni siquiera existe
+ * (src/pages/en/index.astro no se crea en esta fase).
+ */
+import { getTranslatedEntry, type RouteKey } from "../../i18n/routes";
+
+interface Props {
+  routeKey?: RouteKey;
+}
+
+const { routeKey } = Astro.props;
+const entry = routeKey ? getTranslatedEntry(routeKey) : null;
+---
+
+{
+  entry && (
+    <div class="flex items-center gap-1.5 text-sm font-medium">
+      <a
+        href={entry.es}
+        aria-label="Español"
+        aria-current={Astro.currentLocale === "es" ? "page" : undefined}
+        class={
+          Astro.currentLocale === "es"
+            ? "text-white"
+            : "text-white/60 transition-colors duration-200 hover:text-white"
+        }
+      >
+        ES
+      </a>
+      <span class="text-white/40">/</span>
+      <a
+        href={entry.en}
+        aria-label="English"
+        aria-current={Astro.currentLocale === "en" ? "page" : undefined}
+        class={
+          Astro.currentLocale === "en"
+            ? "text-white"
+            : "text-white/60 transition-colors duration-200 hover:text-white"
+        }
+      >
+        EN
+      </a>
+    </div>
+  )
+}

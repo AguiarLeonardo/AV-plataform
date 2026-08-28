@@ -3,16 +3,20 @@ import "../styles/global.css";
 import Navbar from "../components/sections/Navbar.astro";
 import Footer from "../components/sections/Footer.astro";
 import WhatsAppButton from "../components/sections/WhatsAppButton.astro";
+import Hreflang from "../components/seo/Hreflang.astro";
+import type { RouteKey } from "../i18n/routes";
 
 interface Props {
   title?: string;
+  /** Solo lo pasan las páginas ya traducidas (por ahora, únicamente "contact"). Opcional: el resto del sitio no lo pasa todavía y no debe romperse por eso. */
+  routeKey?: RouteKey;
 }
 
-const { title = "Asiaven - B2B" } = Astro.props;
+const { title = "Asiaven - B2B", routeKey } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={Astro.currentLocale ?? "es"}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,9 +27,10 @@ const { title = "Asiaven - B2B" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
+    {routeKey && <Hreflang routeKey={routeKey} />}
   </head>
   <body class="bg-white text-corporativo-gray antialiased">
-    <Navbar />
+    <Navbar routeKey={routeKey} />
     <main>
       <slot />
     </main>

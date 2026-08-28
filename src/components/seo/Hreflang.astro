@@ -1,0 +1,23 @@
+---
+import { routes, getTranslatedEntry, buildAbsoluteUrl, type RouteKey } from "../../i18n/routes";
+
+interface Props {
+  routeKey: RouteKey;
+}
+
+const { routeKey } = Astro.props;
+
+// `site` está definido en astro.config.mjs (ver docs/ESTADO.md) y no se
+// toca en esta fase, así que Astro.site siempre existe en build estático.
+const origin = Astro.site!.origin;
+
+const esUrl = buildAbsoluteUrl(routes[routeKey].es, origin);
+const translated = getTranslatedEntry(routeKey);
+const enUrl = translated ? buildAbsoluteUrl(translated.en, origin) : null;
+const canonicalUrl = Astro.currentLocale === "en" && enUrl ? enUrl : esUrl;
+---
+
+<link rel="canonical" href={canonicalUrl} />
+<link rel="alternate" hreflang="es" href={esUrl} />
+{enUrl && <link rel="alternate" hreflang="en" href={enUrl} />}
+{enUrl && <link rel="alternate" hreflang="x-default" href={esUrl} />}

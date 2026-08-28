@@ -1,15 +1,32 @@
 ---
+import { t } from "../../i18n/utils";
+import { getRouteHref, type RouteKey } from "../../i18n/routes";
+import LanguageSwitcher from "../ui/LanguageSwitcher.astro";
+
+interface Props {
+  routeKey?: RouteKey;
+}
+
+const { routeKey } = Astro.props;
+const lang = Astro.currentLocale === "en" ? "en" : "es";
+
+// "Nosotros/About" es un ancla dentro del home, no una routeKey propia.
 const navLinks = [
-  { label: "Inicio", href: "/" },
-  { label: "Nosotros", href: "/#nosotros" },
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Servicios", href: "/servicios" },
+  { label: t(lang, "nav.home"), href: getRouteHref("home", lang) },
+  { label: t(lang, "nav.about"), href: `${getRouteHref("home", lang)}#nosotros` },
+  { label: t(lang, "nav.projects"), href: getRouteHref("projects", lang) },
+  { label: t(lang, "nav.services"), href: getRouteHref("services", lang) },
 ];
+
+const storeLabel = t(lang, "common.storeLabel");
+const contactLabel = t(lang, "nav.contact");
+const contactHref = getRouteHref("contact", lang);
+const openMenuLabel = t(lang, "nav.openMenu");
 ---
 
 <header class="sticky top-0 z-50 w-full bg-corporativo-gray shadow-sm">
   <nav class="mx-auto flex w-full items-center justify-between px-4 py-4 sm:px-8 lg:px-16">
-    <a href="/" class="text-2xl font-bold tracking-widest uppercase text-white select-none">
+    <a href={getRouteHref("home", lang)} class="text-2xl font-bold tracking-widest uppercase text-white select-none">
       ASIAVEN
     </a>
 
@@ -17,7 +34,7 @@ const navLinks = [
       id="mobile-menu-btn"
       type="button"
       class="inline-flex items-center justify-center rounded-md p-2 text-white/80 hover:text-white md:hidden"
-      aria-label="Abrir menú"
+      aria-label={openMenuLabel}
       aria-expanded="false"
     >
       <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -39,14 +56,15 @@ const navLinks = [
         href="/store"
         class="ml-4 rounded bg-white px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
       >
-        Tienda
+        {storeLabel}
       </a>
       <a
-        href="/contactanos"
-        class="ml-auto rounded-lg bg-corporativo-blue px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
+        href={contactHref}
+        class="rounded-lg bg-corporativo-blue px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
       >
-        Contáctanos
+        {contactLabel}
       </a>
+      <LanguageSwitcher routeKey={routeKey} />
     </div>
   </nav>
 
@@ -64,14 +82,17 @@ const navLinks = [
         href="/store"
         class="mt-2 rounded bg-white px-3 py-2.5 text-center text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
       >
-        Tienda
+        {storeLabel}
       </a>
       <a
-        href="/contactanos"
+        href={contactHref}
         class="mt-2 rounded-lg bg-corporativo-blue px-6 py-2.5 text-center text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
       >
-        Contáctanos
+        {contactLabel}
       </a>
+      <div class="mt-2 flex justify-center">
+        <LanguageSwitcher routeKey={routeKey} />
+      </div>
     </div>
   </div>
 </header>

@@ -1,6 +1,9 @@
 ---
 import { MapPin, Mail, Phone } from "lucide-react";
+import { t } from "../../i18n/utils";
+import { getRouteHref } from "../../i18n/routes";
 
+const lang = Astro.currentLocale === "en" ? "en" : "es";
 const currentYear = new Date().getFullYear();
 
 // Footer 100% corporativo — ningún enlace apunta a /store salvo el único
@@ -35,20 +38,20 @@ const socialLinks = [
   },
 ];
 
-const corporateDescription =
-  "Soluciones integrales en infraestructura y tecnología, desde ingeniería civil hasta equipamiento corporativo de última generación.";
+const corporateDescription = t(lang, "footer.description");
 
 const quickLinks = [
-  { label: "Inicio", href: "/" },
-  { label: "Nosotros", href: "/#nosotros" },
-  { label: "Servicios", href: "/servicios" },
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Contáctanos", href: "/contactanos" },
+  { label: t(lang, "nav.home"), href: getRouteHref("home", lang) },
+  { label: t(lang, "nav.about"), href: `${getRouteHref("home", lang)}#nosotros` },
+  { label: t(lang, "nav.services"), href: getRouteHref("services", lang) },
+  { label: t(lang, "nav.projects"), href: getRouteHref("projects", lang) },
+  { label: t(lang, "nav.contact"), href: getRouteHref("contact", lang) },
 ];
 
+// Direcciones/teléfonos/correos son hechos, no se traducen; solo el nombre de la sede.
 const offices = [
   {
-    name: "Oficina en Venezuela",
+    name: t(lang, "common.officeVenezuela"),
     items: [
       { Icon: Phone, text: "+58 212-9924333" },
       { Icon: Mail, text: "proyectos@asiaven.com" },
@@ -56,7 +59,7 @@ const offices = [
     ],
   },
   {
-    name: "Oficina en Estados Unidos",
+    name: t(lang, "common.officeUnitedStates"),
     items: [
       { Icon: Phone, text: "+1 (305) 555-0198" },
       { Icon: Mail, text: "ventas@asiaven.com" },
@@ -65,9 +68,11 @@ const offices = [
   },
 ];
 
+// Los documentos legales no se traducen (decisión registrada en docs/ESTADO.md):
+// el label sí, el destino siempre es la versión española vinculante.
 const legalLinks = [
-  { label: "Términos de Servicio", href: "/terminos" },
-  { label: "Política de Privacidad", href: "/privacidad" },
+  { label: t(lang, "footer.termsLabel"), href: getRouteHref("terms", lang) },
+  { label: t(lang, "footer.privacyLabel"), href: getRouteHref("privacy", lang) },
 ];
 ---
 
@@ -75,7 +80,7 @@ const legalLinks = [
   <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
     <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <a href="/" class="text-2xl font-bold tracking-widest text-white">ASIAVEN</a>
+        <a href={getRouteHref("home", lang)} class="text-2xl font-bold tracking-widest text-white">ASIAVEN</a>
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">{corporateDescription}</p>
         <div class="mt-6 flex items-center gap-4">
           {socialLinks.map(({ label, href, path }) => (
@@ -101,7 +106,7 @@ const legalLinks = [
       </div>
 
       <div>
-        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">Enlaces Rápidos</h4>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">{t(lang, "footer.quickLinksHeading")}</h4>
         <ul class="mt-4 flex flex-col gap-3">
           {quickLinks.map(({ label, href }) => (
             <li>
@@ -115,14 +120,14 @@ const legalLinks = [
               href="/store"
               class="inline-flex items-center gap-1.5 text-sm font-semibold text-white transition-colors duration-200 hover:text-gray-300"
             >
-              AV Store &rarr;
+              {t(lang, "footer.storeBridge")} &rarr;
             </a>
           </li>
         </ul>
       </div>
 
       <div>
-        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">Contacto</h4>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">{t(lang, "footer.contactHeading")}</h4>
         <div class="mt-4 flex flex-col gap-6">
           {offices.map((office) => (
             <div>
@@ -143,7 +148,7 @@ const legalLinks = [
       </div>
 
       <div>
-        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">Legal</h4>
+        <h4 class="text-sm font-semibold uppercase tracking-widest text-white">{t(lang, "footer.legalHeading")}</h4>
         <ul class="mt-4 flex flex-col gap-3">
           {legalLinks.map(({ label, href }) => (
             <li>
@@ -157,7 +162,7 @@ const legalLinks = [
     </div>
 
     <div class="mt-12 flex flex-col gap-4 border-t border-white/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
-      <p class="text-xs text-gray-500">&copy; {currentYear} Asiaven. Todos los derechos reservados.</p>
+      <p class="text-xs text-gray-500">&copy; {currentYear} {t(lang, "footer.copyrightSuffix")}</p>
       <ul class="flex items-center gap-6">
         {legalLinks.map(({ label, href }) => (
           <li>

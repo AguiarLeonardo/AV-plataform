@@ -1,36 +1,36 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import PageHeader from "../components/ui/PageHeader.astro";
-import FAQAccordion from "../components/react/FAQAccordion.tsx";
+import Layout from "../../layouts/Layout.astro";
+import PageHeader from "../../components/ui/PageHeader.astro";
+import FAQAccordion from "../../components/react/FAQAccordion.tsx";
 import { MapPin, Phone, Mail } from "lucide-react";
-import es from "../i18n/es";
+import en from "../../i18n/en";
 
 // Mismas dos sedes ya sincronizadas en el Footer corporativo
 // (src/components/sections/Footer.astro). Direcciones/teléfonos/correos
 // son hechos, no se traducen; solo los labels y el nombre de la sede.
 const offices = [
   {
-    name: es.common.officeVenezuela,
+    name: en.common.officeVenezuela,
     contactInfo: [
-      { Icon: MapPin, label: es.common.addressLabel, value: "C.C Paseo Las Mercedes Piso 2" },
-      { Icon: Phone, label: es.common.phoneLabel, value: "+58 212-9924333" },
-      { Icon: Mail, label: es.common.emailLabel, value: "proyectos@asiaven.com" },
+      { Icon: MapPin, label: en.common.addressLabel, value: "C.C Paseo Las Mercedes Piso 2" },
+      { Icon: Phone, label: en.common.phoneLabel, value: "+58 212-9924333" },
+      { Icon: Mail, label: en.common.emailLabel, value: "proyectos@asiaven.com" },
     ],
   },
   {
-    name: es.common.officeUnitedStates,
+    name: en.common.officeUnitedStates,
     contactInfo: [
-      { Icon: MapPin, label: es.common.addressLabel, value: "1234 Miami Ave, Suite 100, Miami, FL 33132, EE. UU." },
-      { Icon: Phone, label: es.common.phoneLabel, value: "+1 (305) 555-0198" },
-      { Icon: Mail, label: es.common.emailLabel, value: "ventas@asiaven.com" },
+      { Icon: MapPin, label: en.common.addressLabel, value: "1234 Miami Ave, Suite 100, Miami, FL 33132, EE. UU." },
+      { Icon: Phone, label: en.common.phoneLabel, value: "+1 (305) 555-0198" },
+      { Icon: Mail, label: en.common.emailLabel, value: "ventas@asiaven.com" },
     ],
   },
 ];
 ---
 
-<Layout title={es.seo.contact.title} routeKey="contact">
+<Layout title={en.seo.contact.title} routeKey="contact">
   <PageHeader
-    title={es.contact.pageTitle}
+    title={en.contact.pageTitle}
     bgImage="/images/corporativo/banners/paginas/banner-contactanos.webp"
   />
 
@@ -39,7 +39,7 @@ const offices = [
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
       <div>
         <h2 class="text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl mb-8">
-          {es.contact.officesHeading}
+          {en.contact.officesHeading}
         </h2>
 
         <div class="flex flex-col gap-10">
@@ -71,7 +71,7 @@ const offices = [
         class="w-full h-80 rounded-xl shadow-lg border border-gray-100"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        title={es.contact.mapTitle}
+        title={en.contact.mapTitle}
       ></iframe>
     </div>
 
@@ -79,16 +79,16 @@ const offices = [
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <div>
         <h2 class="text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl">
-          {es.contact.formHeading}
+          {en.contact.formHeading}
         </h2>
         <p class="mt-4 text-base leading-relaxed text-gray-600">
-          {es.contact.formIntro}
+          {en.contact.formIntro}
         </p>
 
         <form class="mt-8 flex flex-col gap-5">
           <div>
             <label for="nombre" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
-              {es.contact.fieldName}
+              {en.contact.fieldName}
             </label>
             <input
               type="text"
@@ -101,7 +101,7 @@ const offices = [
 
           <div>
             <label for="email" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
-              {es.contact.fieldEmail}
+              {en.contact.fieldEmail}
             </label>
             <input
               type="email"
@@ -114,7 +114,7 @@ const offices = [
 
           <div>
             <label for="asunto" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
-              {es.contact.fieldSubject}
+              {en.contact.fieldSubject}
             </label>
             <input
               type="text"
@@ -126,7 +126,7 @@ const offices = [
 
           <div>
             <label for="mensaje" class="mb-1.5 block text-sm font-semibold text-corporativo-gray">
-              {es.contact.fieldMessage}
+              {en.contact.fieldMessage}
             </label>
             <textarea
               id="mensaje"
@@ -141,20 +141,20 @@ const offices = [
             type="submit"
             class="w-full rounded-lg bg-corporativo-blue px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90"
           >
-            {es.contact.submitButton}
+            {en.contact.submitButton}
           </button>
         </form>
       </div>
 
       <div>
         <p class="text-sm font-semibold uppercase tracking-widest text-corporativo-blue">
-          {es.contact.moreInfoEyebrow}
+          {en.contact.moreInfoEyebrow}
         </p>
         <h2 class="mt-2 text-3xl font-extrabold tracking-tight text-corporativo-gray sm:text-4xl mb-8">
-          {es.contact.faqHeading}
+          {en.contact.faqHeading}
         </h2>
 
-        <FAQAccordion faqs={es.contact.faqs} client:visible />
+        <FAQAccordion faqs={en.contact.faqs} client:visible />
       </div>
     </div>
   </div>
