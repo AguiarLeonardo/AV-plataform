@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-28 — corresponde al branch `feat/i18n-fase-1a` (sin mergear; parte de `develop` en `b8bb2cf`).
+**Última actualización:** 2026-08-28 — corresponde al branch `feat/i18n-fase-1b` (sin mergear; parte de `develop` en `e176906`, que ya incluye la Fase 1a).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -72,7 +72,66 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 
 ## 2. Estado del trabajo de i18n
 
-**Infraestructura completa; 1 de 11 páginas corporativas traducida (`contactanos`/`contact`). El resto del sitio corporativo y todo `/store/*` siguen sin tocar.**
+**Infraestructura completa; 5 de 11 páginas corporativas traducidas. El resto del sitio corporativo (home, servicios + dinámica, envases + dinámicas) y todo `/store/*` siguen sin tocar.**
+
+### Páginas traducidas (5)
+| Español | Inglés | Notas |
+|---|---|---|
+| `/contactanos` | `/en/contact` | Fase 1a |
+| `/proyectos` | `/en/projects` | Fase 1b. `clientes` (nombre/ubicación/sector) traducidos en el diccionario; `ClientLogosCarousel.tsx` **no se tocó** (17 nombres de cliente hardcodeados, son nombres propios — ver Gaps) |
+| `/soporte-tecnico` | `/en/technical-support` | Fase 1b |
+| `/privacidad` | `/en/privacy` | Fase 1b. Página breve: aviso en inglés de que la versión vinculante es la española, con link a `/privacidad`. No es una traducción del documento — decisión de negocio ya tomada |
+| `/terminos` | `/en/terms` | Fase 1b, misma lógica que `/en/privacy` |
+
+### Páginas pendientes (6 corporativas + todo `/store/*`)
+`index` (home) y sus secciones, `servicios` (hub + `[servicio]` dinámica), `envases` (hub + `[categoria]`/`producto/[producto]` dinámicas). Ninguna de estas se tocó esta fase.
+
+### Defectos corregidos en esta fase (detectados en el HTML generado de `/en/contact` tras la 1a)
+1. **Meta description en español en páginas en inglés.** `Layout.astro` emitía siempre la description hardcodeada (español). Se agregó una prop `description?: string`; si la página no la pasa, cae a `common.defaultDescription` del locale activo (`Astro.currentLocale`), no a un string hardcodeado — mismo patrón que ya existía para `title`. Todas las páginas traducidas (incluida `contact`, retroactivamente) ahora pasan su propia `seo.*.description`.
+2. **"EE. UU." en la página en inglés** (dos veces: `en/contact.astro` y `Footer.astro`). Causa raíz: la dirección de la oficina de EE. UU. estaba hardcodeada como string literal duplicado en 3 lugares (`contactanos.astro`, `en/contact.astro`, `Footer.astro`). Se creó la clave `common.usOfficeAddress` en ambos diccionarios (es: "...EE. UU.", en: "...USA") y los 3 lugares ahora la consumen — fuente única, ya no puede volver a desincronizarse entre idiomas.
+3. **`WhatsAppButton.astro`** tenía `aria-label="Contactar por WhatsApp"` hardcodeado. Se movió a `common.whatsappLabel`, único cambio que necesitó ese componente.
+
+### Archivos nuevos y su propósito (acumulado, Fase 1a + 1b)
+| Archivo | Propósito |
+|---|---|
+| `src/i18n/routes.ts` | Fuente única de verdad de rutas estáticas corporativas. Una clave es "traducida" si y solo si su entrada tiene `en` — no existe una lista separada que pueda desincronizarse. Expone `RouteKey`, `isTranslated()`, `getTranslatedEntry()`, `getRouteHref()` (con fallback a español si no hay traducción) y `buildAbsoluteUrl()` (trata la raíz explícitamente). En 1b se agregaron `en` a `projects`, `support`, `privacy` y `terms`. |
+| `src/i18n/es.ts` | Diccionario base español. Namespaces: `common`, `nav`, `footer`, `contact`, `projects`, `techSupport`, `legal`, `seo`. Solo las claves que hoy usan las páginas ya traducidas — nada para páginas futuras. **No** lleva `as const` (si lo tuviera, cada valor se tiparía a su literal exacto y `en.ts` con traducciones reales dejaría de ser asignable bajo `satisfies`). |
+| `src/i18n/en.ts` | `export default { ... } satisfies typeof import('./es').default`. Si falta una clave, `npm run check` falla — **verificado en la Fase 1a** (se borró `common.storeLabel` temporalmente, `astro check` reportó el error esperado, se restauró). |
+| `src/i18n/index.ts` | Exporta `dictionaries = { es, en }` y `type Locale`. |
+| `src/i18n/utils.ts` | `t(locale, key)` con autocompletado y tipo de retorno derivados del diccionario. `getLangFromUrl(url)` para contextos sin `Astro` global (el `serialize()` del sitemap). |
+| `src/components/seo/Hreflang.astro` | Canonical + alternate es + alternate en + x-default (→es), URLs absolutas. Layout solo la renderiza si la página pasó `routeKey`. |
+| `src/components/ui/LanguageSwitcher.astro` | Server-only, cero JS. Sin `routeKey` traducida, no renderiza nada. |
+| `src/pages/en/contact.astro` | Fase 1a. |
+| `src/pages/en/projects.astro` | Fase 1b — mismos componentes que `proyectos/index.astro`, incluyendo `ClientLogosCarousel` sin tocar. |
+| `src/pages/en/technical-support.astro` | Fase 1b — mismos componentes que `soporte-tecnico.astro`. |
+| `src/pages/en/privacy.astro`, `src/pages/en/terms.astro` | Fase 1b — páginas breves de aviso (ver decisión de legales), no traducciones del documento. |
+
+### Archivos modificados en 1b
+`src/i18n/es.ts`/`en.ts` (nuevas claves y namespaces), `src/i18n/routes.ts` (4 nuevas `en`), `src/layouts/Layout.astro` (prop `description?`), `src/components/sections/{Footer,WhatsAppButton}.astro`, `src/pages/contactanos.astro` + `src/pages/en/contact.astro` (pasan `description` retroactivamente, usan `common.usOfficeAddress`), `src/pages/proyectos/index.astro`, `src/pages/soporte-tecnico.astro` (leen del diccionario `es`, sin cambios de diseño/markup).
+
+### Selector de idioma y navegación en páginas no traducidas
+Sin cambios respecto a la Fase 1a — política única leída de `routes.ts` en los tres consumidores (switcher, Navbar, `serialize()` del sitemap). Ahora con 5 rutas traducidas en vez de 1, pero el mecanismo es idéntico y no requirió ningún cambio de código.
+
+### `StoreLayout.astro` — pendiente, no tocado
+Sigue con `<html lang="es">` hardcodeado.
+
+### Verificación ejecutada (Fase 1b)
+`npm run build` → **0 errores**, **353 páginas** (349 + 4: `en/projects`, `en/technical-support`, `en/privacy`, `en/terms`). Verificado por grep directo sobre `dist/`:
+- `en/projects/index.html` y `en/technical-support/index.html` tienen canonical + 3 `hreflang` correctos.
+- Ninguna página bajo `dist/en/` contiene "EE. UU.", "Contactar por WhatsApp", ni el fragmento de la description en español.
+- La meta description de las 5 páginas en inglés está en inglés (verificado una por una).
+- `index.html`, `servicios/index.html`, `envases/index.html` (no traducidas): 0 tags hreflang/canonical, 0 selector — cero regresión.
+
+### Hallazgo pendiente de decisión de negocio (NO modificado)
+**Los datos de la oficina de Estados Unidos parecen ser de relleno/placeholder:** la dirección ("1234 Miami Ave, Suite 100, Miami, FL 33132") tiene forma genérica de dirección de ejemplo, y el teléfono ("+1 (305) 555-0198") usa el prefijo `555`, reservado en Norteamérica para números ficticios (nunca asignado a líneas reales). Esto aparece igual en `Footer.astro` y en las páginas de contacto de ambos idiomas — no es un defecto introducido por i18n, ya estaba así antes de esta fase. Requiere que el dueño del proyecto confirme los datos reales de esa sede o decida eliminar la sección. No se modificó nada al respecto.
+
+### Gaps / prerrequisitos para las próximas fases
+1. **`src/pages/en/404.astro` — sigue sin implementar.** Requiere verificar contra la documentación de Vercel el comportamiento real de 404 por subdirectorio en hosting estático antes de implementarlo.
+2. **Prerrequisito para slug-maps dinámicos (servicios, envases):** `services.ts` y `packagingCatalog.ts` necesitan `satisfies Service[]` / `satisfies PackagingCategory[]` en vez de la anotación de tipo explícita actual, para que un futuro `Record<ServiceSlug, string>` sea realmente exhaustivo. No se tocó `src/data/*` esta fase tampoco.
+3. **`StoreLayout.astro`** sigue con `<html lang="es">` hardcodeado.
+4. **`ClientLogosCarousel.tsx`** — revisado en esta fase por el alcance de `/en/projects`: no tiene texto de UI propio más allá de los 17 nombres de cliente (usados como `alt` de cada logo) — no hay nada que traducir en el componente en sí. Si en el futuro se le agrega texto de interfaz (títulos, botones), ese sí necesitaría diccionario.
+5. **PENDIENTE DE VERIFICACIÓN:** cuando `www.asiaven.com` migre a Vercel, confirmar con `curl -I` que ese host **no** devuelve `X-Robots-Tag`, mientras `av-plataform-ruby.vercel.app` sí lo hace (ya verificado en producción el 2026-08-28 — ver sección 8).
+6. **Datos de oficina de EE. UU. posiblemente ficticios** — ver hallazgo arriba, pendiente de confirmación del dueño del proyecto.
 
 ### Configuración
 `astro.config.mjs` tiene el bloque `i18n`:

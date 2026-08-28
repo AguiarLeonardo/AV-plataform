@@ -3,9 +3,13 @@ export default {
     storeLabel: "Store",
     officeVenezuela: "Venezuela Office",
     officeUnitedStates: "United States Office",
+    usOfficeAddress: "1234 Miami Ave, Suite 100, Miami, FL 33132, USA",
     addressLabel: "Address",
     phoneLabel: "Phone",
     emailLabel: "Email",
+    defaultDescription:
+      "Grupo Asiaven - Comprehensive corporate solutions. Specialists in vertical mobility, technological infrastructure, and top-tier industrial equipment.",
+    whatsappLabel: "Contact us on WhatsApp",
   },
   nav: {
     home: "Home",
@@ -59,11 +63,109 @@ export default {
       },
     ],
   },
+  projects: {
+    pageTitle: "Our Projects",
+    introHeading: "Some of our projects",
+    clientsHeading: "Companies that trust us",
+    clients: [
+      {
+        nombre: "Hotel Humboldt",
+        ubicacion: "Capital District, Venezuela",
+        sector: "Modernization / Maintenance",
+      },
+      {
+        nombre: "National Assembly",
+        ubicacion: "Capital District, Venezuela",
+        sector: "Elevation Projects",
+      },
+      {
+        nombre: "Corpoelec Main Headquarters, San Bernardino",
+        ubicacion: "Caracas, Venezuela",
+        sector: "Escalator Installation",
+      },
+      {
+        nombre: "Caracas Metro – Colegio de Ingenieros Station",
+        ubicacion: "Caracas, Venezuela",
+        sector: "Supply and Installation of 6 Escalators",
+      },
+      {
+        nombre: "Dr. Elías Toro Pediatric Hospital",
+        ubicacion: "Caracas, Venezuela",
+        sector: "Installation of 7 High-Capacity Elevators",
+      },
+      {
+        nombre: "Bolivariana de Puertos (Bolipuertos)",
+        ubicacion: "Venezuela",
+        sector: "Specialized Elevator Maintenance",
+      },
+    ],
+  },
+  techSupport: {
+    pageTitle: "Technical Support & Drivers",
+    driversHeading: "Drivers for Your AV Equipment",
+    driversIntro:
+      "Download the latest drivers and utilities for your Asiaven Laptop, All-in-One, Mini-PC, or Workstation, featuring the latest generation Intel and AMD processors.",
+    driversCta: "View drivers",
+    faqHeading: "Frequently Asked Questions",
+    faqs: [
+      {
+        question: "How do I claim the 3-year SWAP warranty?",
+        answer:
+          "Contact our support team with your equipment's serial number and a description of the issue. We'll validate coverage and coordinate a nationwide replacement at no additional cost.",
+      },
+      {
+        question: "Where can I find my AV equipment's serial number?",
+        answer:
+          "The serial number is located on the bottom or back label of your equipment (Laptop, All-in-One, Mini-PC, or Workstation), and can also be checked from the system's BIOS/UEFI.",
+      },
+      {
+        question: "Are the drivers compatible with Windows and Linux?",
+        answer:
+          "Yes, we publish certified driver packages for both Windows and major enterprise Linux distributions, depending on your equipment model.",
+      },
+      {
+        question: "What coverage does the built-in 4G LTE connectivity offer?",
+        answer:
+          "Portable devices with a built-in 4G LTE module require an active SIM from your local carrier. Our support team can help you with initial setup.",
+      },
+    ],
+    contactPrompt: "Having an issue with your equipment? Contact us for immediate assistance.",
+  },
+  legal: {
+    privacy: {
+      pageTitle: "Privacy Policy",
+      notice: "The legally binding version of our Privacy Policy is only available in Spanish.",
+      linkText: "View the Spanish version",
+    },
+    terms: {
+      pageTitle: "Terms of Service",
+      notice: "The legally binding version of our Terms of Service is only available in Spanish.",
+      linkText: "View the Spanish version",
+    },
+  },
   seo: {
     contact: {
       title: "Contact Us - Asiaven",
       description:
         "Get in touch to learn more about Asiaven's corporate solutions in infrastructure, vertical mobility, and industrial technology.",
+    },
+    projects: {
+      title: "Our Projects - Asiaven",
+      description:
+        "Discover some of the infrastructure, vertical mobility, and technology projects Asiaven has delivered for corporate and government clients.",
+    },
+    techSupport: {
+      title: "Technical Support & Drivers - Asiaven",
+      description:
+        "Download drivers, check your SWAP warranty, and get answers about Asiaven technology equipment.",
+    },
+    privacy: {
+      title: "Privacy Policy - Asiaven",
+      description: "Asiaven's privacy policy.",
+    },
+    terms: {
+      title: "Terms of Service - Asiaven",
+      description: "Asiaven's terms of service.",
     },
   },
 } satisfies typeof import("./es").default;

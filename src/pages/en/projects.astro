@@ -3,13 +3,13 @@ import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import ClientLogosCarousel from "../../components/react/ClientLogosCarousel.tsx";
 import { MapPin } from "lucide-react";
-import es from "../../i18n/es";
+import en from "../../i18n/en";
 ---
 
-<Layout title={es.seo.projects.title} description={es.seo.projects.description} routeKey="projects">
+<Layout title={en.seo.projects.title} description={en.seo.projects.description} routeKey="projects">
   <PageHeader
     bgImage="/images/corporativo/banners/paginas/banner-proyectos.webp"
-    title={es.projects.pageTitle}
+    title={en.projects.pageTitle}
   />
 
   <div class="min-h-screen bg-gray-50 pb-20">
@@ -17,12 +17,12 @@ import es from "../../i18n/es";
       <h2
         class="text-3xl md:text-4xl text-corporativo-gray font-bold text-center mb-12"
       >
-        {es.projects.introHeading}
+        {en.projects.introHeading}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {
-          es.projects.clients.map((cliente) => (
+          en.projects.clients.map((cliente) => (
             <div class="p-8 border border-gray-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col justify-center border-l-4 border-l-corporativo-blue">
               <h3 class="text-2xl font-bold text-corporativo-gray mb-2">
                 {cliente.nombre}
@@ -41,7 +41,7 @@ import es from "../../i18n/es";
 
       <div class="mt-24">
         <h2 class="text-3xl md:text-4xl text-corporativo-gray font-bold text-center mb-12">
-          {es.projects.clientsHeading}
+          {en.projects.clientsHeading}
         </h2>
 
         <ClientLogosCarousel client:visible />

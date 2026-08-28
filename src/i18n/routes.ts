@@ -27,12 +27,12 @@
 export const routes = {
   home: { es: "/" },
   contact: { es: "/contactanos", en: "/en/contact" },
-  projects: { es: "/proyectos" },
+  projects: { es: "/proyectos", en: "/en/projects" },
   services: { es: "/servicios" },
   packaging: { es: "/envases" },
-  support: { es: "/soporte-tecnico" },
-  privacy: { es: "/privacidad" },
-  terms: { es: "/terminos" },
+  support: { es: "/soporte-tecnico", en: "/en/technical-support" },
+  privacy: { es: "/privacidad", en: "/en/privacy" },
+  terms: { es: "/terminos", en: "/en/terms" },
 } as const;
 
 export type RouteKey = keyof typeof routes;

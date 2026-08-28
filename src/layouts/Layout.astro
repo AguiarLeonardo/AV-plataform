@@ -5,14 +5,19 @@ import Footer from "../components/sections/Footer.astro";
 import WhatsAppButton from "../components/sections/WhatsAppButton.astro";
 import Hreflang from "../components/seo/Hreflang.astro";
 import type { RouteKey } from "../i18n/routes";
+import { t } from "../i18n/utils";
 
 interface Props {
   title?: string;
+  /** Si la página no pasa la suya, cae a common.defaultDescription del locale activo (no hardcodeada). */
+  description?: string;
   /** Solo lo pasan las páginas ya traducidas (por ahora, únicamente "contact"). Opcional: el resto del sitio no lo pasa todavía y no debe romperse por eso. */
   routeKey?: RouteKey;
 }
 
-const { title = "Asiaven - B2B", routeKey } = Astro.props;
+const lang = Astro.currentLocale === "en" ? "en" : "es";
+const { title = "Asiaven - B2B", description, routeKey } = Astro.props;
+const metaDescription = description ?? t(lang, "common.defaultDescription");
 ---
 
 <!doctype html>
@@ -20,10 +25,7 @@ const { title = "Asiaven - B2B", routeKey } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Grupo Asiaven - Soluciones corporativas integrales. Especialistas en movilidad vertical, infraestructura tecnológica, y equipamiento industrial de alto nivel."
-    />
+    <meta name="description" content={metaDescription} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>

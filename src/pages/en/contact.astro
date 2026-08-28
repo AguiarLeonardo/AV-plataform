@@ -20,7 +20,7 @@ const offices = [
   {
     name: en.common.officeUnitedStates,
     contactInfo: [
-      { Icon: MapPin, label: en.common.addressLabel, value: "1234 Miami Ave, Suite 100, Miami, FL 33132, EE. UU." },
+      { Icon: MapPin, label: en.common.addressLabel, value: en.common.usOfficeAddress },
       { Icon: Phone, label: en.common.phoneLabel, value: "+1 (305) 555-0198" },
       { Icon: Mail, label: en.common.emailLabel, value: "ventas@asiaven.com" },
     ],
@@ -28,7 +28,7 @@ const offices = [
 ];
 ---
 
-<Layout title={en.seo.contact.title} routeKey="contact">
+<Layout title={en.seo.contact.title} description={en.seo.contact.description} routeKey="contact">
   <PageHeader
     title={en.contact.pageTitle}
     bgImage="/images/corporativo/banners/paginas/banner-contactanos.webp"

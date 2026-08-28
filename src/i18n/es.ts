@@ -12,9 +12,13 @@ const es = {
     storeLabel: "Tienda",
     officeVenezuela: "Oficina en Venezuela",
     officeUnitedStates: "Oficina en Estados Unidos",
+    usOfficeAddress: "1234 Miami Ave, Suite 100, Miami, FL 33132, EE. UU.",
     addressLabel: "Dirección",
     phoneLabel: "Teléfono",
     emailLabel: "Email",
+    defaultDescription:
+      "Grupo Asiaven - Soluciones corporativas integrales. Especialistas en movilidad vertical, infraestructura tecnológica, y equipamiento industrial de alto nivel.",
+    whatsappLabel: "Contactar por WhatsApp",
   },
   nav: {
     home: "Inicio",
@@ -70,11 +74,111 @@ const es = {
       },
     ],
   },
+  projects: {
+    pageTitle: "Nuestros Proyectos",
+    introHeading: "Algunos de nuestros proyectos",
+    clientsHeading: "Empresas que confían en nosotros",
+    clients: [
+      {
+        nombre: "Hotel Humboldt",
+        ubicacion: "Distrito Capital, Venezuela",
+        sector: "Modernización / Mantenimiento",
+      },
+      {
+        nombre: "Asamblea Nacional",
+        ubicacion: "Distrito Capital, Venezuela",
+        sector: "Proyectos de Elevación",
+      },
+      {
+        nombre: "Sede Principal Corpoelec San Bernardino",
+        ubicacion: "Caracas, Venezuela",
+        sector: "Instalación de Escaleras Mecánicas",
+      },
+      {
+        nombre: "Metro de Caracas – Estación Colegio de Ingenieros",
+        ubicacion: "Caracas, Venezuela",
+        sector: "Suministro e Instalación de 6 Escaleras Mecánicas",
+      },
+      {
+        nombre: "Hospital Pediátrico Dr. Elías Toro",
+        ubicacion: "Caracas, Venezuela",
+        sector: "Instalación de 7 Ascensores de Alta Capacidad",
+      },
+      {
+        nombre: "Bolivariana de Puertos (Bolipuertos)",
+        ubicacion: "Venezuela",
+        sector: "Mantenimiento Especializado de Ascensores",
+      },
+    ],
+  },
+  techSupport: {
+    pageTitle: "Soporte Técnico y Drivers",
+    driversHeading: "Controladores para tu Equipo AV",
+    driversIntro:
+      "Descarga los drivers y utilidades más recientes para tu Laptop, All-in-One, Mini-PC o Workstation Asiaven, con procesadores Intel y AMD de última generación.",
+    driversCta: "Ver drivers",
+    faqHeading: "Preguntas Frecuentes",
+    faqs: [
+      {
+        question: "¿Cómo aplico la garantía SWAP de 3 años?",
+        answer:
+          "Contacta a nuestro equipo de soporte con el número de serie de tu equipo y una descripción de la falla. Validaremos la cobertura y coordinaremos el reemplazo a nivel nacional sin costo adicional.",
+      },
+      {
+        question: "¿Dónde encuentro el número de serie de mi equipo AV?",
+        answer:
+          "El número de serie se encuentra en la etiqueta inferior o trasera del equipo (Laptop, All-in-One, Mini-PC o Workstation), y también puede consultarse desde el BIOS/UEFI del sistema.",
+      },
+      {
+        question: "¿Los drivers son compatibles con Windows y Linux?",
+        answer:
+          "Sí, publicamos paquetes de controladores certificados tanto para Windows como para las principales distribuciones Linux empresariales, según el modelo de tu equipo.",
+      },
+      {
+        question: "¿Qué cobertura tiene la conectividad 4G LTE integrada?",
+        answer:
+          "Los equipos portátiles con módulo 4G LTE integrado requieren una SIM activa de tu operador local. Nuestro equipo de soporte puede ayudarte con la configuración inicial.",
+      },
+    ],
+    contactPrompt: "¿Tienes algún problema con tu equipo? Contáctanos para asistencia inmediata.",
+  },
+  legal: {
+    privacy: {
+      pageTitle: "Política de Privacidad",
+      notice:
+        "La versión legalmente vinculante de nuestra Política de Privacidad está disponible únicamente en español.",
+      linkText: "Ver la versión en español",
+    },
+    terms: {
+      pageTitle: "Términos de Servicio",
+      notice:
+        "La versión legalmente vinculante de nuestros Términos de Servicio está disponible únicamente en español.",
+      linkText: "Ver la versión en español",
+    },
+  },
   seo: {
     contact: {
       title: "Contáctanos - Asiaven",
       description:
         "Contáctanos para conocer más sobre las soluciones corporativas de Asiaven en infraestructura, movilidad vertical y tecnología industrial.",
+    },
+    projects: {
+      title: "Nuestros Proyectos - Asiaven",
+      description:
+        "Conoce algunos de los proyectos de infraestructura, movilidad vertical y tecnología que Asiaven ha ejecutado para clientes corporativos y estatales.",
+    },
+    techSupport: {
+      title: "Soporte Técnico y Drivers - Asiaven",
+      description:
+        "Descarga drivers, consulta la garantía SWAP y resuelve tus dudas sobre los equipos tecnológicos Asiaven.",
+    },
+    privacy: {
+      title: "Política de Privacidad - Asiaven",
+      description: "Política de privacidad de Asiaven.",
+    },
+    terms: {
+      title: "Términos de Servicio - Asiaven",
+      description: "Términos de servicio de Asiaven.",
     },
   },
 };
