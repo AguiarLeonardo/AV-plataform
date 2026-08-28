@@ -2,7 +2,7 @@
 
 ## Visión General
 
-Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding internacional con sede en Venezuela y más de 15 años de experiencia (fundada en 2010). La empresa se especializa en proveer soluciones de infraestructura, mantenimiento, tecnología industrial y manufactura. El objetivo del sitio es proyectar madurez, solidez empresarial y captar clientes corporativos de alto perfil.
+Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding internacional con sede en Venezuela y más de 18 años de experiencia (fundada en 2010). La empresa se especializa en proveer soluciones de infraestructura, mantenimiento, tecnología industrial y manufactura. El objetivo del sitio es proyectar madurez, solidez empresarial y captar clientes corporativos de alto perfil.
 
 ---
 
@@ -83,7 +83,7 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 * **Visión:** Poder ser referente mundial con nuestros principales productos elevadores Asiaven y solventar todos los problemas de nuestros clientes dándole soluciones a medida para convertirnos en la mejor alternativa de las empresas en esta área.
 
 ### Cifras Oficiales (Estadísticas)
-* **15+** Años en el mercado / Éxito Invicto.
+* **18+** Años en el mercado / Éxito Invicto.
 * **802** Proyectos Exitosos / Realizados.
 * **50+** Empresas Internacionales y Nacionales.
 * **30+** Trabajadores y sumando.
