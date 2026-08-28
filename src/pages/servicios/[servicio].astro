@@ -4,6 +4,7 @@ import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
 import { services } from "../../data/services";
 import { Download } from "lucide-react";
+import { localize } from "../../i18n/utils";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -13,6 +14,11 @@ export function getStaticPaths() {
 }
 
 const { service } = Astro.props;
+// Ruta 100% española esta fase (no traducida todavía), pero se deriva el
+// locale igual que en cualquier otra página en vez de asumir "es" a mano:
+// cuando esta ruta se traduzca en la Fase 1d, alcanza con que le llegue el
+// locale correcto — no hay accesos .es literales que perseguir.
+const lang = Astro.currentLocale === "en" ? "en" : "es";
 
 const elevatorsData = [
   {
@@ -98,16 +104,16 @@ const escalatorsData = [
 ];
 ---
 
-<Layout title={`${service.title} - Asiaven`}>
+<Layout title={`${localize(service.title, lang)} - Asiaven`}>
   <div class="max-w-7xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <ServiceSlider images={service.images} client:load />
 
       <div class="prose prose-lg text-gray-700">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-          {service.title}
+          {localize(service.title, lang)}
         </h1>
-        {service.fullDescription.map((paragraph) => (
+        {localize(service.fullDescription, lang).map((paragraph) => (
           <p class="mb-6 leading-relaxed">{paragraph}</p>
         ))}
         {service.slug === "tecnologia-y-telecomunicaciones" ? (

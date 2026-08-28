@@ -2,6 +2,10 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { services } from "../../data/services";
 
+// Fix mínimo de compatibilidad con la nueva forma Localized<T> de
+// services.ts (Fase 1c, punto 1) — este componente todavía no recibe
+// locale/props (eso es el refactor del punto 2, inmediato siguiente commit),
+// así que ".es" aquí es deliberado y de muy corta vida, no un olvido.
 export default function ServicesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -21,7 +25,7 @@ export default function ServicesCarousel() {
       <img
         key={current.images[0]}
         src={current.images[0]}
-        alt={current.title}
+        alt={current.title.es}
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
       />
       
@@ -31,10 +35,10 @@ export default function ServicesCarousel() {
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 transition-transform duration-500 ease-out group-hover:-translate-y-2">
         <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight drop-shadow-md">
-          {current.title}
+          {current.title.es}
         </h3>
         <p className="mt-4 max-w-2xl text-lg md:text-xl text-gray-200 font-light drop-shadow-sm">
-          {current.shortDescription}
+          {current.shortDescription.es}
         </p>
         <a
           href={`/servicios/${current.slug}`}

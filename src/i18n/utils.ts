@@ -48,3 +48,26 @@ export function t<K extends TranslationKey>(locale: Locale, key: K): PathValue<D
 export function getLangFromUrl(url: URL): Locale {
   return url.pathname === "/en" || url.pathname.startsWith("/en/") ? "en" : "es";
 }
+
+/**
+ * Forma de los campos de texto multiidioma en src/data/* (services.ts y,
+ * cuando llegue su fase, packagingCatalog.ts / techCatalog.ts). Se ancla
+ * aquí — no en cada archivo de datos — porque es un concepto de i18n, no de
+ * un dataset concreto, y todos los datasets lo comparten.
+ */
+export interface Localized<T> {
+  es: T;
+  en: T;
+}
+
+/**
+ * Única forma permitida de leer un campo `Localized<T>` en un .astro: NUNCA
+ * accedas a `campo.es`/`campo.en` de forma literal. Un `.es` hardcodeado
+ * compila igual en una página que después se traduzca — mostraría español
+ * en la versión en inglés sin ningún error, un fallo silencioso. Con
+ * `localize(campo, locale)`, traducir esa ruta en el futuro es cuestión de
+ * que le llegue el `locale` correcto, no de perseguir accesos literales.
+ */
+export function localize<T>(field: Localized<T>, locale: Locale): T {
+  return field[locale];
+}
