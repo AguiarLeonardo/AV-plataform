@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type SubmitEvent } from "react";
 
 interface OptionSpec {
   label: string;
@@ -40,7 +40,7 @@ function BTOFormBase({ title, subtitle, basePrice, specs }: BTOConfig) {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitted(true);
     setTimeout(() => {

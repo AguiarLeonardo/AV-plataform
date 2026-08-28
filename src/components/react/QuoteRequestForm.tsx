@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
 import { clearCart } from "../../store/quoteCart";
 
 export default function QuoteRequestForm() {
   const [submitted, setSubmitted] = useState(false);
   const [isBusiness, setIsBusiness] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitted(true);
     clearCart();
