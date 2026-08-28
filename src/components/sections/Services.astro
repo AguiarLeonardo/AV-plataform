@@ -1,14 +1,38 @@
 ---
 import ServicesCarousel from "../react/ServicesCarousel.tsx";
+import { services } from "../../data/services";
+import { t, localize } from "../../i18n/utils";
+import { getRouteHref } from "../../i18n/routes";
+
+const lang = Astro.currentLocale === "en" ? "en" : "es";
+
+const slides = services.map((service) => ({
+  slug: service.slug,
+  title: localize(service.title, lang),
+  shortDescription: localize(service.shortDescription, lang),
+  image: service.images[0],
+}));
 ---
 
 <section id="servicios" class="bg-gray-50 h-[100dvh] flex flex-col justify-center py-8">
   <div class="mx-auto w-full max-w-7xl px-6 lg:px-8">
     <div class="flex justify-between items-end mb-6">
-      <h2 class="text-4xl text-corporativo-gray font-bold">Nuestros Servicios</h2>
-      <a href="/servicios" class="text-corporativo-blue font-semibold hover:underline flex items-center gap-2">Ver todos &rarr;</a>
+      <h2 class="text-4xl text-corporativo-gray font-bold">{t(lang, "home.services.heading")}</h2>
+      <a
+        href={getRouteHref("services", lang)}
+        class="text-corporativo-blue font-semibold hover:underline flex items-center gap-2"
+      >
+        {t(lang, "home.services.viewAllLabel")} &rarr;
+      </a>
     </div>
-    
-    <ServicesCarousel client:visible />
+
+    <ServicesCarousel
+      slides={slides}
+      ctaLabel={t(lang, "home.services.carousel.ctaLabel")}
+      prevLabel={t(lang, "home.services.carousel.prevLabel")}
+      nextLabel={t(lang, "home.services.carousel.nextLabel")}
+      goToSlideLabel={t(lang, "home.services.carousel.goToSlideLabel")}
+      client:visible
+    />
   </div>
 </section>

@@ -15,42 +15,14 @@ interface Slide {
   image: string;
 }
 
-const slides: Slide[] = [
-  {
-    overline: "MÁS QUE UN LUJO, UNA NECESIDAD",
-    title: "La visión se hizo realidad",
-    subtitle:
-      "Ofrecemos soluciones integrales en construcción, suministro de maquinaria pesada y distribución de tecnología de punta con estándares globales.",
-    ctas: [
-      { text: "Conoce nuestros servicios", href: "/servicios", primary: true },
-      { text: "Ver Proyectos", href: "/proyectos", primary: false },
-    ],
-    image: "/images/corporativo/banners/hero/banner-vision-realidad.webp",
-  },
-  {
-    title: "Ingeniería de Precisión en Movilidad Vertical",
-    subtitle:
-      "Especialistas en la instalación, modernización y mantenimiento de sistemas de ascensores y escaleras mecánicas con estándares internacionales.",
-    ctas: [{ text: "Soluciones en Elevación", href: "/servicios/ascensores", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-movilidad-vertical.webp",
-  },
-  {
-    title: "Innovación en Soluciones de Envasado",
-    subtitle:
-      "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
-    ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-envasado-innovacion.webp",
-  },
-  {
-    title: "Vanguardia en Equipamiento Tecnológico",
-    subtitle:
-      "Suministro de hardware corporativo, servidores e infraestructura de redes. Equipos de última generación respaldados por 3 años de garantía integral.",
-    ctas: [{ text: "División Tecnológica", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true }],
-    image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.webp",
-  },
-];
+interface Props {
+  slides: Slide[];
+  prevLabel: string;
+  nextLabel: string;
+  goToSlideLabel: string;
+}
 
-export default function HeroSlider() {
+export default function HeroSlider({ slides, prevLabel, nextLabel, goToSlideLabel }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -58,7 +30,7 @@ export default function HeroSlider() {
       setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 10000);
     return () => clearTimeout(timer);
-  }, [currentIndex]);
+  }, [currentIndex, slides.length]);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -124,7 +96,7 @@ export default function HeroSlider() {
       <button
         onClick={prevSlide}
         className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white opacity-60 backdrop-blur-sm transition-all duration-300 hover:bg-corporativo-blue hover:opacity-100"
-        aria-label="Diapositiva anterior"
+        aria-label={prevLabel}
       >
         <ChevronLeft className="h-6 w-6" />
       </button>
@@ -132,7 +104,7 @@ export default function HeroSlider() {
       <button
         onClick={nextSlide}
         className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white opacity-60 backdrop-blur-sm transition-all duration-300 hover:bg-corporativo-blue hover:opacity-100"
-        aria-label="Siguiente diapositiva"
+        aria-label={nextLabel}
       >
         <ChevronRight className="h-6 w-6" />
       </button>
@@ -145,7 +117,7 @@ export default function HeroSlider() {
             className={`h-3 rounded-full transition-all duration-300 ${
               index === currentIndex ? "w-10 bg-corporativo-blue" : "w-3 bg-white/60 hover:bg-white"
             }`}
-            aria-label={`Ir a la diapositiva ${index + 1}`}
+            aria-label={`${goToSlideLabel} ${index + 1}`}
           />
         ))}
       </div>

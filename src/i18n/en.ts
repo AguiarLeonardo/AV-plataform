@@ -1,4 +1,128 @@
 export default {
+  home: {
+    hero: {
+      prevLabel: "Previous slide",
+      nextLabel: "Next slide",
+      goToSlideLabel: "Go to slide",
+      slides: [
+        {
+          overline: "MORE THAN A LUXURY, A NECESSITY",
+          title: "The vision became reality",
+          subtitle:
+            "We offer comprehensive solutions in construction, heavy machinery supply, and cutting-edge technology distribution with global standards.",
+          image: "/images/corporativo/banners/hero/banner-vision-realidad.webp",
+          ctas: [
+            { text: "See our services", routeKey: "services" as const, primary: true },
+            { text: "View Projects", routeKey: "projects" as const, primary: false },
+          ],
+        },
+        {
+          title: "Precision Engineering in Vertical Mobility",
+          subtitle:
+            "Specialists in the installation, modernization, and maintenance of elevator and escalator systems with international standards.",
+          image: "/images/corporativo/banners/hero/banner-movilidad-vertical.webp",
+          ctas: [{ text: "Elevation Solutions", href: "/servicios/ascensores", primary: true }],
+        },
+        {
+          title: "Innovation in Packaging Solutions",
+          subtitle:
+            "Manufacturing of high-resistance containers and packaging for the industrial and commercial sector, ensuring maximum durability.",
+          image: "/images/corporativo/banners/hero/banner-envasado-innovacion.webp",
+          ctas: [{ text: "View Catalog", href: "/servicios/envases", primary: true }],
+        },
+        {
+          title: "State-of-the-Art Technology Equipment",
+          subtitle:
+            "Supply of corporate hardware, servers, and network infrastructure. Latest-generation equipment backed by a 3-year comprehensive warranty.",
+          image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.webp",
+          ctas: [
+            { text: "Technology Division", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true },
+          ],
+        },
+      ],
+    },
+    stats: {
+      items: [
+        { value: "802+", label: "Successful Projects" },
+        { value: "18+", label: "Years in the market" },
+        { value: "50+", label: "International and National Companies" },
+        { value: "30+", label: "Employees and counting" },
+      ],
+    },
+    video: {
+      fallbackText: "Your browser does not support video playback. Contact us to learn more about Asiaven.",
+      activateSoundLabel: "Turn on sound",
+      muteLabel: "Mute",
+    },
+    about: {
+      heading: "Excellence and Corporate Strength",
+      imageAlt: "About Asiaven",
+      paragraph:
+        "With more than 18 years of experience in the market, we have established ourselves as a strategic partner in the country's development. We carry out highly complex technical projects for leading corporate and government entities, offering solutions that integrate cutting-edge technology with industrial robustness.",
+      items: [
+        {
+          title: "Global Quality Standards.",
+          description:
+            "Internationally certified equipment (ISO, CE, FCC), ensuring durability and efficiency in every implementation.",
+        },
+        {
+          title: "Institutional Backing.",
+          description:
+            "Proven experience in mega-projects for the energy, telecommunications, and public infrastructure sectors.",
+        },
+        {
+          title: "Comprehensive Technical Support.",
+          description:
+            'Nationwide coverage with preventive maintenance plans and "swap"-type warranty for our technology division.',
+        },
+      ],
+    },
+    missionVision: {
+      mission: {
+        heading: "Mission",
+        imageAlt: "Mission",
+        text: "To use innovative technologies based on each client's business needs, with the goal of increasing their competitiveness through creative solutions adapted to their practical environment.",
+      },
+      vision: {
+        heading: "Vision",
+        imageAlt: "Vision",
+        text: "To become a global benchmark with our flagship Asiaven elevator products, solving all of our clients' challenges with tailored solutions that make us the best alternative for businesses in this field.",
+      },
+    },
+    services: {
+      heading: "Our Services",
+      viewAllLabel: "View all",
+      carousel: {
+        ctaLabel: "View details",
+        prevLabel: "Previous service",
+        nextLabel: "Next service",
+        goToSlideLabel: "Go to slide",
+      },
+    },
+    affiliates: {
+      eyebrow: "Asiaven Companies",
+      heading: "Our Specialized Divisions",
+      intro: "The backing of Grupo Asiaven, structured to serve every strategic sector.",
+      divisions: [
+        {
+          name: "AV Constructora",
+          description: "Infrastructure projects, civil works, and industrial development.",
+        },
+        {
+          name: "AV Elevators",
+          description: "Solutions in elevation equipment, cranes, and elevated work platforms.",
+        },
+        {
+          name: "AV Maquinarias Pesadas",
+          description: "Rental, sale, and support of heavy machinery for mining and construction.",
+        },
+        {
+          name: "AV Tecnología",
+          description: "Technology solutions, automation, and industrial systems development.",
+        },
+      ],
+    },
+  },
   common: {
     storeLabel: "Store",
     officeVenezuela: "Venezuela Office",

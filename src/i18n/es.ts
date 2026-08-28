@@ -8,6 +8,131 @@
  * exige que `en.ts` tenga las mismas claves con el mismo tipo estructural.
  */
 const es = {
+  home: {
+    hero: {
+      prevLabel: "Diapositiva anterior",
+      nextLabel: "Siguiente diapositiva",
+      goToSlideLabel: "Ir a la diapositiva",
+      slides: [
+        {
+          overline: "MÁS QUE UN LUJO, UNA NECESIDAD",
+          title: "La visión se hizo realidad",
+          subtitle:
+            "Ofrecemos soluciones integrales en construcción, suministro de maquinaria pesada y distribución de tecnología de punta con estándares globales.",
+          image: "/images/corporativo/banners/hero/banner-vision-realidad.webp",
+          ctas: [
+            { text: "Conoce nuestros servicios", routeKey: "services" as const, primary: true },
+            { text: "Ver Proyectos", routeKey: "projects" as const, primary: false },
+          ],
+        },
+        {
+          title: "Ingeniería de Precisión en Movilidad Vertical",
+          subtitle:
+            "Especialistas en la instalación, modernización y mantenimiento de sistemas de ascensores y escaleras mecánicas con estándares internacionales.",
+          image: "/images/corporativo/banners/hero/banner-movilidad-vertical.webp",
+          ctas: [{ text: "Soluciones en Elevación", href: "/servicios/ascensores", primary: true }],
+        },
+        {
+          title: "Innovación en Soluciones de Envasado",
+          subtitle:
+            "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
+          image: "/images/corporativo/banners/hero/banner-envasado-innovacion.webp",
+          ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
+        },
+        {
+          title: "Vanguardia en Equipamiento Tecnológico",
+          subtitle:
+            "Suministro de hardware corporativo, servidores e infraestructura de redes. Equipos de última generación respaldados por 3 años de garantía integral.",
+          image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.webp",
+          ctas: [
+            { text: "División Tecnológica", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true },
+          ],
+        },
+      ],
+    },
+    stats: {
+      items: [
+        { value: "802+", label: "Proyectos Exitosos" },
+        { value: "18+", label: "Años en el mercado" },
+        { value: "50+", label: "Empresas Internacionales y Nacionales" },
+        { value: "30+", label: "Trabajadores y sumando" },
+      ],
+    },
+    video: {
+      fallbackText:
+        "Tu navegador no soporta la reproducción de este video. Contáctanos para conocer más sobre Asiaven.",
+      activateSoundLabel: "Activar sonido",
+      muteLabel: "Silenciar",
+    },
+    about: {
+      heading: "Excelencia y Solidez Corporativa",
+      imageAlt: "Acerca de Asiaven",
+      paragraph:
+        "Con más de 18 años de trayectoria en el mercado, nos hemos consolidado como un aliado estratégico en el desarrollo del país. Ejecutamos proyectos de alta complejidad técnica para las principales entidades corporativas y estatales, ofreciendo soluciones que integran tecnología de punta y robustez industrial.",
+      items: [
+        {
+          title: "Estándares de Calidad Global.",
+          description:
+            "Equipamiento certificado internacionalmente (ISO, CE, FCC), garantizando durabilidad y eficiencia en cada implementación.",
+        },
+        {
+          title: "Respaldo Institucional.",
+          description:
+            "Experiencia probada en mega-proyectos para sectores de energía, telecomunicaciones e infraestructura pública.",
+        },
+        {
+          title: "Soporte Técnico Integral.",
+          description:
+            'Cobertura a nivel nacional con planes de mantenimiento preventivo y garantía tipo "swap" para nuestra división tecnológica.',
+        },
+      ],
+    },
+    missionVision: {
+      mission: {
+        heading: "Misión",
+        imageAlt: "Misión",
+        text: "Utilizar tecnologías innovadoras dependiendo de las necesidades del cliente a nivel empresarial con el objetivo de incrementar su competitividad mediante soluciones creativas adaptadas al entorno práctico del mismo.",
+      },
+      vision: {
+        heading: "Visión",
+        imageAlt: "Visión",
+        text: "Poder ser referente mundial con nuestros principales productos elevadores Asiaven y solventar todos los problemas de nuestros clientes dándole soluciones a medida para convertirnos en la mejor alternativa de las empresas en esta área.",
+      },
+    },
+    services: {
+      heading: "Nuestros Servicios",
+      viewAllLabel: "Ver todos",
+      carousel: {
+        ctaLabel: "Ver detalles",
+        prevLabel: "Servicio anterior",
+        nextLabel: "Siguiente servicio",
+        goToSlideLabel: "Ir a la diapositiva",
+      },
+    },
+    affiliates: {
+      eyebrow: "Empresas Asiaven",
+      heading: "Nuestras Divisiones Especializadas",
+      intro: "El respaldo del Grupo Asiaven estructurado para atender cada sector estratégico.",
+      divisions: [
+        {
+          name: "AV Constructora",
+          description: "Proyectos de infraestructura, obras civiles y desarrollo industrial.",
+        },
+        {
+          name: "AV Elevators",
+          description: "Soluciones en equipos de elevación, grúas y plataformas de trabajo en altura.",
+        },
+        {
+          name: "AV Maquinarias Pesadas",
+          description: "Alquiler, venta y soporte de maquinaria pesada para minería y construcción.",
+        },
+        {
+          name: "AV Tecnología",
+          description: "Soluciones tecnológicas, automatización y desarrollo de sistemas industriales.",
+        },
+      ],
+    },
+  },
   common: {
     storeLabel: "Tienda",
     officeVenezuela: "Oficina en Venezuela",
