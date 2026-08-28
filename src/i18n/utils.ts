@@ -2,12 +2,17 @@ import { dictionaries, type Locale } from "./index";
 
 type Dictionary = (typeof dictionaries)["es"];
 
-/** Todas las rutas de clave anidadas del diccionario ("nav.home", "contact.faqs", ...). Los arrays cuentan como hoja: no se expanden índice por índice. */
+/**
+ * Todas las rutas de clave anidadas del diccionario, incluyendo las
+ * intermedias ("home.about" además de "home.about.heading") — t() puede
+ * devolver una rama completa (un objeto/array), no solo un string hoja.
+ * Los arrays cuentan como hoja: no se expanden índice por índice.
+ */
 type NestedKeyOf<T> = {
   [K in keyof T & string]: T[K] extends readonly unknown[]
     ? K
     : T[K] extends object
-      ? `${K}.${NestedKeyOf<T[K]>}`
+      ? K | `${K}.${NestedKeyOf<T[K]>}`
       : K;
 }[keyof T & string];
 

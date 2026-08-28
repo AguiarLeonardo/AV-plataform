@@ -1,5 +1,9 @@
 ---
 import { Volume2, VolumeX } from "lucide-react";
+import { t } from "../../i18n/utils";
+
+const lang = Astro.currentLocale === "en" ? "en" : "es";
+const video = t(lang, "home.video");
 ---
 
 <section class="w-full">
@@ -16,14 +20,16 @@ import { Volume2, VolumeX } from "lucide-react";
       <source src="/videos/video-corporativo.webm" type="video/webm" />
       <source src="/videos/video-corporativo.mp4" type="video/mp4" />
       <p class="flex h-full w-full items-center justify-center bg-corporativo-gray px-6 text-center text-sm text-gray-300">
-        Tu navegador no soporta la reproducción de este video. Contáctanos para conocer más sobre Asiaven.
+        {video.fallbackText}
       </p>
     </video>
 
     <button
       type="button"
       id="corporate-video-mute-toggle"
-      aria-label="Activar sonido"
+      aria-label={video.activateSoundLabel}
+      data-activate-label={video.activateSoundLabel}
+      data-mute-label={video.muteLabel}
       aria-pressed="false"
       class="absolute bottom-8 right-8 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
     >
@@ -43,7 +49,9 @@ import { Volume2, VolumeX } from "lucide-react";
     if (!video) return;
     video.muted = !video.muted;
     toggleButton.setAttribute("aria-pressed", String(!video.muted));
-    toggleButton.setAttribute("aria-label", video.muted ? "Activar sonido" : "Silenciar");
+    const activateLabel = toggleButton.dataset.activateLabel ?? "";
+    const muteLabel = toggleButton.dataset.muteLabel ?? "";
+    toggleButton.setAttribute("aria-label", video.muted ? activateLabel : muteLabel);
     iconMuted?.classList.toggle("hidden", !video.muted);
     iconUnmuted?.classList.toggle("hidden", video.muted);
   });

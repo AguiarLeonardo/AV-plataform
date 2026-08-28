@@ -1,5 +1,10 @@
 ---
 import { Globe, Building2, Wrench } from "lucide-react";
+import { t } from "../../i18n/utils";
+
+const lang = Astro.currentLocale === "en" ? "en" : "es";
+const about = t(lang, "home.about");
+const icons = [Globe, Building2, Wrench];
 ---
 
 <section id="nosotros" class="bg-white py-24 sm:py-32">
@@ -9,7 +14,7 @@ import { Globe, Building2, Wrench } from "lucide-react";
       <div class="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl">
         <img
           src="/images/corporativo/nosotros/equipo-oficina-asiaven.webp"
-          alt="Acerca de Asiaven"
+          alt={about.imageAlt}
           class="h-full w-full object-cover"
           loading="lazy"
           decoding="async"
@@ -19,36 +24,25 @@ import { Globe, Building2, Wrench } from "lucide-react";
       <!-- Derecha: Contenido -->
       <div>
         <h2 class="mt-4 text-4xl font-extrabold tracking-tight text-corporativo-gray sm:text-5xl">
-          Excelencia y Solidez Corporativa
+          {about.heading}
         </h2>
         <p class="mt-6 text-lg leading-relaxed text-gray-600">
-          Con más de 18 años de trayectoria en el mercado, nos hemos consolidado como un aliado estratégico en el desarrollo del país. Ejecutamos proyectos de alta complejidad técnica para las principales entidades corporativas y estatales, ofreciendo soluciones que integran tecnología de punta y robustez industrial.
+          {about.paragraph}
         </p>
 
         <dl class="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600">
-          <div class="relative pl-12">
-            <dt class="inline font-bold text-corporativo-gray">
-              <Globe className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
-              Estándares de Calidad Global.
-            </dt>
-            <dd class="inline"> Equipamiento certificado internacionalmente (ISO, CE, FCC), garantizando durabilidad y eficiencia en cada implementación.</dd>
-          </div>
-
-          <div class="relative pl-12">
-            <dt class="inline font-bold text-corporativo-gray">
-              <Building2 className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
-              Respaldo Institucional.
-            </dt>
-            <dd class="inline"> Experiencia probada en mega-proyectos para sectores de energía, telecomunicaciones e infraestructura pública.</dd>
-          </div>
-
-          <div class="relative pl-12">
-            <dt class="inline font-bold text-corporativo-gray">
-              <Wrench className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
-              Soporte Técnico Integral.
-            </dt>
-            <dd class="inline"> Cobertura a nivel nacional con planes de mantenimiento preventivo y garantía tipo "swap" para nuestra división tecnológica.</dd>
-          </div>
+          {about.items.map((item, index) => {
+            const Icon = icons[index];
+            return (
+              <div class="relative pl-12">
+                <dt class="inline font-bold text-corporativo-gray">
+                  <Icon className="absolute left-1 top-1 h-6 w-6 text-corporativo-blue" />
+                  {item.title}
+                </dt>
+                <dd class="inline"> {item.description}</dd>
+              </div>
+            );
+          })}
         </dl>
       </div>
     </div>

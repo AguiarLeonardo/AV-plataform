@@ -193,27 +193,30 @@ export default {
     clientsHeading: "Companies that trust us",
     clients: [
       {
+        // Nombres propios: se conservan tal cual, con una aclaración en
+        // inglés cuando ayuda (nunca como reemplazo del nombre). Los
+        // topónimos administrativos (ubicacion) NUNCA se traducen.
         nombre: "Hotel Humboldt",
-        ubicacion: "Capital District, Venezuela",
+        ubicacion: "Distrito Capital, Venezuela",
         sector: "Modernization / Maintenance",
       },
       {
-        nombre: "National Assembly",
-        ubicacion: "Capital District, Venezuela",
+        nombre: "Asamblea Nacional (Venezuela's National Assembly)",
+        ubicacion: "Distrito Capital, Venezuela",
         sector: "Elevation Projects",
       },
       {
-        nombre: "Corpoelec Main Headquarters, San Bernardino",
+        nombre: "Corpoelec Headquarters, San Bernardino",
         ubicacion: "Caracas, Venezuela",
         sector: "Escalator Installation",
       },
       {
-        nombre: "Caracas Metro – Colegio de Ingenieros Station",
+        nombre: "Metro de Caracas – Colegio de Ingenieros Station",
         ubicacion: "Caracas, Venezuela",
         sector: "Supply and Installation of 6 Escalators",
       },
       {
-        nombre: "Dr. Elías Toro Pediatric Hospital",
+        nombre: "Hospital Pediátrico Dr. Elías Toro",
         ubicacion: "Caracas, Venezuela",
         sector: "Installation of 7 High-Capacity Elevators",
       },
@@ -268,6 +271,11 @@ export default {
     },
   },
   seo: {
+    home: {
+      title: "Asiaven - Home",
+      description:
+        "Grupo Asiaven - Comprehensive corporate solutions. Specialists in vertical mobility, technological infrastructure, and top-tier industrial equipment.",
+    },
     contact: {
       title: "Contact Us - Asiaven",
       description:

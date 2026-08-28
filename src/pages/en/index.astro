@@ -1,0 +1,21 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Hero from "../../components/sections/Hero.astro";
+import StatsStrip from "../../components/sections/StatsStrip.astro";
+import CorporateVideo from "../../components/sections/CorporateVideo.astro";
+import About from "../../components/sections/About.astro";
+import Services from "../../components/sections/Services.astro";
+import MissionVision from "../../components/sections/MissionVision.astro";
+import Affiliates from "../../components/sections/Affiliates.astro";
+import en from "../../i18n/en";
+---
+
+<Layout title={en.seo.home.title} description={en.seo.home.description} routeKey="home">
+  <Hero />
+  <StatsStrip />
+  <CorporateVideo />
+  <Services />
+  <About />
+  <MissionVision />
+  <Affiliates />
+</Layout>

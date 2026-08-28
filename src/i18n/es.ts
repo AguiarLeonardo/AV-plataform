@@ -282,6 +282,11 @@ const es = {
     },
   },
   seo: {
+    home: {
+      title: "Asiaven - Inicio",
+      description:
+        "Grupo Asiaven - Soluciones corporativas integrales. Especialistas en movilidad vertical, infraestructura tecnológica, y equipamiento industrial de alto nivel.",
+    },
     contact: {
       title: "Contáctanos - Asiaven",
       description:

@@ -25,7 +25,7 @@
  */
 
 export const routes = {
-  home: { es: "/" },
+  home: { es: "/", en: "/en" },
   contact: { es: "/contactanos", en: "/en/contact" },
   projects: { es: "/proyectos", en: "/en/projects" },
   services: { es: "/servicios" },

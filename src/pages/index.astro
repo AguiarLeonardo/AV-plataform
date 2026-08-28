@@ -7,9 +7,10 @@ import About from "../components/sections/About.astro";
 import Services from "../components/sections/Services.astro";
 import MissionVision from "../components/sections/MissionVision.astro";
 import Affiliates from "../components/sections/Affiliates.astro";
+import es from "../i18n/es";
 ---
 
-<Layout title="Asiaven - Inicio">
+<Layout title={es.seo.home.title} description={es.seo.home.description} routeKey="home">
   <Hero />
   <StatsStrip />
   <CorporateVideo />
