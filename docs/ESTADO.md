@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-28 — corresponde al branch `feat/i18n-fase-1c` (sin mergear; parte de `develop` en `ea068c9`, que ya incluye las Fases 1a y 1b).
+**Última actualización:** 2026-08-28 — corresponde al branch `feat/i18n-cierre-fase-1` (sin mergear; parte de `develop` en `3426abc`, que ya incluye las Fases 1a, 1b y 1c).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -76,11 +76,20 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 
 ---
 
-## 2. Estado del trabajo de i18n
+## 2. Estado del trabajo de i18n — CIERRE DE FASE 1
 
-**Infraestructura completa; 6 de 11 páginas corporativas traducidas (home incluida). Servicios (hub + dinámica) y envases (hub + dinámicas) siguen pendientes; todo `/store/*` sin tocar.**
+**Fase 1 del i18n del sitio corporativo cerrada.** Infraestructura completa y estable; 6 de 11 páginas corporativas traducidas (home incluida) + el 404 global bilingüe. La traducción de `/servicios` y `/envases` (hub + rutas dinámicas) queda **aplazada deliberadamente** — no es deuda técnica ni falta de tiempo, es una dependencia real explicada en detalle más abajo. Todo `/store/*` sigue sin tocar (fuera de alcance de esta fase desde el inicio).
 
-### Páginas traducidas (6)
+### Guía rápida para traducir una página nueva (leer esto primero si retomas el proyecto)
+1. **`src/i18n/routes.ts` es la única fuente de verdad de rutas.** Agrega la clave `en` a la entrada correspondiente (ej. `services: { es: "/servicios", en: "/en/services" }`). Eso solo ya activa: el `LanguageSwitcher` en esa página, el fallback del Navbar/Footer (que dejan de apuntar a la versión española), y los alternates del sitemap — **nada más que tocar en esos tres sitios**, todos leen de `routes.ts`.
+2. **Diccionarios:** agrega las claves que esa página necesita a `src/i18n/es.ts` (base) y su traducción real a `src/i18n/en.ts` (`satisfies typeof import('./es').default` hace que el build falle si falta una clave — pruébalo borrando una clave de `en.ts` y corriendo `npm run check` si tienes dudas). No agregues claves para páginas que todavía no vas a traducir.
+3. **Página en español:** si no lee ya del diccionario, migra su texto hardcodeado a `es.ts` y reemplázalo por referencias (`es.miPagina.titulo`, etc.) — sin cambiar diseño ni markup.
+4. **Página en inglés:** crea el archivo gemelo bajo `src/pages/en/...` (ver `routes.ts` para el slug exacto), mismos componentes, mismo layout, leyendo de `en.ts`. Pásale `routeKey="miPagina"` a `Layout` en ambas versiones — eso activa el `Hreflang` (canonical + alternates) automáticamente.
+5. **Si la página consume datos de `src/data/*`** (como `services.ts`) y esos datos ya usan `Localized<T>`: nunca escribas `campo.es`/`campo.en` a mano en un `.astro` — siempre `localize(campo, locale)` con `locale = Astro.currentLocale === "en" ? "en" : "es"`. Esto aplica **incluso si la página todavía no se va a traducir** (ver `servicios/index.astro`/`servicios/[servicio].astro`, que ya usan `localize()` sin tener versión en inglés) — un `.es` hardcodeado compila igual y falla en silencio el día que sí se traduzca.
+6. **Si la página monta una isla de React** (`client:load`/`client:visible`): la isla recibe las cadenas ya traducidas como props planas (`string`, nunca el objeto `Localized<T>` ni el diccionario completo). Cero Context, cero provider, cero hook de i18n en React — cada isla se hidrata aislada y no tiene acceso al `Astro.currentLocale` del servidor. Ver `HeroSlider.tsx`/`ServicesCarousel.tsx` como referencia del patrón (reciben `slides`, labels, etc. por props desde `Hero.astro`/`Services.astro`).
+7. **`npm run build`** corre `astro check` antes de `astro build` — cualquier clave de diccionario faltante o mal tipada rompe el build, no llega a producción en silencio.
+
+### Páginas traducidas (6 + el 404)
 | Español | Inglés | Notas |
 |---|---|---|
 | `/` (home) | `/en` | Fase 1c. 7 secciones: Hero, StatsStrip, CorporateVideo, Services, About, MissionVision, Affiliates — todas leen del diccionario vía `t()`/`Astro.currentLocale`, sin duplicar lógica entre la página es/en |
@@ -89,9 +98,28 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 | `/soporte-tecnico` | `/en/technical-support` | Fase 1b |
 | `/privacidad` | `/en/privacy` | Fase 1b. Aviso breve, no traducción del documento — decisión de negocio ya tomada |
 | `/terminos` | `/en/terms` | Fase 1b, misma lógica que `/en/privacy` |
+| `/404` (no existe como ruta) | igual | Cierre de Fase 1. Único 404.html global (ver más abajo), detecta idioma en cliente por `pathname`, no emite canonical/hreflang |
 
 ### Páginas pendientes (4 corporativas + todo `/store/*`)
-`servicios` (hub + `[servicio]` dinámica — el hub y la dinámica ya leen `services.ts` vía `localize()`, listas para traducirse en cuanto se cree su `en`, pero la ruta en inglés todavía no existe), `envases` (hub + `[categoria]`/`producto/[producto]` dinámicas, sin tocar).
+`servicios` (hub + `[servicio]` dinámica), `envases` (hub + `[categoria]`/`producto/[producto]` dinámicas) — **APLAZADAS**, ver la sección dedicada justo abajo. Todo `/store/*` sin tocar, fuera de alcance de la Fase 1 desde el inicio.
+
+### ⏸️ Aplazamiento deliberado: `/servicios` y `/envases` (rutas dinámicas)
+
+**Decisión del dueño del proyecto, tomada en el cierre de la Fase 1.** No es falta de tiempo — es una dependencia real con un trabajo de infraestructura que va a pasar pronto y que cambiaría la respuesta correcta.
+
+**El motivo:** `packagingCatalog.ts` y `techCatalog.ts` van a migrar a una base de datos real en un futuro cercano, como parte de estructurar un e-commerce con productos y clientes de verdad (hoy son arrays de TypeScript hardcodeados en el repo). Traducir esos datos ahora, dentro de los `.ts`, sería trabajo desechable: el día de la migración, el idioma tiene que vivir en el esquema de la base de datos (columnas `title_es`/`title_en`, o una tabla de traducciones aparte) — no en `Localized<T>` de TypeScript, que deja de existir en cuanto el dato deja de estar en un archivo `.ts`. Escribir las traducciones dos veces (ahora en `Localized<T>`, después en el esquema de la BD) no tiene sentido.
+
+**Por qué esto importa más allá de la traducción — consecuencia para el diseño de la base de datos nueva (léase con cuidado si te toca diseñar ese esquema):** el sitio ya es bilingüe desde esta fase. **Todo campo de texto visible al usuario en el esquema nuevo necesita la dimensión de idioma desde el diseño inicial** — nombre de producto, descripción, categoría, lo que sea que el usuario lea. Agregar la dimensión de idioma *después* de que el esquema ya existe y tiene datos cargados es sustancialmente más caro que incluirla desde el primer `CREATE TABLE` (migración de datos, backfill, código ya escrito asumiendo un solo idioma por fila, etc.). Este documento es el lugar donde queda registrado que esa necesidad ya existía cuando se diseñe esa base de datos, aunque quien la diseñe no haya trabajado en el i18n.
+
+**Pregunta abierta de modelado, sin resolver, que motivó este análisis:** en `packagingCatalog.ts`, `PackagingProduct.specs` es un `Record<string, string>` donde **las claves también están en español** (ej. `"Capacidad (mL)": "250"`, `"Diámetro Interior (mm)": "65.30±0.15"` — ver `catalogo_latas_asiaven.md`). Al modelar esto en una base de datos hay que decidir explícitamente si:
+- (a) las claves de specs se convierten en identificadores estables no traducibles (ej. `capacity_ml`, `inner_diameter_mm`) con una etiqueta visible aparte que sí se traduce (`spec_labels.es`/`spec_labels.en`), o
+- (b) se modelan de otra forma (una tabla `product_specs` con `spec_key`, `spec_value`, y una tabla de labels separada; o algo específico del dominio de envases).
+
+No se decide aquí — se registra como pregunta abierta para quien diseñe ese esquema, porque la estructura actual (clave de texto libre en español, sin separación entre identificador y etiqueta) no sobrevive la migración tal cual sin que alguien tome esta decisión primero.
+
+**La UI fija de esas páginas tampoco se traduce por ahora**, aunque no dependa en absoluto de la base de datos (encabezados, labels de botones, textos fijos de `/servicios`, `/servicios/[servicio]`, `/envases`, etc. son contenido puramente `.astro`, no datos). Motivo: una página con interfaz en inglés pero tarjetas de producto todavía en español (porque los datos no están traducidos) se ve peor y es más confusa que una página que simplemente no existe en inglés todavía. El comportamiento actual — selector de idioma oculto en esas páginas, Navbar/Footer en inglés cayendo a la versión española vía `getRouteHref()` — es más honesto con el visitante y **se mantiene tal cual** hasta que los datos estén listos para traducirse de verdad.
+
+**Qué es seguro hacer ya, sin esperar la migración de base de datos** (y de hecho ya se hizo en la Fase 1c, como preparación): `services.ts` — que es contenido editorial fijo del sitio corporativo, no un catálogo que vaya a vivir en una base de datos de e-commerce — ya usa `Localized<T>` y no está afectado por este aplazamiento.
 
 ### Fase 1c — resumen
 1. **`services.ts` migrado a `Localized<T>`** — `title`/`shortDescription`/`fullDescription` pasan de `string`/`string[]` a `Localized<string>`/`Localized<string[]>`; `slug`/`images` sin cambios. `: Service[]` → `satisfies Service[]` (prerrequisito de la 1a: slugs quedan como unión de literales, condición para los slug-maps exhaustivos de la 1d).
@@ -119,6 +147,7 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 | `src/pages/en/contact.astro` | Fase 1a. |
 | `src/pages/en/projects.astro`, `en/technical-support.astro` | Fase 1b. |
 | `src/pages/en/privacy.astro`, `en/terms.astro` | Fase 1b — avisos breves, no traducciones del documento. |
+| `src/pages/404.astro` | Cierre de Fase 1 — único 404 del proyecto (antes no existía ninguno, ni en español). Detección de idioma en cliente por `pathname`, sin `routeKey` (sin canonical/hreflang). |
 
 ### Selector de idioma y navegación en páginas no traducidas
 Sin cambios de mecanismo desde la Fase 1a — política única leída de `routes.ts` en los tres consumidores (switcher, Navbar, `serialize()` del sitemap): el switcher no se renderiza si la ruta actual no está traducida; Navbar cae a la versión española para rutas sin `en`; el sitemap solo agrega alternates a pares traducidos. 6 rutas traducidas ahora, mecanismo idéntico, cero cambios de código adicionales.
@@ -126,20 +155,26 @@ Sin cambios de mecanismo desde la Fase 1a — política única leída de `routes
 ### `StoreLayout.astro` — pendiente, no tocado
 Sigue con `<html lang="es">` hardcodeado.
 
-### Verificación ejecutada (Fase 1c)
-`npm run build` → **0 errores**, **354 páginas** (353 + 1: `en/index`). Verificado por grep sobre `dist/`:
-- `en/index.html` y `index.html` (español) tienen canonical + 3 `hreflang` correctos — antes de esta fase `index.html` no tenía ninguno (home no estaba traducida).
-- Ninguna página en inglés contiene texto en español en las secciones traducidas (grep de frases clave sin coincidencias); "Distrito Capital" sí aparece en `en/projects` (topónimo, correcto que no se traduzca).
-- `servicios/index.html`, `envases/index.html` (no traducidas): 0 hreflang/canonical, 0 selector.
-Verificado en navegador: home española sin regresión visual (Hero, carrusel de servicios, todo idéntico); `/en` renderiza completa en inglés, `html lang="en"`, links Home→`/en`, ancla About→`/en#nosotros`, botón de mute del video con aria-label en inglés — todo confirmado sin necesidad de recorrer manualmente cada string.
+### Cierre de Fase 1 — resumen
+1. **404 bilingüe** (`src/pages/404.astro`, único archivo): verificado contra la documentación oficial de Vercel que un despliegue estático sirve un único `404.html` global, sin soporte documentado para 404 distinto por subdirectorio (`/docs/kb/guide/custom-404-page`, `/docs/custom-error-pages`). Detecta el idioma en el cliente por `window.location.pathname`, con el texto de ambos locales resuelto en build vía `data-*` attributes (mismo patrón que `CorporateVideo.astro`). No pasa `routeKey` a `Layout` — no emite canonical ni hreflang, correcto para una página que no es un recurso real.
+2. **Aplazamiento formal de `/servicios` y `/envases`** — ver sección dedicada arriba. No se tradujo nada nuevo de esas rutas en este cierre.
+3. **Namespace `notFound`** agregado a `es.ts`/`en.ts` (título, encabezado, mensaje, label del link de vuelta).
 
-### Gaps / prerrequisitos para las próximas fases
-1. **`src/pages/en/404.astro`** — sigue sin implementar; requiere verificar contra la documentación de Vercel el comportamiento de 404 por subdirectorio en hosting estático.
-2. **Prerrequisito para slug-maps dinámicos y para heredar `Localized<T>`:** `packagingCatalog.ts` y `techCatalog.ts` necesitan `satisfies` en vez de la anotación de tipo explícita actual (ver sección "Patrón de datos multiidioma" arriba).
-3. **`StoreLayout.astro`** sigue con `<html lang="es">` hardcodeado.
+### Verificación ejecutada (Cierre de Fase 1)
+`npm run build` → **0 errores**, **355 páginas** (354 + 1: `404.html`). Verificado por grep sobre `dist/`:
+- `dist/404.html` — sin `<link rel="canonical">` ni `<link rel="alternate">` (confirmado, sin coincidencias).
+- Páginas ya traducidas sin regresión: `index.html`, `en/index.html`, `contactanos/index.html`, `en/contact/index.html` — las 4 mantienen exactamente 3 `<link rel="alternate">` cada una (el conteo inicial con `grep -c` reportó 1 por estar el HTML en una sola línea — recontado con `grep -o | wc -l`, que sí cuenta ocurrencias en vez de líneas, y confirma 3).
+- `servicios/index.html`, `envases/index.html` (no traducidas): 0 hreflang/canonical, 0 selector — sin cambios.
+
+Verificado en navegador (variante de detección de cliente): `http://localhost:4321/pagina-inexistente` → español, `html lang="es"`, link "Volver al inicio" → `href="/"`. `http://localhost:4321/en/pagina-inexistente` → inglés (`document.title` cambia a "Page Not Found - Asiaven"), `html lang="en"`, link "Back to home" → `href="/en"`. Ambos casos confirmados leyendo el DOM tras la ejecución del script (no solo el HTML estático servido, que es idéntico para ambas rutas — el cambio ocurre en cliente).
+
+### Deuda pendiente y bloqueantes que se mantienen
+1. **`StoreLayout.astro`** sigue con `<html lang="es">` hardcodeado — toda la sección `/store/*` permanece sin ninguna adaptación i18n (fuera de alcance desde el inicio de la Fase 1, no solo de este cierre).
+2. **`/servicios` y `/envases`** — aplazadas, ver sección dedicada arriba. No es un "olvido", es una decisión registrada con motivo y dependencia explícita.
+3. **Prerrequisito de tipos para cuando se retomen:** `packagingCatalog.ts` y `techCatalog.ts` necesitan `satisfies` en vez de su anotación de tipo explícita actual, tanto para heredar `Localized<T>` como para que los futuros slug-maps de rutas dinámicas sean exhaustivos (ver Fase 1a/1c).
 4. **`ClientLogosCarousel.tsx`** — sin texto de UI propio más allá de los 17 nombres de cliente (`alt` de cada logo); nada que traducir en el componente en sí.
 5. **PENDIENTE DE VERIFICACIÓN:** cuando `www.asiaven.com` migre a Vercel, confirmar con `curl -I` que ese host **no** devuelve `X-Robots-Tag`, mientras `av-plataform-ruby.vercel.app` sí lo hace (ya verificado en producción el 2026-08-28 — ver sección 8).
-6. **Datos de oficina de Miami ficticios** — ver BLOQUEANTES DE LANZAMIENTO al inicio del documento.
+6. **BLOQUEANTE DE LANZAMIENTO — datos de oficina de Miami ficticios.** Ver encabezado dedicado al inicio de este documento. Se mantiene sin cambios: no se tocó en este cierre, solo se reafirma que sigue pendiente.
 
 ---
 
