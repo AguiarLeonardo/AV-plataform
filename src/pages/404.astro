@@ -1,0 +1,84 @@
+---
+// Primer 404 personalizado del proyecto (no existía ninguno, ni en español).
+// Vercel sirve un único 404.html global para todo el despliegue estático —
+// verificado contra su documentación oficial (ver commit/PR): no hay soporte
+// documentado para un 404 distinto por subdirectorio (/en/*). Por eso este
+// archivo es el único 404 del sitio y detecta el idioma en el cliente a
+// partir de window.location.pathname, con el texto de ambos locales resuelto
+// en build y entregado vía data-* attributes — mismo patrón que ya usa
+// CorporateVideo.astro para su botón de mute/unmute.
+//
+// A propósito, NO se pasa routeKey a Layout: un 404 no debe emitir
+// canonical ni hreflang (no representa un recurso real ni tiene alternates).
+import Layout from "../layouts/Layout.astro";
+import es from "../i18n/es";
+import en from "../i18n/en";
+import { getRouteHref } from "../i18n/routes";
+---
+
+<Layout title={es.notFound.title}>
+  <div
+    class="flex min-h-[60vh] flex-col items-center justify-center px-4 py-24 text-center"
+    data-title-es={es.notFound.title}
+    data-title-en={en.notFound.title}
+  >
+    <h1
+      id="not-found-heading"
+      class="mb-4 text-4xl font-bold text-corporativo-gray"
+      data-es={es.notFound.heading}
+      data-en={en.notFound.heading}
+    >
+      {es.notFound.heading}
+    </h1>
+    <p
+      id="not-found-message"
+      class="mb-8 text-lg text-gray-600"
+      data-es={es.notFound.message}
+      data-en={en.notFound.message}
+    >
+      {es.notFound.message}
+    </p>
+    <a
+      id="not-found-home-link"
+      href={getRouteHref("home", "es")}
+      data-href-es={getRouteHref("home", "es")}
+      data-href-en={getRouteHref("home", "en")}
+      data-label-es={es.notFound.homeLabel}
+      data-label-en={en.notFound.homeLabel}
+      class="inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+    >
+      {es.notFound.homeLabel}
+    </a>
+  </div>
+</Layout>
+
+<script>
+  const pathname = window.location.pathname;
+  const lang = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "es";
+
+  document.documentElement.lang = lang;
+
+  const wrapper = document.querySelector<HTMLElement>("[data-title-es]");
+  const title = lang === "en" ? wrapper?.dataset.titleEn : wrapper?.dataset.titleEs;
+  if (title) document.title = title;
+
+  const heading = document.getElementById("not-found-heading");
+  if (heading) {
+    const text = lang === "en" ? heading.dataset.en : heading.dataset.es;
+    if (text) heading.textContent = text;
+  }
+
+  const message = document.getElementById("not-found-message");
+  if (message) {
+    const text = lang === "en" ? message.dataset.en : message.dataset.es;
+    if (text) message.textContent = text;
+  }
+
+  const homeLink = document.getElementById("not-found-home-link") as HTMLAnchorElement | null;
+  if (homeLink) {
+    const href = lang === "en" ? homeLink.dataset.hrefEn : homeLink.dataset.hrefEs;
+    const label = lang === "en" ? homeLink.dataset.labelEn : homeLink.dataset.labelEs;
+    if (href) homeLink.setAttribute("href", href);
+    if (label) homeLink.textContent = label;
+  }
+</script>

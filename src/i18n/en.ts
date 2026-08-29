@@ -270,6 +270,12 @@ export default {
       linkText: "View the Spanish version",
     },
   },
+  notFound: {
+    title: "Page Not Found - Asiaven",
+    heading: "Page not found",
+    message: "The page you're looking for doesn't exist or was moved.",
+    homeLabel: "Back to home",
+  },
   seo: {
     home: {
       title: "Asiaven - Home",

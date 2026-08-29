@@ -281,6 +281,12 @@ const es = {
       linkText: "Ver la versión en español",
     },
   },
+  notFound: {
+    title: "Página no encontrada - Asiaven",
+    heading: "Página no encontrada",
+    message: "La página que buscas no existe o fue movida.",
+    homeLabel: "Volver al inicio",
+  },
   seo: {
     home: {
       title: "Asiaven - Inicio",
