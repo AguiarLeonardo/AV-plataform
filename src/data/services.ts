@@ -152,6 +152,42 @@ export const services = [
           ],
         },
       },
+      {
+        // Features: base tomada de "Ascensores Residenciales" (ver reporte
+        // en el resumen de la tarea sobre qué se tomó tal cual, qué se
+        // adaptó y qué se agregó de cero — pendiente de revisión del dueño
+        // del proyecto).
+        title: { es: "Ascensores de Lujo", en: "Luxury Elevators" },
+        image: "/images/corporativo/producto-detalle/ascensores-lujo.webp",
+        features: {
+          es: [
+            "Bajo consumo energético",
+            "Baja contaminación sónica",
+            "Velocidades desde 1 m/s hasta 1,75 m/s",
+            "Materiales de cabina en acabados de lujo (madera, acero inoxidable y vidrio)",
+            "Modernos sistemas de seguridad",
+            "Modernos sistemas de operadores de puertas",
+            "Innovadores y confiables sistemas electrónicos",
+            "Confort durante el recorrido",
+            "Iluminación LED de diseño y ambientación personalizable",
+            "Panel de control con pantalla táctil y acabados premium",
+            "Opciones de personalización exclusiva por proyecto (madera, piedra natural, acero inoxidable cepillado)",
+          ],
+          en: [
+            "Low energy consumption",
+            "Low noise pollution",
+            "Speeds from 1 m/s up to 1.75 m/s",
+            "Premium cabin finishes (wood, stainless steel, and glass)",
+            "Modern safety systems",
+            "Modern door operator systems",
+            "Innovative and reliable electronic systems",
+            "Comfort throughout the ride",
+            "Designer LED lighting with customizable ambiance",
+            "Touchscreen control panel with premium finishes",
+            "Exclusive per-project customization options (wood, natural stone, brushed stainless steel)",
+          ],
+        },
+      },
     ],
   },
   {
