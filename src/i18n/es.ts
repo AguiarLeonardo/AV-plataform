@@ -199,6 +199,18 @@ const es = {
       },
     ],
   },
+  services: {
+    carousel: {
+      prevLabel: "Producto anterior",
+      nextLabel: "Producto siguiente",
+    },
+    viewer360: {
+      buttonLabel: "Ver vista 360°",
+      closeLabel: "Cerrar",
+      loadingText: "Cargando panorámica…",
+      errorText: "No se pudo cargar la vista 360°. Inténtalo de nuevo más tarde.",
+    },
+  },
   projects: {
     pageTitle: "Nuestros Proyectos",
     introHeading: "Algunos de nuestros proyectos",

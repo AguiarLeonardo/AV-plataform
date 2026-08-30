@@ -1,24 +1,38 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Check, View } from "lucide-react";
 import type { SubProduct } from "../../data/services";
 import type { Localized } from "../../i18n/utils";
+import Panorama360Modal from "./Panorama360Modal.tsx";
 
 // El componente sigue sin saber nada de locales: recibe strings ya
 // resueltos por el .astro padre vía localize(), nunca el objeto
 // Localized<T> completo. Este tipo se deriva de SubProduct en vez de
 // declarar los campos a mano, para que un cambio futuro en la forma de
 // SubProduct se refleje aquí sin tener que acordarse de actualizar dos
-// lugares.
+// lugares. `panorama360` (no localizado) pasa igual sin cambios.
 type ResolvedSubProduct = {
   [K in keyof SubProduct]: SubProduct[K] extends Localized<infer V> ? V : SubProduct[K];
 };
 
-interface Props {
-  products: ResolvedSubProduct[];
+interface Viewer360Labels {
+  buttonLabel: string;
+  closeLabel: string;
+  loadingText: string;
+  errorText: string;
 }
 
-export default function ProductFeatureSlider({ products }: Props) {
+interface Props {
+  products: ResolvedSubProduct[];
+  prevLabel: string;
+  nextLabel: string;
+  viewer360: Viewer360Labels;
+}
+
+export default function ProductFeatureSlider({ products, prevLabel, nextLabel, viewer360 }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [openPanoramaIndex, setOpenPanoramaIndex] = useState<number | null>(null);
+  const triggerButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const activeTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const prev = () => {
     setCurrentIndex((i) => (i === 0 ? products.length - 1 : i - 1));
@@ -27,6 +41,8 @@ export default function ProductFeatureSlider({ products }: Props) {
   const next = () => {
     setCurrentIndex((i) => (i === products.length - 1 ? 0 : i + 1));
   };
+
+  const openProduct = openPanoramaIndex !== null ? products[openPanoramaIndex] : null;
 
   return (
     <div className="relative w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
@@ -63,6 +79,25 @@ export default function ProductFeatureSlider({ products }: Props) {
                   </li>
                 ))}
               </ul>
+
+              {/* Sin panorámica, no hay botón — nada de deshabilitado ni "próximamente" (mismo criterio que el LanguageSwitcher en páginas no traducidas). */}
+              {product.panorama360 && (
+                <button
+                  type="button"
+                  ref={(el) => {
+                    triggerButtonRefs.current[index] = el;
+                  }}
+                  onClick={() => {
+                    activeTriggerRef.current = triggerButtonRefs.current[index];
+                    setOpenPanoramaIndex(index);
+                  }}
+                  aria-label={`${viewer360.buttonLabel} — ${product.title}`}
+                  className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white"
+                >
+                  <View className="h-4 w-4" />
+                  {viewer360.buttonLabel}
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -72,20 +107,32 @@ export default function ProductFeatureSlider({ products }: Props) {
             <button
               onClick={prev}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-corporativo-gray shadow-md transition-colors hover:bg-corporativo-blue hover:text-white"
-              aria-label="Producto anterior"
+              aria-label={prevLabel}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={next}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-corporativo-gray shadow-md transition-colors hover:bg-corporativo-blue hover:text-white"
-              aria-label="Producto siguiente"
+              aria-label={nextLabel}
             >
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         )}
       </div>
+
+      {openProduct?.panorama360 && (
+        <Panorama360Modal
+          src={openProduct.panorama360}
+          title={openProduct.title}
+          closeLabel={viewer360.closeLabel}
+          loadingText={viewer360.loadingText}
+          errorText={viewer360.errorText}
+          onClose={() => setOpenPanoramaIndex(null)}
+          triggerRef={activeTriggerRef}
+        />
+      )}
     </div>
   );
 }

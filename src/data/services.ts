@@ -4,6 +4,8 @@ export interface SubProduct {
   title: Localized<string>;
   image: string;
   features: Localized<string[]>;
+  /** Panorámica equirrectangular para el visor 360 — opcional, no se traduce. Solo residenciales/panorámicos/lujo la tienen hoy; oficina y hospitales no tienen imagen todavía. */
+  panorama360?: string;
 }
 
 export interface Service {
@@ -51,6 +53,7 @@ export const services = [
       {
         title: { es: "Ascensores Residenciales", en: "Residential Elevators" },
         image: "/images/corporativo/producto-detalle/ascensores-residenciales.webp",
+        panorama360: "/images/corporativo/producto-360/ascensores-residenciales.jpg",
         features: {
           es: [
             "Bajo consumo energético",
@@ -107,6 +110,7 @@ export const services = [
       {
         title: { es: "Ascensores Panorámicos", en: "Panoramic Elevators" },
         image: "/images/corporativo/producto-detalle/ascensores-panoramicos.webp",
+        panorama360: "/images/corporativo/producto-360/ascensores-panoramicos.jpg",
         features: {
           es: [
             "Bajo consumo energético",
@@ -159,6 +163,7 @@ export const services = [
         // del proyecto).
         title: { es: "Ascensores de Lujo", en: "Luxury Elevators" },
         image: "/images/corporativo/producto-detalle/ascensores-lujo.webp",
+        panorama360: "/images/corporativo/producto-360/ascensores-lujo.jpg",
         features: {
           es: [
             "Bajo consumo energético",

@@ -4,7 +4,7 @@ import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
 import { services } from "../../data/services";
 import { Download } from "lucide-react";
-import { localize } from "../../i18n/utils";
+import { localize, t } from "../../i18n/utils";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -29,6 +29,7 @@ const subProducts = service.subProducts?.map((subProduct) => ({
   title: localize(subProduct.title, lang),
   image: subProduct.image,
   features: localize(subProduct.features, lang),
+  panorama360: subProduct.panorama360,
 }));
 ---
 
@@ -91,7 +92,13 @@ const subProducts = service.subProducts?.map((subProduct) => ({
         <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
           {localize(service.subProductsHeading, lang)}
         </h2>
-        <ProductFeatureSlider products={subProducts} client:load />
+        <ProductFeatureSlider
+          products={subProducts}
+          prevLabel={t(lang, "services.carousel.prevLabel")}
+          nextLabel={t(lang, "services.carousel.nextLabel")}
+          viewer360={t(lang, "services.viewer360")}
+          client:load
+        />
       </div>
     )}
   </div>

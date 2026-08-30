@@ -187,6 +187,18 @@ export default {
       },
     ],
   },
+  services: {
+    carousel: {
+      prevLabel: "Previous product",
+      nextLabel: "Next product",
+    },
+    viewer360: {
+      buttonLabel: "View 360° tour",
+      closeLabel: "Close",
+      loadingText: "Loading panorama…",
+      errorText: "We couldn't load the 360° view. Please try again later.",
+    },
+  },
   projects: {
     pageTitle: "Our Projects",
     introHeading: "Some of our projects",
