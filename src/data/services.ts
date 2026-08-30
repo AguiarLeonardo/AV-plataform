@@ -157,10 +157,13 @@ export const services = [
         },
       },
       {
-        // Features: base tomada de "Ascensores Residenciales" (ver reporte
-        // en el resumen de la tarea sobre qué se tomó tal cual, qué se
-        // adaptó y qué se agregó de cero — pendiente de revisión del dueño
-        // del proyecto).
+        // Features: las 8 primeras son las de "Ascensores Residenciales" tal
+        // cual (se omite "Reducción de espacios"), más 1 sola feature nueva
+        // y genérica sobre el acabado de lujo — sin nombrar materiales
+        // concretos, porque no está confirmado qué ofrece Asiaven. Las 3
+        // features anteriores (iluminación LED, panel táctil, materiales
+        // específicos) se retiraron: eran afirmaciones comerciales
+        // inventadas que el dueño del proyecto no aprobó.
         title: { es: "Ascensores de Lujo", en: "Luxury Elevators" },
         image: "/images/corporativo/producto-detalle/ascensores-lujo.webp",
         panorama360: "/images/corporativo/producto-360/ascensores-lujo.jpg",
@@ -169,27 +172,23 @@ export const services = [
             "Bajo consumo energético",
             "Baja contaminación sónica",
             "Velocidades desde 1 m/s hasta 1,75 m/s",
-            "Materiales de cabina en acabados de lujo (madera, acero inoxidable y vidrio)",
+            "Materiales de cabina de alta calidad",
             "Modernos sistemas de seguridad",
             "Modernos sistemas de operadores de puertas",
             "Innovadores y confiables sistemas electrónicos",
             "Confort durante el recorrido",
-            "Iluminación LED de diseño y ambientación personalizable",
-            "Panel de control con pantalla táctil y acabados premium",
-            "Opciones de personalización exclusiva por proyecto (madera, piedra natural, acero inoxidable cepillado)",
+            "Terminaciones premium en cabina",
           ],
           en: [
             "Low energy consumption",
             "Low noise pollution",
             "Speeds from 1 m/s up to 1.75 m/s",
-            "Premium cabin finishes (wood, stainless steel, and glass)",
+            "High-quality cabin materials",
             "Modern safety systems",
             "Modern door operator systems",
             "Innovative and reliable electronic systems",
             "Comfort throughout the ride",
-            "Designer LED lighting with customizable ambiance",
-            "Touchscreen control panel with premium finishes",
-            "Exclusive per-project customization options (wood, natural stone, brushed stainless steel)",
+            "Premium cabin finishes",
           ],
         },
       },
