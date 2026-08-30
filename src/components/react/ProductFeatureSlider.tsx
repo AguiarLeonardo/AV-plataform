@@ -64,40 +64,54 @@ export default function ProductFeatureSlider({ products, prevLabel, nextLabel, v
               />
             </div>
 
-            <div className="flex min-h-0 flex-col justify-center p-8 lg:p-12">
-              <h3 className="text-2xl font-extrabold tracking-tight text-corporativo-gray lg:text-3xl">
-                {product.title}
-              </h3>
+            {/*
+              overflow-y-auto (no justify-center) en esta columna + el wrapper
+              interno con m-auto: cuando el contenido cabe, el margen
+              automático lo centra exactamente igual que justify-center antes
+              (cero cambio visual). Cuando el contenido NO cabe (desborda los
+              500px de la tarjeta), el margen colapsa a 0 y el contenido se
+              ancla arriba, quedando accesible completo con scroll — el bug
+              original era que un bloque centrado con overflow-visible dentro
+              de un contenedor de altura fija se desborda simétricamente por
+              ARRIBA y por ABAJO, y el overflow-hidden del contenedor raíz
+              recorta ambos extremos sin dejar forma de alcanzarlos.
+            */}
+            <div className="flex min-h-0 flex-col overflow-y-auto p-8 lg:p-12">
+              <div className="m-auto w-full">
+                <h3 className="text-2xl font-extrabold tracking-tight text-corporativo-gray lg:text-3xl">
+                  {product.title}
+                </h3>
 
-              <ul
-                className="mt-6 flex max-h-40 flex-col gap-3 overflow-y-auto pr-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent lg:max-h-none lg:overflow-visible lg:pr-0"
-              >
-                {product.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 text-gray-600">
-                    <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-corporativo-blue" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Sin panorámica, no hay botón — nada de deshabilitado ni "próximamente" (mismo criterio que el LanguageSwitcher en páginas no traducidas). */}
-              {product.panorama360 && (
-                <button
-                  type="button"
-                  ref={(el) => {
-                    triggerButtonRefs.current[index] = el;
-                  }}
-                  onClick={() => {
-                    activeTriggerRef.current = triggerButtonRefs.current[index];
-                    setOpenPanoramaIndex(index);
-                  }}
-                  aria-label={`${viewer360.buttonLabel} — ${product.title}`}
-                  className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white"
+                <ul
+                  className="mt-6 flex max-h-40 flex-col gap-3 overflow-y-auto pr-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent lg:max-h-none lg:overflow-visible lg:pr-0"
                 >
-                  <View className="h-4 w-4" />
-                  {viewer360.buttonLabel}
-                </button>
-              )}
+                  {product.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3 text-gray-600">
+                      <Check className="mt-0.5 h-5 w-5 flex-shrink-0 text-corporativo-blue" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Sin panorámica, no hay botón — nada de deshabilitado ni "próximamente" (mismo criterio que el LanguageSwitcher en páginas no traducidas). */}
+                {product.panorama360 && (
+                  <button
+                    type="button"
+                    ref={(el) => {
+                      triggerButtonRefs.current[index] = el;
+                    }}
+                    onClick={() => {
+                      activeTriggerRef.current = triggerButtonRefs.current[index];
+                      setOpenPanoramaIndex(index);
+                    }}
+                    aria-label={`${viewer360.buttonLabel} — ${product.title}`}
+                    className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white"
+                  >
+                    <View className="h-4 w-4" />
+                    {viewer360.buttonLabel}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}
