@@ -1,11 +1,21 @@
 import type { Localized } from "../i18n/utils";
 
+export interface SubProduct {
+  title: Localized<string>;
+  image: string;
+  features: Localized<string[]>;
+}
+
 export interface Service {
   slug: string;
   title: Localized<string>;
   shortDescription: Localized<string>;
   fullDescription: Localized<string[]>;
   images: string[];
+  /** Solo ascensores y escaleras-mecanicas lo tienen hoy. La página los renderiza si existen, sin preguntar por slug. */
+  subProducts?: SubProduct[];
+  /** Encabezado de la sección de subproductos — viaja junto con subProducts porque el texto difiere por servicio (ver servicios/[servicio].astro). */
+  subProductsHeading?: Localized<string>;
 }
 
 export const services = [
@@ -33,6 +43,116 @@ export const services = [
       "/images/corporativo/servicios/ascensores/ascensor-cuarto-maquinas.webp",
       "/images/corporativo/servicios/ascensores/ascensor-cabina.webp",
     ],
+    subProductsHeading: {
+      es: "Nuestras Soluciones en Elevación",
+      en: "Our Elevation Solutions",
+    },
+    subProducts: [
+      {
+        title: { es: "Ascensores Residenciales", en: "Residential Elevators" },
+        image: "/images/corporativo/producto-detalle/ascensores-residenciales.webp",
+        features: {
+          es: [
+            "Bajo consumo energético",
+            "Baja contaminación sónica",
+            "Velocidades desde 1 m/s hasta 1,75 m/s",
+            "Materiales de cabina de alta calidad",
+            "Modernos sistemas de seguridad",
+            "Modernos sistemas de operadores de puertas",
+            "Innovadores y confiables sistemas electrónicos",
+            "Confort durante el recorrido",
+            "Reducción de espacios",
+          ],
+          en: [
+            "Low energy consumption",
+            "Low noise pollution",
+            "Speeds from 1 m/s up to 1.75 m/s",
+            "High-quality cabin materials",
+            "Modern safety systems",
+            "Modern door operator systems",
+            "Innovative and reliable electronic systems",
+            "Comfort throughout the ride",
+            "Reduced space requirements",
+          ],
+        },
+      },
+      {
+        title: { es: "Ascensores para Oficina", en: "Office Elevators" },
+        image: "/images/corporativo/producto-detalle/ascensores-oficina.webp",
+        features: {
+          es: [
+            "Bajo consumo energético",
+            "Baja contaminación sónica",
+            "Alta velocidades de acuerdo a la fosa y los requerimientos",
+            "Materiales de cabina de lujo",
+            "Modernos sistemas de seguridad",
+            "Modernos sistemas de operadores de puertas",
+            "Innovadores y confiables sistemas electrónicos",
+            "Confort durante el recorrido",
+            "Reducción de espacios",
+          ],
+          en: [
+            "Low energy consumption",
+            "Low noise pollution",
+            "High speeds according to shaft pit and requirements",
+            "Luxury cabin materials",
+            "Modern safety systems",
+            "Modern door operator systems",
+            "Innovative and reliable electronic systems",
+            "Comfort throughout the ride",
+            "Reduced space requirements",
+          ],
+        },
+      },
+      {
+        title: { es: "Ascensores Panorámicos", en: "Panoramic Elevators" },
+        image: "/images/corporativo/producto-detalle/ascensores-panoramicos.webp",
+        features: {
+          es: [
+            "Bajo consumo energético",
+            "Baja contaminación sónica",
+            "Velocidad acorde al diseño",
+            "Materiales de cabina panorámica de lujo",
+            "Modernos sistemas de seguridad",
+            "Modernos sistemas de operadores de puertas",
+            "Innovadores y confiables sistemas electrónicos",
+            "Confort durante el recorrido",
+          ],
+          en: [
+            "Low energy consumption",
+            "Low noise pollution",
+            "Speed suited to the design",
+            "Luxury panoramic cabin materials",
+            "Modern safety systems",
+            "Modern door operator systems",
+            "Innovative and reliable electronic systems",
+            "Comfort throughout the ride",
+          ],
+        },
+      },
+      {
+        title: { es: "Ascensores para Hospitales", en: "Hospital Elevators" },
+        image: "/images/corporativo/producto-detalle/ascensores-hospitales.webp",
+        features: {
+          es: [
+            "Ascensores Desarrollados para Hospitales",
+            "Tamaño ideal de cabina (Traslado de Pacientes en Cama)",
+            "Programa especial de Recorrido (Tiempo de apertura de puertas y tiempo de arrancada y frenado)",
+            "Poco servicio de mantenimiento (Evitando: Fuera de Servicio)",
+            "Componentes de Alta Rotación",
+            "Los mejores componentes para brindarle el confort requerido durante el uso del ascensor",
+          ],
+          en: [
+            "Elevators developed specifically for hospitals",
+            "Ideal cabin size (for transporting patients on beds)",
+            "Special travel program (door opening time and start/braking time)",
+            "Low maintenance requirements (minimizing out-of-service time)",
+            "High-rotation components",
+            "The best components to provide the comfort required during elevator use",
+          ],
+        },
+      },
+    ],
   },
   {
     slug: "escaleras-mecanicas",
@@ -57,6 +177,50 @@ export const services = [
       "/images/corporativo/servicios/escaleras-mecanicas/escalera-centro-comercial.webp",
       "/images/corporativo/servicios/escaleras-mecanicas/escalera-peldanos.webp",
       "/images/corporativo/servicios/escaleras-mecanicas/rampa-mecanica.webp",
+    ],
+    subProductsHeading: {
+      es: "Nuestros Sistemas de Movilidad",
+      en: "Our Mobility Systems",
+    },
+    subProducts: [
+      {
+        title: { es: "Escaleras Mecánicas", en: "Escalators" },
+        image: "/images/corporativo/producto-detalle/escaleras-mecanicas-tramo.webp",
+        features: {
+          es: [
+            "Flexibles y Personalizables: Se adaptan a cualquier espacio y se pueden diseñar a medida.",
+            "Directas y Eficientes: Llevan a los usuarios directamente a su destino.",
+            "Modulares: Se pueden combinar con otros sistemas de transporte.",
+            "Seguras: Incorporan sistemas de seguridad de última generación.",
+            "Estéticas: Se integran perfectamente en cualquier entorno.",
+          ],
+          en: [
+            "Flexible and Customizable: They adapt to any space and can be custom-designed.",
+            "Direct and Efficient: They take users straight to their destination.",
+            "Modular: They can be combined with other transport systems.",
+            "Safe: They incorporate the latest-generation safety systems.",
+            "Aesthetic: They integrate seamlessly into any environment.",
+          ],
+        },
+      },
+      {
+        title: { es: "Rampas Mecánicas", en: "Moving Walkways" },
+        image: "/images/corporativo/producto-detalle/rampas-mecanicas.webp",
+        features: {
+          es: [
+            "Inclusivas: Permiten el acceso a todos, especialmente a personas con movilidad reducida.",
+            "Versátiles: Se adaptan a distintos espacios y necesidades.",
+            "Seguras: Garantizan un desplazamiento sin riesgos.",
+            "Personalizables: Se ajustan a cualquier estilo arquitectónico.",
+          ],
+          en: [
+            "Inclusive: They provide access for everyone, especially people with reduced mobility.",
+            "Versatile: They adapt to different spaces and needs.",
+            "Safe: They ensure risk-free movement.",
+            "Customizable: They adjust to any architectural style.",
+          ],
+        },
+      },
     ],
   },
   {

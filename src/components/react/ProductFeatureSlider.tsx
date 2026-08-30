@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import type { SubProduct } from "../../data/services";
+import type { Localized } from "../../i18n/utils";
 
-interface Product {
-  title: string;
-  image: string;
-  features: string[];
-}
+// El componente sigue sin saber nada de locales: recibe strings ya
+// resueltos por el .astro padre vía localize(), nunca el objeto
+// Localized<T> completo. Este tipo se deriva de SubProduct en vez de
+// declarar los campos a mano, para que un cambio futuro en la forma de
+// SubProduct se refleje aquí sin tener que acordarse de actualizar dos
+// lugares.
+type ResolvedSubProduct = {
+  [K in keyof SubProduct]: SubProduct[K] extends Localized<infer V> ? V : SubProduct[K];
+};
 
 interface Props {
-  products: Product[];
+  products: ResolvedSubProduct[];
 }
 
 export default function ProductFeatureSlider({ products }: Props) {

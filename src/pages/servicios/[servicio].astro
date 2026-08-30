@@ -20,88 +20,16 @@ const { service } = Astro.props;
 // locale correcto — no hay accesos .es literales que perseguir.
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 
-const elevatorsData = [
-  {
-    title: "Ascensores Residenciales",
-    image: "/images/corporativo/producto-detalle/ascensores-residenciales.webp",
-    features: [
-      "Bajo consumo energético",
-      "Baja contaminación sónica",
-      "Velocidades desde 1 m/s hasta 1,75 m/s",
-      "Materiales de cabina de alta calidad",
-      "Modernos sistemas de seguridad",
-      "Modernos sistemas de operadores de puertas",
-      "Innovadores y confiables sistemas electrónicos",
-      "Confort durante el recorrido",
-      "Reducción de espacios",
-    ],
-  },
-  {
-    title: "Ascensores para Oficina",
-    image: "/images/corporativo/producto-detalle/ascensores-oficina.webp",
-    features: [
-      "Bajo consumo energético",
-      "Baja contaminación sónica",
-      "Alta velocidades de acuerdo a la fosa y los requerimientos",
-      "Materiales de cabina de lujo",
-      "Modernos sistemas de seguridad",
-      "Modernos sistemas de operadores de puertas",
-      "Innovadores y confiables sistemas electrónicos",
-      "Confort durante el recorrido",
-      "Reducción de espacios",
-    ],
-  },
-  {
-    title: "Ascensores Panorámicos",
-    image: "/images/corporativo/producto-detalle/ascensores-panoramicos.webp",
-    features: [
-      "Bajo consumo energético",
-      "Baja contaminación sónica",
-      "Velocidad acorde al diseño",
-      "Materiales de cabina panorámica de lujo",
-      "Modernos sistemas de seguridad",
-      "Modernos sistemas de operadores de puertas",
-      "Innovadores y confiables sistemas electrónicos",
-      "Confort durante el recorrido",
-    ],
-  },
-  {
-    title: "Ascensores para Hospitales",
-    image: "/images/corporativo/producto-detalle/ascensores-hospitales.webp",
-    features: [
-      "Ascensores Desarrollados para Hospitales",
-      "Tamaño ideal de cabina (Traslado de Pacientes en Cama)",
-      "Programa especial de Recorrido (Tiempo de apertura de puertas y tiempo de arrancada y frenado)",
-      "Poco servicio de mantenimiento (Evitando: Fuera de Servicio)",
-      "Componentes de Alta Rotación",
-      "Los mejores componentes para brindarle el confort requerido durante el uso del ascensor",
-    ],
-  },
-];
-
-const escalatorsData = [
-  {
-    title: "Escaleras Mecánicas",
-    image: "/images/corporativo/producto-detalle/escaleras-mecanicas-tramo.webp",
-    features: [
-      "Flexibles y Personalizables: Se adaptan a cualquier espacio y se pueden diseñar a medida.",
-      "Directas y Eficientes: Llevan a los usuarios directamente a su destino.",
-      "Modulares: Se pueden combinar con otros sistemas de transporte.",
-      "Seguras: Incorporan sistemas de seguridad de última generación.",
-      "Estéticas: Se integran perfectamente en cualquier entorno.",
-    ],
-  },
-  {
-    title: "Rampas Mecánicas",
-    image: "/images/corporativo/producto-detalle/rampas-mecanicas.webp",
-    features: [
-      "Inclusivas: Permiten el acceso a todos, especialmente a personas con movilidad reducida.",
-      "Versátiles: Se adaptan a distintos espacios y necesidades.",
-      "Seguras: Garantizan un desplazamiento sin riesgos.",
-      "Personalizables: Se ajustan a cualquier estilo arquitectónico.",
-    ],
-  },
-];
+// Subproductos (elevatorsData/escalatorsData ya no viven aquí — se movieron
+// a services.ts como Service.subProducts). Se resuelven a strings planos
+// antes de pasarlos a ProductFeatureSlider, que sigue sin saber nada de
+// locales. Genérico: si otro servicio agrega subProducts mañana, esto
+// funciona sin tocar el .astro.
+const subProducts = service.subProducts?.map((subProduct) => ({
+  title: localize(subProduct.title, lang),
+  image: subProduct.image,
+  features: localize(subProduct.features, lang),
+}));
 ---
 
 <Layout title={`${localize(service.title, lang)} - Asiaven`}>
@@ -158,21 +86,12 @@ const escalatorsData = [
       </div>
     </div>
 
-    {service.slug === "ascensores" && (
+    {subProducts && service.subProductsHeading && (
       <div class="mt-20">
         <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
-          Nuestras Soluciones en Elevación
+          {localize(service.subProductsHeading, lang)}
         </h2>
-        <ProductFeatureSlider products={elevatorsData} client:load />
-      </div>
-    )}
-
-    {service.slug === "escaleras-mecanicas" && (
-      <div class="mt-20">
-        <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
-          Nuestros Sistemas de Movilidad
-        </h2>
-        <ProductFeatureSlider products={escalatorsData} client:load />
+        <ProductFeatureSlider products={subProducts} client:load />
       </div>
     )}
   </div>
