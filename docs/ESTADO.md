@@ -141,6 +141,11 @@ Un análisis previo detectó que los 4 tipos de ascensor y los 2 de escalera/ram
 - **No se tradujo la ruta** — `/servicios/[servicio]` sigue sin versión en inglés; esto es puramente estructural, preparación para cuando esa ruta se traduzca.
 - Verificado sin cambio visible en `/servicios/ascensores` y `/servicios/escaleras-mecanicas` (texto idéntico al de antes del refactor).
 
+### Post-1c — quinto tipo "Ascensores de Lujo" agregado a `/servicios/ascensores`
+Se agregó un quinto `SubProduct` al registro `ascensores` en `services.ts` (`title: "Ascensores de Lujo" / "Luxury Elevators"`, imagen `ascensores-lujo.webp`, al final del array después de hospitales). Verificado en navegador: el carrusel de `ProductFeatureSlider` renderiza los 5 elementos, la imagen carga (`naturalWidth` > 0, no rota), y la navegación con los botones anterior/siguiente completa el ciclo correctamente (4 clics en "siguiente" llega a Lujo, el 5º vuelve a Residenciales).
+
+**⚠️ Features de "Ascensores de Lujo" pendientes de revisión del dueño del proyecto.** Se construyeron a partir de "Ascensores Residenciales" (features base tomadas literalmente, una adaptada al acabado de lujo, tres agregadas de cero para el segmento premium — detalle completo en el resumen de la tarea que las creó). No son contenido verificado por el negocio, son una propuesta razonable a partir del patrón existente.
+
 ### Patrón de datos multiidioma (`Localized<T>`) y quién lo hereda
 `Localized<T>` (`{ es: T; en: T }`) y `localize()` viven en `src/i18n/utils.ts` — es un concepto de i18n, no de un dataset concreto. `services.ts` es el primer archivo de datos que lo adopta (Fase 1c). **Pendiente de heredarlo:** `packagingCatalog.ts` (`title`/`shortDescription`/`description` en sus 3 niveles) y `techCatalog.ts` (`title`/`category`/`subcategoryName`/`description`/`features`) — ninguno tocado todavía. Ambos, igual que `services.ts` antes de esta fase, declaran sus arrays con anotación de tipo explícita (`: PackagingCategory[]`, `: TechProduct[]`) en vez de `satisfies`, así que antes de escribir sus slug-maps exhaustivos necesitan el mismo cambio de anotación que se aplicó a `services.ts` en este commit.
 
