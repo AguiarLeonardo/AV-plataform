@@ -2,6 +2,7 @@
 import Layout from "../../../layouts/Layout.astro";
 import { packagingCategories } from "../../../data/packagingCatalog";
 import { ArrowLeft } from "lucide-react";
+import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
 
 export function getStaticPaths() {
   return packagingCategories.flatMap((category) =>
@@ -60,12 +61,14 @@ const specEntries = Object.entries(product.specs);
         </table>
       </div>
 
-      <a
-        href={`/store/envases/${product.slug}`}
-        class="mt-10 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
-      >
-        Ver producto en la tienda &rarr;
-      </a>
+      {STORE_CATALOG_LIVE && (
+        <a
+          href={`/store/envases/${product.slug}`}
+          class="mt-10 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+        >
+          Ver producto en la tienda &rarr;
+        </a>
+      )}
     </div>
   </div>
 </Layout>
