@@ -21,14 +21,14 @@ export default {
           subtitle:
             "Specialists in the installation, modernization, and maintenance of elevator and escalator systems with international standards.",
           image: "/images/corporativo/banners/hero/banner-movilidad-vertical.webp",
-          ctas: [{ text: "Elevation Solutions", href: "/servicios/ascensores", primary: true }],
+          ctas: [{ text: "Elevation Solutions", serviceSlug: "ascensores" as const, primary: true }],
         },
         {
           title: "Innovation in Packaging Solutions",
           subtitle:
             "Manufacturing of high-resistance containers and packaging for the industrial and commercial sector, ensuring maximum durability.",
           image: "/images/corporativo/banners/hero/banner-envasado-innovacion.webp",
-          ctas: [{ text: "View Catalog", href: "/servicios/envases", primary: true }],
+          ctas: [{ text: "View Catalog", serviceSlug: "envases" as const, primary: true }],
         },
         {
           title: "State-of-the-Art Technology Equipment",
@@ -36,7 +36,7 @@ export default {
             "Supply of corporate hardware, servers, and network infrastructure. Latest-generation equipment backed by a 3-year comprehensive warranty.",
           image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.webp",
           ctas: [
-            { text: "Technology Division", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true },
+            { text: "Technology Division", serviceSlug: "tecnologia-y-telecomunicaciones" as const, primary: true },
           ],
         },
       ],
@@ -188,6 +188,9 @@ export default {
     ],
   },
   services: {
+    pageHeading: "Our Services",
+    pageIntro:
+      "At Asiaven we have strived to provide the best services for more than 15 years, always focusing on quality, innovation, and the complete satisfaction of our corporate clients in every project we undertake.",
     carousel: {
       prevLabel: "Previous product",
       nextLabel: "Next product",
@@ -198,6 +201,20 @@ export default {
       loadingText: "Loading panorama…",
       errorText: "We couldn't load the 360° view. Please try again later.",
     },
+    detail: {
+      quoteCta: "Request a Quote",
+      supportCta: "Technical Support",
+      storeCta: "Go to the store",
+      storeSpanishOnlyNote: "Our store is only available in Spanish.",
+      catalogCta: "View full catalog",
+      catalogPdfCta: "Download catalog (PDF)",
+      catalogSpanishOnlyNote: "Our catalog is only available in Spanish.",
+    },
+  },
+  packaging: {
+    pageTitle: "Packaging Catalog",
+    notice: "Our full packaging catalog is only available in Spanish.",
+    linkText: "View the catalog in Spanish",
   },
   projects: {
     pageTitle: "Our Projects",
@@ -303,6 +320,14 @@ export default {
       title: "Our Projects - Asiaven",
       description:
         "Discover some of the infrastructure, vertical mobility, and technology projects Asiaven has delivered for corporate and government clients.",
+    },
+    services: {
+      title: "Our Services - Asiaven",
+      description: "Discover all of Grupo Asiaven's services: elevators, escalators, technology, construction, and more.",
+    },
+    packaging: {
+      title: "Packaging Catalog - Asiaven",
+      description: "Asiaven's full packaging catalog is available in Spanish.",
     },
     techSupport: {
       title: "Technical Support & Drivers - Asiaven",

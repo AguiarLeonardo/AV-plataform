@@ -30,14 +30,14 @@ const es = {
           subtitle:
             "Especialistas en la instalación, modernización y mantenimiento de sistemas de ascensores y escaleras mecánicas con estándares internacionales.",
           image: "/images/corporativo/banners/hero/banner-movilidad-vertical.webp",
-          ctas: [{ text: "Soluciones en Elevación", href: "/servicios/ascensores", primary: true }],
+          ctas: [{ text: "Soluciones en Elevación", serviceSlug: "ascensores" as const, primary: true }],
         },
         {
           title: "Innovación en Soluciones de Envasado",
           subtitle:
             "Fabricación de recipientes y envases de alta resistencia para el sector industrial y comercial, garantizando la máxima durabilidad.",
           image: "/images/corporativo/banners/hero/banner-envasado-innovacion.webp",
-          ctas: [{ text: "Ver Catálogo", href: "/servicios/envases", primary: true }],
+          ctas: [{ text: "Ver Catálogo", serviceSlug: "envases" as const, primary: true }],
         },
         {
           title: "Vanguardia en Equipamiento Tecnológico",
@@ -45,7 +45,7 @@ const es = {
             "Suministro de hardware corporativo, servidores e infraestructura de redes. Equipos de última generación respaldados por 3 años de garantía integral.",
           image: "/images/corporativo/banners/hero/banner-equipamiento-tecnologico.webp",
           ctas: [
-            { text: "División Tecnológica", href: "/servicios/tecnologia-y-telecomunicaciones", primary: true },
+            { text: "División Tecnológica", serviceSlug: "tecnologia-y-telecomunicaciones" as const, primary: true },
           ],
         },
       ],
@@ -200,6 +200,9 @@ const es = {
     ],
   },
   services: {
+    pageHeading: "Nuestros Servicios",
+    pageIntro:
+      "En Asiaven procuramos brindar los mejores servicios desde hace más de 15 años, enfocándonos siempre en la calidad, la innovación y la satisfacción absoluta de nuestros clientes corporativos en cada proyecto que emprendemos.",
     carousel: {
       prevLabel: "Producto anterior",
       nextLabel: "Producto siguiente",
@@ -210,6 +213,26 @@ const es = {
       loadingText: "Cargando panorámica…",
       errorText: "No se pudo cargar la vista 360°. Inténtalo de nuevo más tarde.",
     },
+    detail: {
+      quoteCta: "Solicitar Cotización",
+      supportCta: "Soporte Técnico",
+      storeCta: "Ir a la tienda",
+      // Nunca se muestra en español (la Tienda ya está en español) — existe
+      // solo para que en.ts tenga la misma forma. Ver services.detail en en.ts.
+      storeSpanishOnlyNote: "Nuestra tienda está disponible en español.",
+      catalogCta: "Ver catálogo completo",
+      catalogPdfCta: "Descargar catálogo (PDF)",
+      // Mismo caso que storeSpanishOnlyNote: no se muestra en español.
+      catalogSpanishOnlyNote: "Nuestro catálogo está disponible en español.",
+    },
+  },
+  packaging: {
+    // No lo usa ninguna página en español (el catálogo /envases no pasa por
+    // este diccionario) — existe solo para que en.ts, consumido por
+    // /en/packaging.astro, tenga la misma forma (satisfies typeof es).
+    pageTitle: "Catálogo de Envases",
+    notice: "Nuestro catálogo completo de envases está disponible únicamente en español.",
+    linkText: "Ver el catálogo en español",
   },
   projects: {
     pageTitle: "Nuestros Proyectos",
@@ -314,6 +337,17 @@ const es = {
       title: "Nuestros Proyectos - Asiaven",
       description:
         "Conoce algunos de los proyectos de infraestructura, movilidad vertical y tecnología que Asiaven ha ejecutado para clientes corporativos y estatales.",
+    },
+    services: {
+      title: "Nuestros Servicios - Asiaven",
+      description:
+        "Conoce todos los servicios de Grupo Asiaven: ascensores, escaleras mecánicas, tecnología, construcción y más.",
+    },
+    packaging: {
+      // No la usa /envases (no pasa por el diccionario) — misma razón que
+      // packaging.pageTitle más arriba: solo para que en.ts tenga la misma forma.
+      title: "Catálogo de Envases - Asiaven",
+      description: "El catálogo completo de envases de Asiaven está disponible en español.",
     },
     techSupport: {
       title: "Soporte Técnico y Drivers - Asiaven",
