@@ -204,6 +204,7 @@ export default {
     },
     detail: {
       quoteCta: "Request a Quote",
+      viewProductCta: "View product in the store",
       supportCta: "Technical Support",
       storeCta: "Go to the store",
       storeSpanishOnlyNote: "Our store is only available in Spanish.",

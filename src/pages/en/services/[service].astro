@@ -92,6 +92,27 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
             depende del idioma de la ruta. */}
             <p class="text-xs text-gray-500">{t(lang, "services.detail.catalogSpanishOnlyNote")}</p>
           </div>
+        ) : service.slug === "recipientes-gas-licuado" ? (
+          <div class="flex flex-col gap-2 items-start w-full">
+            <div class="flex flex-wrap items-center gap-4">
+              <a
+                href={getRouteHref("contact", lang)}
+                class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+              >
+                {t(lang, "services.detail.quoteCta")} &rarr;
+              </a>
+              <a
+                href="/store/recipientes/gas-licuado"
+                class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+              >
+                {t(lang, "services.detail.viewProductCta")} &rarr;
+              </a>
+            </div>
+            {/* La Store no está traducida (ver docs/ESTADO.md), así que el
+            enlace al producto se mantiene con esta misma señal discreta ya
+            usada para el catálogo de envases. */}
+            <p class="text-xs text-gray-500">{t(lang, "services.detail.storeSpanishOnlyNote")}</p>
+          </div>
         ) : (
           <a
             href={getRouteHref("contact", lang)}

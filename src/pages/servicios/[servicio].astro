@@ -88,6 +88,21 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
               </a>
             )}
           </div>
+        ) : service.slug === "recipientes-gas-licuado" ? (
+          <div class="flex flex-wrap items-center gap-4">
+            <a
+              href={getRouteHref("contact", lang)}
+              class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+            >
+              {t(lang, "services.detail.quoteCta")} &rarr;
+            </a>
+            <a
+              href="/store/recipientes/gas-licuado"
+              class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+            >
+              {t(lang, "services.detail.viewProductCta")} &rarr;
+            </a>
+          </div>
         ) : (
           <a
             href={getRouteHref("contact", lang)}

@@ -219,6 +219,7 @@ const es = {
     },
     detail: {
       quoteCta: "Solicitar Cotización",
+      viewProductCta: "Ver producto en la tienda",
       supportCta: "Soporte Técnico",
       // storeCta/storeSpanishOnlyNote: sin uso desde que el CTA de
       // Tecnología y Telecomunicaciones pasó a apuntar al PDF del catálogo
