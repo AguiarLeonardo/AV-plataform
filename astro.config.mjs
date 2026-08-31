@@ -6,27 +6,26 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
-import { routes, getTranslatedEntry, buildAbsoluteUrl } from './src/i18n/routes.ts';
+import { getAllTranslatedPairs, buildAbsoluteUrl } from './src/i18n/routes.ts';
 import { getLangFromUrl } from './src/i18n/utils.ts';
 
 /**
  * @astrojs/sitemap trae una opción `i18n` integrada, pero asume que cada
  * locale repite el mismo slug (`/foo` <-> `/en/foo`) — no aplica aquí,
- * porque los slugs se traducen de verdad (`/contactanos` <-> `/en/contact`).
- * Por eso se arma el hreflang del sitemap a mano en `serialize()`, leyendo
- * el mismo registro de src/i18n/routes.ts que usan el Navbar y el
- * LanguageSwitcher — nada hardcodeado aquí aparte de esa única fuente.
+ * porque los slugs se traducen de verdad (`/contactanos` <-> `/en/contact`,
+ * `/servicios/ascensores` <-> `/en/services/elevators`). Por eso se arma el
+ * hreflang del sitemap a mano en `serialize()`, leyendo el mismo
+ * `getAllTranslatedPairs()` de src/i18n/routes.ts que usan Hreflang y
+ * LanguageSwitcher — nada hardcodeado aquí aparte de esa única fuente. Cubre
+ * tanto las RouteKey fijas como los 8 pares de detalle de servicios por
+ * igual, sin distinguir entre ambos.
  *
  * @param {string} pathname
  * @param {"es" | "en"} locale
- * @returns {keyof typeof routes | undefined}
+ * @returns {{ es: string; en: string } | undefined}
  */
-function findRouteKeyForPath(pathname, locale) {
-  const keys = /** @type {(keyof typeof routes)[]} */ (Object.keys(routes));
-  return keys.find((key) => {
-    const entry = /** @type {{ es: string; en?: string }} */ (routes[key]);
-    return locale === 'en' ? entry.en === pathname : entry.es === pathname;
-  });
+function findTranslatedPair(pathname, locale) {
+  return getAllTranslatedPairs().find((pair) => (locale === 'en' ? pair.en === pathname : pair.es === pathname));
 }
 
 // https://astro.build/config
@@ -55,8 +54,7 @@ export default defineConfig({
       serialize(item) {
         const url = new URL(item.url);
         const locale = getLangFromUrl(url);
-        const routeKey = findRouteKeyForPath(url.pathname, locale);
-        const entry = routeKey ? getTranslatedEntry(routeKey) : null;
+        const entry = findTranslatedPair(url.pathname, locale);
 
         if (!entry) {
           return item;
