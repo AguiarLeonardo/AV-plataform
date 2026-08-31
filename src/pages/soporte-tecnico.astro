@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import PageHeader from "../components/ui/PageHeader.astro";
 import { Download, Mail } from "lucide-react";
 import es from "../i18n/es";
+import { STORE_CATALOG_LIVE } from "../config/storeFlags";
 ---
 
 <Layout title={es.seo.techSupport.title} description={es.seo.techSupport.description} routeKey="support">
@@ -12,24 +13,29 @@ import es from "../i18n/es";
   />
 
   <div class="bg-gray-50 pb-20">
-    <!-- Sección 1: Drivers -->
-    <section class="max-w-5xl mx-auto px-4 pt-16">
-      <div class="rounded-2xl bg-corporativo-blue px-8 py-12 text-center shadow-lg md:px-16">
-        <h2 class="text-2xl font-bold text-white md:text-3xl">
-          {es.techSupport.driversHeading}
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/90">
-          {es.techSupport.driversIntro}
-        </p>
-        <a
-          href="/store/soporte/descargas"
-          class="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-corporativo-blue shadow-lg transition-colors hover:bg-gray-100 no-underline"
-        >
-          <Download className="h-5 w-5" />
-          {es.techSupport.driversCta}
-        </a>
-      </div>
-    </section>
+    <!-- Sección 1: Drivers — oculta mientras la Store esté apagada (ver
+    storeFlags.ts): su único CTA lleva a /store/soporte/descargas, que hoy
+    muestra "Próximamente". Una sección entera sin ninguna acción posible es
+    peor que no mostrarla; reversible con el flag, nada se borró. -->
+    {STORE_CATALOG_LIVE && (
+      <section class="max-w-5xl mx-auto px-4 pt-16">
+        <div class="rounded-2xl bg-corporativo-blue px-8 py-12 text-center shadow-lg md:px-16">
+          <h2 class="text-2xl font-bold text-white md:text-3xl">
+            {es.techSupport.driversHeading}
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/90">
+            {es.techSupport.driversIntro}
+          </p>
+          <a
+            href="/store/soporte/descargas"
+            class="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-corporativo-blue shadow-lg transition-colors hover:bg-gray-100 no-underline"
+          >
+            <Download className="h-5 w-5" />
+            {es.techSupport.driversCta}
+          </a>
+        </div>
+      </section>
+    )}
 
     <!-- Sección 2: FAQ -->
     <section class="max-w-5xl mx-auto px-4 py-16">

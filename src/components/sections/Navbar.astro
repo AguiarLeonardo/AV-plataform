@@ -2,6 +2,7 @@
 import { t } from "../../i18n/utils";
 import { getRouteHref, type RouteKey } from "../../i18n/routes";
 import LanguageSwitcher from "../ui/LanguageSwitcher.astro";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
 
 interface Props {
   routeKey?: RouteKey;
@@ -54,12 +55,14 @@ const openMenuLabel = t(lang, "nav.openMenu");
           {label}
         </a>
       ))}
-      <a
-        href="/store"
-        class="ml-4 rounded bg-white px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
-      >
-        {storeLabel}
-      </a>
+      {STORE_CATALOG_LIVE && (
+        <a
+          href="/store"
+          class="ml-4 rounded bg-white px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
+        >
+          {storeLabel}
+        </a>
+      )}
       <a
         href={contactHref}
         class="rounded-lg bg-corporativo-blue px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
@@ -80,12 +83,14 @@ const openMenuLabel = t(lang, "nav.openMenu");
           {label}
         </a>
       ))}
-      <a
-        href="/store"
-        class="mt-2 rounded bg-white px-3 py-2.5 text-center text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
-      >
-        {storeLabel}
-      </a>
+      {STORE_CATALOG_LIVE && (
+        <a
+          href="/store"
+          class="mt-2 rounded bg-white px-3 py-2.5 text-center text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
+        >
+          {storeLabel}
+        </a>
+      )}
       <a
         href={contactHref}
         class="mt-2 rounded-lg bg-corporativo-blue px-6 py-2.5 text-center text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
