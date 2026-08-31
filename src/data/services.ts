@@ -22,7 +22,7 @@ export interface Service {
 
 export const services = [
   {
-    slug: "ascensores",
+    slug: "ascensores" as const,
     title: { es: "Ascensores", en: "Elevators" },
     shortDescription: {
       es: "Instalación, modernización y mantenimiento de sistemas de elevación vertical para edificios residenciales y comerciales.",
@@ -195,7 +195,7 @@ export const services = [
     ],
   },
   {
-    slug: "escaleras-mecanicas",
+    slug: "escaleras-mecanicas" as const,
     title: { es: "Escaleras Mecánicas", en: "Escalators" },
     shortDescription: {
       es: "Sistemas de transporte mecánico para centros comerciales, aeropuertos y espacios de alto tráfico peatonal.",
@@ -264,7 +264,7 @@ export const services = [
     ],
   },
   {
-    slug: "tecnologia-y-telecomunicaciones",
+    slug: "tecnologia-y-telecomunicaciones" as const,
     title: { es: "Tecnología y Telecomunicaciones", en: "Technology & Telecommunications" },
     shortDescription: {
       es: "Soluciones tecnológicas avanzadas en telecomunicaciones e infraestructura digital para empresas.",
@@ -289,7 +289,7 @@ export const services = [
     ],
   },
   {
-    slug: "envases",
+    slug: "envases" as const,
     title: { es: "Envases", en: "Packaging" },
     shortDescription: {
       es: "Fabricación y distribución de envases de aluminio de alta calidad para la industria alimentaria y de bebidas.",
@@ -314,7 +314,7 @@ export const services = [
     ],
   },
   {
-    slug: "construccion",
+    slug: "construccion" as const,
     title: { es: "Construcción", en: "Construction" },
     shortDescription: {
       es: "Proyectos de construcción civil e infraestructura con los más altos estándares de calidad internacional.",
@@ -339,7 +339,7 @@ export const services = [
     ],
   },
   {
-    slug: "recipientes-gas-licuado",
+    slug: "recipientes-gas-licuado" as const,
     title: { es: "Recipientes de Gas Licuado", en: "Liquefied Gas Containers" },
     shortDescription: {
       es: "Fabricación y suministro de cilindros industriales certificados para el almacenamiento y distribución de gas licuado.",
@@ -364,7 +364,7 @@ export const services = [
     ],
   },
   {
-    slug: "mantenimiento",
+    slug: "mantenimiento" as const,
     title: { es: "Mantenimiento", en: "Maintenance" },
     shortDescription: {
       es: "Servicio preventivo y correctivo para garantizar el funcionamiento óptimo de todos nuestros equipos instalados.",
@@ -389,7 +389,7 @@ export const services = [
     ],
   },
   {
-    slug: "compras-internacionales",
+    slug: "compras-internacionales" as const,
     title: { es: "Compras Internacionales", en: "International Purchasing" },
     shortDescription: {
       es: "Gestión integral de importación y distribución de productos desde el continente asiático.",
