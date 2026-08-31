@@ -390,7 +390,7 @@ export const services = [
   },
   {
     slug: "compras-internacionales" as const,
-    title: { es: "Compras Internacionales", en: "International Purchasing" },
+    title: { es: "Compras Internacionales", en: "International Procurement" },
     shortDescription: {
       es: "Gestión integral de importación y distribución de productos desde el continente asiático.",
       en: "Comprehensive management of importing and distributing products from Asia.",
@@ -402,7 +402,7 @@ export const services = [
         "Trabajamos con una red consolidada de proveedores en Asia, lo que nos permite ofrecer condiciones comerciales competitivas y garantizar la continuidad del suministro para proyectos industriales y comerciales de gran escala.",
       ],
       en: [
-        "We give our corporate clients access to Asian manufacturing markets through a comprehensive international purchasing service, covering everything from direct negotiation with certified manufacturers to final delivery at destination.",
+        "We give our corporate clients access to Asian manufacturing markets through a comprehensive international procurement service, covering everything from direct negotiation with certified manufacturers to final delivery at destination.",
         "Our team manages the logistics and customs process from start to finish, including quality control at origin, cargo consolidation, and complete traceability of every shipment, reducing operating times and costs.",
         "We work with a well-established network of suppliers in Asia, allowing us to offer competitive commercial terms and guarantee supply continuity for large-scale industrial and commercial projects.",
       ],
