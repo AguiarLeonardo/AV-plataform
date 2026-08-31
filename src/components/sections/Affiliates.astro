@@ -38,8 +38,7 @@ const affiliates = affiliatesText.divisions.map((division, index) => ({
     <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {
         affiliates.map(({ name, description, image }) => (
-          <a
-            href="#"
+          <div
             class="group relative block h-80 overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl sm:h-96"
           >
             {/* Estado normal: foto + overlay oscuro. Ambos se desvanecen en hover. */}
@@ -68,7 +67,7 @@ const affiliates = affiliatesText.divisions.map((division, index) => ({
                 {description}
               </p>
             </div>
-          </a>
+          </div>
         ))
       }
     </div>
