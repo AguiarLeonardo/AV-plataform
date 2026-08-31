@@ -216,10 +216,16 @@ const es = {
     detail: {
       quoteCta: "Solicitar Cotización",
       supportCta: "Soporte Técnico",
+      // storeCta/storeSpanishOnlyNote: sin uso desde que el CTA de
+      // Tecnología y Telecomunicaciones pasó a apuntar al PDF del catálogo
+      // en vez de a la Store (branch feat/ocultar-store, ver docs/ESTADO.md
+      // — la Store completa se ocultó por tener datos de relleno). Se
+      // conservan a propósito, sin borrarse: vuelven a hacer falta cuando
+      // se revierta ese apagado. Nunca se muestran en español (la Tienda ya
+      // está en español) — existen solo para que en.ts tenga la misma forma.
       storeCta: "Ir a la tienda",
-      // Nunca se muestra en español (la Tienda ya está en español) — existe
-      // solo para que en.ts tenga la misma forma. Ver services.detail en en.ts.
       storeSpanishOnlyNote: "Nuestra tienda está disponible en español.",
+      techCatalogPdfCta: "Ver catálogo (PDF)",
       catalogCta: "Ver catálogo completo",
       catalogPdfCta: "Descargar catálogo (PDF)",
       // Mismo caso que storeSpanishOnlyNote: no se muestra en español.

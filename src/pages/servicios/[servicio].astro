@@ -6,6 +6,10 @@ import { services, type SubProduct } from "../../data/services";
 import { Download } from "lucide-react";
 import { localize, t } from "../../i18n/utils";
 import { getRouteHref, getServiceDetailUrls } from "../../i18n/routes";
+import { catalogPdfExists } from "../../utils/pdfExists";
+
+const techCatalogPdfExists = catalogPdfExists("catalogo-tecnologia.pdf");
+const envasesCatalogPdfExists = catalogPdfExists("catalogo-envases.pdf");
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -50,12 +54,15 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
         ))}
         {service.slug === "tecnologia-y-telecomunicaciones" ? (
           <div class="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
-            <a
-              href="/store"
-              class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
-            >
-              {t(lang, "services.detail.storeCta")} &rarr;
-            </a>
+            {techCatalogPdfExists && (
+              <a
+                href="/documentos/catalogos/catalogo-tecnologia.pdf"
+                class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+              >
+                <Download className="h-4 w-4" />
+                {t(lang, "services.detail.techCatalogPdfCta")}
+              </a>
+            )}
             <a
               href={getRouteHref("support", lang)}
               class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
@@ -71,13 +78,15 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
             >
               {t(lang, "services.detail.catalogCta")} &rarr;
             </a>
-            <a
-              href="#"
-              class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
-            >
-              <Download className="h-4 w-4" />
-              {t(lang, "services.detail.catalogPdfCta")}
-            </a>
+            {envasesCatalogPdfExists && (
+              <a
+                href="/documentos/catalogos/catalogo-envases.pdf"
+                class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+              >
+                <Download className="h-4 w-4" />
+                {t(lang, "services.detail.catalogPdfCta")}
+              </a>
+            )}
           </div>
         ) : (
           <a

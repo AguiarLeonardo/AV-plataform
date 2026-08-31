@@ -206,6 +206,7 @@ export default {
       supportCta: "Technical Support",
       storeCta: "Go to the store",
       storeSpanishOnlyNote: "Our store is only available in Spanish.",
+      techCatalogPdfCta: "View catalog (PDF)",
       catalogCta: "View full catalog",
       catalogPdfCta: "Download catalog (PDF)",
       catalogSpanishOnlyNote: "Our catalog is only available in Spanish.",

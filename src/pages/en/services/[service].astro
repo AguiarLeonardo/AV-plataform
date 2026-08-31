@@ -6,6 +6,10 @@ import { services, type SubProduct } from "../../../data/services";
 import { Download } from "lucide-react";
 import { localize, t } from "../../../i18n/utils";
 import { getRouteHref, getServiceDetailUrls, serviceSlugMap } from "../../../i18n/routes";
+import { catalogPdfExists } from "../../../utils/pdfExists";
+
+const techCatalogPdfExists = catalogPdfExists("catalogo-tecnologia.pdf");
+const envasesCatalogPdfExists = catalogPdfExists("catalogo-envases.pdf");
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -46,25 +50,22 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
           <p class="mb-6 leading-relaxed">{paragraph}</p>
         ))}
         {service.slug === "tecnologia-y-telecomunicaciones" ? (
-          <div class="mt-8 flex flex-col gap-2 items-start w-full">
-            <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+            {techCatalogPdfExists && (
               <a
-                href="/store"
+                href="/documentos/catalogos/catalogo-tecnologia.pdf"
                 class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
               >
-                {t(lang, "services.detail.storeCta")} &rarr;
+                <Download className="h-4 w-4" />
+                {t(lang, "services.detail.techCatalogPdfCta")}
               </a>
-              <a
-                href={getRouteHref("support", lang)}
-                class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
-              >
-                {t(lang, "services.detail.supportCta")} &rarr;
-              </a>
-            </div>
-            {/* Decisión del dueño del proyecto: el CTA a la Store se mantiene
-            en inglés (no se oculta), con esta señal discreta de que la
-            Store en sí sigue solo en español. */}
-            <p class="text-xs text-gray-500">{t(lang, "services.detail.storeSpanishOnlyNote")}</p>
+            )}
+            <a
+              href={getRouteHref("support", lang)}
+              class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+            >
+              {t(lang, "services.detail.supportCta")} &rarr;
+            </a>
           </div>
         ) : service.slug === "envases" ? (
           <div class="flex flex-col gap-2 items-start w-full">
@@ -75,17 +76,20 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
               >
                 {t(lang, "services.detail.catalogCta")} &rarr;
               </a>
-              <a
-                href="#"
-                class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
-              >
-                <Download className="h-4 w-4" />
-                {t(lang, "services.detail.catalogPdfCta")}
-              </a>
+              {envasesCatalogPdfExists && (
+                <a
+                  href="/documentos/catalogos/catalogo-envases.pdf"
+                  class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+                >
+                  <Download className="h-4 w-4" />
+                  {t(lang, "services.detail.catalogPdfCta")}
+                </a>
+              )}
             </div>
-            {/* Mismo tratamiento que el CTA a la Store: el catálogo de envases
-            tampoco está traducido (ver docs/ESTADO.md), así que el enlace se
-            mantiene con esta misma señal discreta. */}
+            {/* El catálogo de envases (/envases) no está traducido (ver
+            docs/ESTADO.md), así que el enlace se mantiene con esta señal
+            discreta. El botón de PDF no la necesita: el PDF en sí no
+            depende del idioma de la ruta. */}
             <p class="text-xs text-gray-500">{t(lang, "services.detail.catalogSpanishOnlyNote")}</p>
           </div>
         ) : (
