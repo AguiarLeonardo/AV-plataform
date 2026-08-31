@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ServiceSlide {
-  slug: string;
+  href: string;
   title: string;
   shortDescription: string;
   image: string;
@@ -51,7 +51,7 @@ export default function ServicesCarousel({ slides, ctaLabel, prevLabel, nextLabe
           {current.shortDescription}
         </p>
         <a
-          href={`/servicios/${current.slug}`}
+          href={current.href}
           className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#1E3A8A] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-[#1E3A8A]/90"
         >
           {ctaLabel} &rarr;

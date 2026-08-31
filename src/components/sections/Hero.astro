@@ -1,21 +1,22 @@
 ---
 import HeroSlider from "../react/HeroSlider.tsx";
 import { t } from "../../i18n/utils";
-import { getRouteHref } from "../../i18n/routes";
+import { getRouteHref, getServiceDetailUrls } from "../../i18n/routes";
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 const dictSlides = t(lang, "home.hero.slides");
 
-// Los CTA con routeKey resuelven su href vía routes.ts (para que sigan la
-// política de fallback a español si la ruta destino no está traducida); los
-// que enlazan a una ficha de servicio dinámica (no traducida todavía) ya
-// traen su href fijo en el diccionario.
+// Los CTA con routeKey resuelven su href vía routes.ts (fallback a español
+// si la ruta destino no está traducida); los que enlazan a una ficha de
+// servicio (slug traducido, distinto por idioma) resuelven vía
+// getServiceDetailUrls en vez de traer un href fijo en el diccionario —
+// necesario desde que /servicios/* se tradujo (Fase 2 de i18n).
 const slides = dictSlides.map((slide) => ({
   ...slide,
   ctas: slide.ctas.map((cta) => ({
     text: cta.text,
     primary: cta.primary,
-    href: "routeKey" in cta ? getRouteHref(cta.routeKey, lang) : cta.href,
+    href: "routeKey" in cta ? getRouteHref(cta.routeKey, lang) : getServiceDetailUrls(cta.serviceSlug)[lang],
   })),
 }));
 ---

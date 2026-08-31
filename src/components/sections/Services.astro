@@ -2,12 +2,12 @@
 import ServicesCarousel from "../react/ServicesCarousel.tsx";
 import { services } from "../../data/services";
 import { t, localize } from "../../i18n/utils";
-import { getRouteHref } from "../../i18n/routes";
+import { getRouteHref, getServiceDetailUrls } from "../../i18n/routes";
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 
 const slides = services.map((service) => ({
-  slug: service.slug,
+  href: getServiceDetailUrls(service.slug)[lang],
   title: localize(service.title, lang),
   shortDescription: localize(service.shortDescription, lang),
   image: service.images[0],
