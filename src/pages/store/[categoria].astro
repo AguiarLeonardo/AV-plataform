@@ -4,7 +4,9 @@ import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import StoreProductCard from "../../components/store/StoreProductCard.astro";
 import CatalogControls from "../../components/store/CatalogControls.astro";
 import CatalogFilters from "../../components/react/CatalogFilters.tsx";
+import ComingSoon from "../../components/store/ComingSoon.astro";
 import { fakePriceValue } from "../../utils/fakePrice";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
 import {
   storeCategories,
   productsForItem,
@@ -13,24 +15,38 @@ import {
 } from "../../data/storeTaxonomy";
 
 export function getStaticPaths() {
+  // Catálogo apagado (ver storeFlags.ts): de las ~75 páginas que este archivo
+  // generaría normalmente (2 categorías + sus grupos + sus ítems, todas con
+  // datos de relleno), solo se conservan las 2 categorías de nivel superior
+  // — como stubs "Próximamente" con nombre propio (StoreFooter y
+  // StoreNavigation ya enlazan a exactamente estos 2 slugs). Los ~73 slugs
+  // de grupo/ítem dejan de generarse por completo: no queremos que existan
+  // ni que Google los indexe.
+  if (!STORE_CATALOG_LIVE) {
+    return storeCategories.map((category) => ({
+      params: { categoria: category.slug },
+      props: { comingSoon: true as const, label: category.name, products: [] },
+    }));
+  }
+
   const paths = [];
 
   for (const category of storeCategories) {
     paths.push({
       params: { categoria: category.slug },
-      props: { label: category.name, products: productsForCategory(category) },
+      props: { comingSoon: false as const, label: category.name, products: productsForCategory(category) },
     });
 
     for (const group of category.groups) {
       paths.push({
         params: { categoria: group.slug },
-        props: { label: group.name, products: productsForGroup(group) },
+        props: { comingSoon: false as const, label: group.name, products: productsForGroup(group) },
       });
 
       for (const item of group.items) {
         paths.push({
           params: { categoria: item.slug },
-          props: { label: item.name, products: productsForItem(item.slug) },
+          props: { comingSoon: false as const, label: item.name, products: productsForItem(item.slug) },
         });
       }
     }
@@ -39,9 +55,12 @@ export function getStaticPaths() {
   return paths;
 }
 
-const { label, products } = Astro.props;
+const { comingSoon, label, products } = Astro.props;
 ---
 
+{comingSoon ? (
+  <ComingSoon sectionName={label} />
+) : (
 <StoreLayout title={`${label} - Asiaven Store`}>
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -94,3 +113,4 @@ const { label, products } = Astro.props;
     }
   </main>
 </StoreLayout>
+)}

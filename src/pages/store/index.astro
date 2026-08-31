@@ -3,8 +3,10 @@ import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import StoreHeroSlider from "../../components/react/StoreHeroSlider.tsx";
 import StoreProductCard from "../../components/store/StoreProductCard.astro";
+import ComingSoon from "../../components/store/ComingSoon.astro";
 import { techProducts } from "../../data/techCatalog";
 import { fakePriceValue } from "../../utils/fakePrice";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
 import { ShieldCheck, Headset, Truck, Users, ChevronLeft, ChevronRight } from "lucide-react";
 
 function unsplash(photoId: string) {
@@ -83,6 +85,9 @@ const brandPillars = [
 ];
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Asiaven Store" />
+) : (
 <StoreLayout title="Asiaven Store - Equipos Tecnológicos para Empresas">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
   <StoreHeroSlider client:load />
@@ -198,6 +203,7 @@ const brandPillars = [
     </div>
   </section>
 </StoreLayout>
+)}
 
 <script>
   const scrollContainer = document.getElementById("featured-scroll");

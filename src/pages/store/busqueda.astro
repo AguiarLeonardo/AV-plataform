@@ -2,9 +2,15 @@
 import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import SearchResults from "../../components/react/SearchResults.tsx";
+import ComingSoon from "../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Búsqueda" />
+) : (
 <StoreLayout title="Resultados de Búsqueda - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
   <SearchResults client:load />
 </StoreLayout>
+)}

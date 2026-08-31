@@ -3,8 +3,13 @@ import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
 import QuoteCartList from "../../components/react/QuoteCartList.tsx";
 import QuoteRequestForm from "../../components/react/QuoteRequestForm.tsx";
+import ComingSoon from "../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Cotización" />
+) : (
 <StoreLayout title="Solicitud de Cotización - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -24,3 +29,4 @@ import QuoteRequestForm from "../../components/react/QuoteRequestForm.tsx";
     </div>
   </main>
 </StoreLayout>
+)}

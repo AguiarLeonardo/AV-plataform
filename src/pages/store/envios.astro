@@ -1,6 +1,8 @@
 ---
 import StoreLayout from "../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../components/react/StoreNavigation.tsx";
+import ComingSoon from "../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
 
 const sections = [
   {
@@ -40,6 +42,9 @@ const sections = [
 ];
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Envíos" />
+) : (
 <StoreLayout title="Políticas de Envío - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -61,3 +66,4 @@ const sections = [
     </div>
   </main>
 </StoreLayout>
+)}

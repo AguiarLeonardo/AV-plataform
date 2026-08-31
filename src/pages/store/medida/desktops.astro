@@ -2,8 +2,13 @@
 import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
 import { DesktopBTO } from "../../../components/react/BTOForm.tsx";
+import ComingSoon from "../../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Equipo a Medida" />
+) : (
 <StoreLayout title="Configurar PC de Escritorio / Workstation - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -11,3 +16,4 @@ import { DesktopBTO } from "../../../components/react/BTOForm.tsx";
     <DesktopBTO client:load />
   </main>
 </StoreLayout>
+)}

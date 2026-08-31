@@ -1,6 +1,8 @@
 ---
 import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import ComingSoon from "../../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
 import { Settings2, Zap, Users } from "lucide-react";
 
 const pillars = [
@@ -22,6 +24,9 @@ const pillars = [
 ];
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Soporte Técnico" />
+) : (
 <StoreLayout title="Soporte Técnico VIP - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -63,3 +68,4 @@ const pillars = [
     </div>
   </main>
 </StoreLayout>
+)}

@@ -1,6 +1,8 @@
 ---
 import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import ComingSoon from "../../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
 import { Search, Download, Server, Laptop, ShieldCheck } from "lucide-react";
 
 const downloads = [
@@ -43,6 +45,9 @@ const downloads = [
 ];
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Software y Drivers" />
+) : (
 <StoreLayout title="Centro de Descargas - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -95,3 +100,4 @@ const downloads = [
     </p>
   </main>
 </StoreLayout>
+)}

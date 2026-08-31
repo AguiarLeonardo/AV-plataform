@@ -1,6 +1,8 @@
 ---
 import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
+import ComingSoon from "../../../components/store/ComingSoon.astro";
+import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
 import { Search, FileText, Truck } from "lucide-react";
 
 const steps = [
@@ -22,6 +24,9 @@ const steps = [
 ];
 ---
 
+{!STORE_CATALOG_LIVE ? (
+  <ComingSoon sectionName="Asesoría de Compra" />
+) : (
 <StoreLayout title="Asesoría de Compra - Asiaven Store">
   <StoreNavigation client:load currentPath={Astro.url.pathname} />
 
@@ -69,3 +74,4 @@ const steps = [
     </div>
   </main>
 </StoreLayout>
+)}
