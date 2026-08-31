@@ -4,9 +4,11 @@ import StoreFooter from "../components/store/StoreFooter.astro";
 
 interface Props {
   title?: string;
+  /** Páginas "Próximamente" (catálogo apagado, ver storeFlags.ts) lo pasan en true — no deben indexarse mientras muestren un cartel genérico en vez de contenido real. */
+  noindex?: boolean;
 }
 
-const { title = "Asiaven Store" } = Astro.props;
+const { title = "Asiaven Store", noindex = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -18,6 +20,7 @@ const { title = "Asiaven Store" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
   </head>
   <body class="bg-white text-gray-900 antialiased">
     <slot />

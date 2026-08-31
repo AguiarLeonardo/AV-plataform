@@ -1,0 +1,28 @@
+---
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import StoreNavigation from "../react/StoreNavigation.tsx";
+
+interface Props {
+  /** Nombre de la sección a mostrar junto al mensaje (ej. "Productos", "Garantía") — cada página que usa este componente pasa el suyo, para no mostrar el mismo cartel genérico en todas partes. */
+  sectionName: string;
+}
+
+const { sectionName } = Astro.props;
+---
+
+<StoreLayout title={`${sectionName} - Asiaven Store`} noindex={true}>
+  <StoreNavigation client:load currentPath={Astro.url.pathname} />
+
+  <main class="mx-auto flex min-h-[50vh] max-w-3xl flex-col items-center justify-center px-4 py-24 text-center">
+    <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl">{sectionName} — Próximamente</h1>
+    <p class="mx-auto mt-4 max-w-md text-base text-gray-600">
+      Estamos terminando de preparar esta sección de la tienda. Vuelve pronto.
+    </p>
+    <a
+      href="/"
+      class="mt-8 inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+    >
+      &larr; Volver al sitio de Asiaven
+    </a>
+  </main>
+</StoreLayout>
