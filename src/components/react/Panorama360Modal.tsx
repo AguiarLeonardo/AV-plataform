@@ -38,6 +38,15 @@ interface Props {
  * efecto que inicializa el visor siempre corre con el contenedor ya en su
  * tamaño final.
  */
+// Cuánto esperar antes de dar la panorámica por caída, en vez de depender de
+// que el navegador emita su propio timeout de red (que puede tardar decenas
+// de segundos y deja el spinner girando sin dar ninguna información). 20s es
+// un punto medio deliberado: tolera una conexión lenta cargando un archivo de
+// varios MB (las panorámicas HD que van a reemplazar a las actuales) sin
+// llegar a los tiempos de espera "no hay respuesta" que un usuario ya
+// interpreta como error por su cuenta.
+const PANORAMA_LOAD_TIMEOUT_MS = 20_000;
+
 export default function Panorama360Modal({
   src,
   title,
@@ -102,6 +111,7 @@ export default function Panorama360Modal({
   // Carga diferida de Pannellum + inicialización del visor.
   useEffect(() => {
     let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     setStatus("loading");
 
     (async () => {
@@ -117,21 +127,33 @@ export default function Panorama360Modal({
           showZoomCtrl: true,
         });
 
+        // Cubre el caso de red caída: si autoLoad se queda colgado pidiendo
+        // la imagen (sin disparar "error" — eso solo ocurre para respuestas
+        // de red que sí llegan, como un 404), este timeout fuerza el estado
+        // de error en vez de dejar el spinner indefinidamente.
+        timeoutId = setTimeout(() => {
+          if (!cancelled) setStatus("error");
+        }, PANORAMA_LOAD_TIMEOUT_MS);
+
         viewer.on("load", () => {
+          clearTimeout(timeoutId);
           if (!cancelled) setStatus("ready");
         });
         viewer.on("error", () => {
+          clearTimeout(timeoutId);
           if (!cancelled) setStatus("error");
         });
 
         viewerRef.current = viewer;
       } catch {
+        clearTimeout(timeoutId);
         if (!cancelled) setStatus("error");
       }
     })();
 
     return () => {
       cancelled = true;
+      clearTimeout(timeoutId);
       viewerRef.current?.destroy();
       viewerRef.current = null;
     };
