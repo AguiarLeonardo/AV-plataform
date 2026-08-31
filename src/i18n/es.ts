@@ -236,6 +236,27 @@ const es = {
       // Mismo caso que storeSpanishOnlyNote: no se muestra en español.
       catalogSpanishOnlyNote: "Nuestro catálogo está disponible en español.",
     },
+    // Mensaje precargado del botón de cotización por WhatsApp — uno por
+    // servicio, indexado por su slug (no por t() con ruta dinámica: t()
+    // exige una ruta literal conocida en build-time, y aquí el slug se
+    // conoce recién en runtime). Ascensores y escaleras mecánicas llevan un
+    // marcador [indicar tipo] entre corchetes -- no paréntesis, para que se
+    // lea inequívocamente como algo a reemplazar -- porque tienen varios
+    // subtipos; el resto no.
+    whatsappQuote: {
+      ascensores:
+        "Hola, quisiera solicitar una cotización para el servicio de ascensores de Asiaven. Tipo de interés: [indicar tipo]",
+      "escaleras-mecanicas":
+        "Hola, quisiera solicitar una cotización para el servicio de escaleras mecánicas de Asiaven. Tipo de interés: [indicar tipo]",
+      "tecnologia-y-telecomunicaciones":
+        "Hola, quisiera solicitar una cotización para el servicio de tecnología y telecomunicaciones de Asiaven.",
+      envases: "Hola, quisiera solicitar una cotización para el servicio de envases de Asiaven.",
+      construccion: "Hola, quisiera solicitar una cotización para el servicio de construcción de Asiaven.",
+      "recipientes-gas-licuado":
+        "Hola, quisiera solicitar una cotización para el servicio de recipientes de gas licuado de Asiaven.",
+      "compras-internacionales":
+        "Hola, quisiera solicitar una cotización para el servicio de compras internacionales de Asiaven.",
+    },
   },
   packaging: {
     // No lo usa ninguna página en español (el catálogo /envases no pasa por

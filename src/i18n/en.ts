@@ -213,6 +213,20 @@ export default {
       catalogPdfCta: "Download catalog (PDF)",
       catalogSpanishOnlyNote: "Our catalog is only available in Spanish.",
     },
+    whatsappQuote: {
+      ascensores:
+        "Hello, I would like to request a quote for Asiaven's elevators service. Type of interest: [please specify]",
+      "escaleras-mecanicas":
+        "Hello, I would like to request a quote for Asiaven's escalators service. Type of interest: [please specify]",
+      "tecnologia-y-telecomunicaciones":
+        "Hello, I would like to request a quote for Asiaven's technology and telecommunications service.",
+      envases: "Hello, I would like to request a quote for Asiaven's packaging service.",
+      construccion: "Hello, I would like to request a quote for Asiaven's construction service.",
+      "recipientes-gas-licuado":
+        "Hello, I would like to request a quote for Asiaven's liquefied gas containers service.",
+      "compras-internacionales":
+        "Hello, I would like to request a quote for Asiaven's international procurement service.",
+    },
   },
   packaging: {
     pageTitle: "Packaging Catalog",
