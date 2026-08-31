@@ -1,22 +1,23 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import PageHeader from "../../components/ui/PageHeader.astro";
-import { services } from "../../data/services";
-import es from "../../i18n/es";
-import { localize } from "../../i18n/utils";
+import Layout from "../../../layouts/Layout.astro";
+import PageHeader from "../../../components/ui/PageHeader.astro";
+import { services } from "../../../data/services";
+import en from "../../../i18n/en";
+import { localize } from "../../../i18n/utils";
+import { serviceSlugMap } from "../../../i18n/routes";
 
-const lang = "es" as const;
+const lang = "en" as const;
 ---
 
-<Layout title={es.seo.services.title} description={es.seo.services.description} routeKey="services">
+<Layout title={en.seo.services.title} description={en.seo.services.description} routeKey="services">
   <PageHeader
     bgImage="/images/corporativo/banners/paginas/banner-servicios.webp"
-    title={es.services.pageHeading}
+    title={en.services.pageHeading}
   />
   <div class="bg-gray-50 pb-20">
     <div class="max-w-4xl mx-auto px-4 pt-16 pb-20 text-center">
       <p class="text-lg md:text-xl text-gray-600 leading-relaxed">
-        {es.services.pageIntro}
+        {en.services.pageIntro}
       </p>
     </div>
 
@@ -26,7 +27,7 @@ const lang = "es" as const;
       {
         services.map((service) => (
           <a
-            href={`/servicios/${service.slug}`}
+            href={`/en/services/${serviceSlugMap[service.slug]}`}
             class="group relative h-80 w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(33.333%-1.5rem)] md:max-w-none flex-shrink-0 flex-grow-0 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-corporativo-blue focus:ring-offset-2"
           >
             <img
