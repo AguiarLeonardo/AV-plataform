@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-31 — corresponde al branch `feat/producto-gas-licuado` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-08-31 — corresponde al branch `feat/whatsapp-y-divisiones` (sin mergear; parte de `develop`).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -262,6 +262,62 @@ store/recipientes/gas-licuado/index.html       (real)
 | 4G típico | 15 Mbps | ~1s |
 
 **✅ RESUELTO (branch `fix/visor-360-timeout` → continuado en `feat/ocultar-store`).** Decisión del dueño del proyecto: 45s era demasiado tiempo mirando un indicador que no dice nada — a esa altura el usuario ya cerró la pestaña. Se implementaron dos cambios en `Panorama360Modal.tsx`, ver sección dedicada más abajo ("Timeout de 30s + indicador de progreso real"): el timeout bajó a **30s** (no a 45s) y se agregó un **indicador de progreso real** (no simulado) que hace tolerable la espera — el problema no era solo "cuánto esperar", era "esperar sin saber si algo está pasando".
+
+---
+
+## 📲 CTA de cotización por WhatsApp + carrusel de divisiones (branch `feat/whatsapp-y-divisiones`)
+
+Dos partes independientes, comiteadas por separado. Rama creada desde `develop` **después de** mergear en local `feat/limpieza-corporativa` y `feat/producto-gas-licuado` (ninguna de las dos estaba mergeada al pedirse esta tarea; decisión del dueño del proyecto: mergear primero, crear la rama después — merges fast-forward, sin conflictos, no pusheados a `origin`).
+
+### Parte 1 — Botón "Solicitar Cotización" → WhatsApp (los 7 servicios, ES/EN)
+
+El botón que antes llevaba a `/contactanos` ahora abre `https://wa.me/5822129924333` con un mensaje precargado por servicio (`encodeURIComponent`). **Decisión explícita del dueño del proyecto: sin botón secundario hacia `/contactanos`** — quien prefiera el formulario llega por Navbar o Footer, que siguen enlazando ahí en ambos idiomas (único camino restante hacia esa página).
+
+Mensajes nuevos en el diccionario, clave `services.whatsappQuote` (hermana de `services.detail`, indexada por slug), ES y EN:
+
+| Servicio | Mensaje (ES) |
+|---|---|
+| Ascensores / Escaleras mecánicas | "...de Asiaven. Tipo de interés: **[indicar tipo]**" — corchetes a propósito, se leen inequívocamente como algo a reemplazar (no paréntesis) |
+| Resto (tecnología, envases, construcción, recipientes de gas licuado, compras internacionales) | Sin marcador, mensaje directo |
+
+EN usa el mismo patrón (`"Type of interest: [please specify]"`), para que ventas sepa de antemano en qué idioma llega la conversación.
+
+`service.slug` solo se conoce en runtime, así que no se pudo usar `t()` con una ruta literal de 3 niveles (`t(lang, "services.detail.whatsappQuote")` daba un error de TypeScript engañoso, sin relación aparente — aparentemente el sistema de tipos recursivo `NestedKeyOf`/`PathValue` topa con un límite de complejidad en rutas profundas de diccionarios grandes). Solución: `t(lang, "services").whatsappQuote[service.slug]` — un nivel de `t()` ya probado, resto por acceso de propiedad JS normal.
+
+**Botón visualmente idéntico al ya usado en la página de producto de GLP:** verde `bg-[#25D366]`, ícono WhatsApp SVG inline (no existe en lucide-react), `target="_blank" rel="noopener noreferrer"`. En `/servicios/recipientes-gas-licuado` coexiste con el botón hacia la Store (`/store/recipientes/gas-licuado`) — visualmente distinguibles: el de WhatsApp cotiza el servicio, el otro (borde azul, sin relleno) lleva al producto.
+
+**Revisión del resto del sitio corporativo (home, secciones, footer) en busca de otros CTA de cotización hacia `/contactanos`:** grep exhaustivo de `getRouteHref("contact"...)` — únicos usos: `Navbar.astro` y `Footer.astro` (los que deben quedarse). No se encontró ningún otro CTA de cotización a cambiar. Se encontraron, sí, dos enlaces hardcodeados a `/contactanos` **dentro de la Store** (`SearchResults.tsx`, `store/[categoria].astro`, fallbacks de "no hay resultados"/categoría vacía) — fuera del alcance explícito de esta tarea (Store, no sitio corporativo), reportados aquí sin tocar.
+
+El botón flotante de WhatsApp existente no se tocó.
+
+### Parte 2 — Quinta división "AV Envasados" + carrusel en `Affiliates.astro`
+
+**Nombre y descripción redactados para revisión del dueño del proyecto** (mismo tono/longitud que las 4 existentes — pendiente de aprobación, no un hecho ya decidido):
+
+| ES | EN |
+|---|---|
+| **AV Envasados** — Fabricación y distribución de envases de aluminio para la industria alimentaria y de bebidas. | **AV Envasados** — Manufacturing and distribution of aluminum packaging for the food and beverage industry. |
+
+Imagen ya presente en el repo: `public/images/corporativo/afiliadas/av-envasados.webp` (mismo tratamiento que las otras 4 — sin crop/optimización adicional de esta tarea).
+
+**El grid estático de 4 columnas se convirtió en un carrusel de desplazamiento lateral** (3 tarjetas visibles en escritorio, 2 en móvil) reutilizando el patrón ya existente de la sección "Recomendados para ti" de `store/producto/[slug].astro`: fila `overflow-x-auto` + `snap-x snap-mandatory`, tarjetas de ancho fijo vía `w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]`, botones prev/next con `scrollBy({left, behavior:"smooth"})` en un `<script>` vanilla — sin isla de React.
+
+**Desviación explícita del enfoque sugerido en el pedido** ("mira cómo están hechos ServicesCarousel/ProductFeatureSlider y sigue el mismo enfoque"): ambos son carruseles de **un slide completo a la vez** (estado `useState` + posicionamiento absoluto/full-bleed) — no soportan "N tarjetas visibles simultáneamente", que es justo el requisito de esta tarea (3 en escritorio / 2 en móvil). El patrón de "Recomendados para ti" sí lo resuelve de forma nativa (varias tarjetas en una fila con scroll), así que se usó ese en su lugar.
+
+**Las tarjetas siguen sin enlace** (decisión ya vigente, reafirmada aquí explícitamente por el dueño del proyecto: "ninguna navega hasta nuevo aviso, incluida AV Envasados") — se mantuvieron como `<div>`, con el mismo tratamiento hover/transición exacto que ya tenían (foto → overlay oscuro → relleno gris del tema, texto revelado). Botones prev/next siempre visibles (no solo en hover), con `aria-label` nuevo en el diccionario (`home.affiliates.carousel.prevLabel`/`nextLabel`, ES/EN).
+
+### Verificación ejecutada
+
+- `npm run build` → **0 errores, 116 páginas** (sin cambio respecto a la base — esta tarea no agrega ni quita rutas).
+- 3 hrefs de WhatsApp verificados y decodificados en el navegador:
+  - `/servicios/ascensores` (ES, con marcador): `https://wa.me/5822129924333?text=Hola%2C%20quisiera%20solicitar%20una%20cotizaci%C3%B3n%20para%20el%20servicio%20de%20ascensores%20de%20Asiaven.%20Tipo%20de%20inter%C3%A9s%3A%20%5Bindicar%20tipo%5D` → decodifica a `"Hola, quisiera solicitar una cotización para el servicio de ascensores de Asiaven. Tipo de interés: [indicar tipo]"`.
+  - `/en/services/escalators` (EN, con marcador): `https://wa.me/5822129924333?text=Hello%2C%20I%20would%20like%20to%20request%20a%20quote%20for%20Asiaven%27s%20escalators%20service.%20Type%20of%20interest%3A%20%5Bplease%20specify%5D` → decodifica a `"Hello, I would like to request a quote for Asiaven's escalators service. Type of interest: [please specify]"`.
+  - `/servicios/construccion` (ES, sin marcador): `https://wa.me/5822129924333?text=Hola%2C%20quisiera%20solicitar%20una%20cotizaci%C3%B3n%20para%20el%20servicio%20de%20construcci%C3%B3n%20de%20Asiaven.` → decodifica a `"Hola, quisiera solicitar una cotización para el servicio de construcción de Asiaven."`.
+- Confirmado por `grep` sobre `dist/` que las 14 páginas de servicio (7 × 2 idiomas) tienen exactamente 3 ocurrencias de `contactanos`/`/en/contact` — igual que la línea base del home (Navbar desktop + móvil + Footer) — es decir, **ningún servicio conserva un CTA de cotización hacia `/contactanos`**.
+- Confirmado que Navbar y Footer siguen enlazando a `/contactanos`/`/en/contact` en ambos idiomas (único grep con resultados para `getRouteHref("contact"...)`).
+- Carrusel verificado por geometría en el navegador (no por captura de pantalla — ver limitación abajo): 5 tarjetas en el DOM, **exactamente 3 completamente visibles en 1280px de ancho** (la 4ª asoma un 6%), **exactamente 2 completamente visibles en 375px** (la 3ª asoma un 5%). 0 elementos `<a>` dentro del carrusel — ninguna tarjeta navega al hacer click. Botones prev/next confirmados invocando `scrollBy` con la dirección y magnitud correctas (mismo código, verificado con `behavior:"instant"`).
+- **Limitación del entorno de prueba, no del código:** en esta sesión, `scrollBy({..., behavior:"smooth"})` no avanza el scroll dentro del navegador de pruebas (probablemente `requestAnimationFrame` congelado en una pestaña no compuesta activamente) — con `behavior:"instant"` el mismo contenedor sí se desplaza correctamente a la posición esperada. El listener del botón se confirmó invocado (log manual) y llamando a `scrollBy` con los argumentos correctos; el comportamiento suave en un navegador real no debería verse afectado.
+- Sin regresión visual en el resto del home: confirmado por texto de página (`get_page_text`) que Hero, franja de estadísticas, secciones de servicios destacados, "Excelencia y Solidez Corporativa" y Misión/Visión se renderizan sin cambios.
 
 ---
 
