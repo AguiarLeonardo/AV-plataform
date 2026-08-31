@@ -11,12 +11,18 @@ interface Props {
   title?: string;
   /** Si la página no pasa la suya, cae a common.defaultDescription del locale activo (no hardcodeada). */
   description?: string;
-  /** Solo lo pasan las páginas ya traducidas (por ahora, únicamente "contact"). Opcional: el resto del sitio no lo pasa todavía y no debe romperse por eso. */
+  /** Solo lo pasan las páginas ya traducidas con una RouteKey fija de un solo par {es,en}. Opcional: el resto del sitio no lo pasa todavía y no debe romperse por eso. */
   routeKey?: RouteKey;
+  /**
+   * Par {es,en} explícito para páginas de detalle con slug traducido (8
+   * páginas de servicios, cada una con su propio par) — no encajan en una
+   * RouteKey única. Tiene prioridad sobre `routeKey` si ambos llegan.
+   */
+  dynamicHreflang?: { es: string; en: string };
 }
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
-const { title = "Asiaven - B2B", description, routeKey } = Astro.props;
+const { title = "Asiaven - B2B", description, routeKey, dynamicHreflang } = Astro.props;
 const metaDescription = description ?? t(lang, "common.defaultDescription");
 ---
 
@@ -29,10 +35,10 @@ const metaDescription = description ?? t(lang, "common.defaultDescription");
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <title>{title}</title>
-    {routeKey && <Hreflang routeKey={routeKey} />}
+    {dynamicHreflang ? <Hreflang urls={dynamicHreflang} /> : routeKey && <Hreflang routeKey={routeKey} />}
   </head>
   <body class="bg-white text-corporativo-gray antialiased">
-    <Navbar routeKey={routeKey} />
+    <Navbar routeKey={routeKey} switcherEntry={dynamicHreflang} />
     <main>
       <slot />
     </main>

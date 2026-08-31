@@ -2,18 +2,33 @@
 import { routes, getTranslatedEntry, buildAbsoluteUrl, type RouteKey } from "../../i18n/routes";
 
 interface Props {
-  routeKey: RouteKey;
+  /** RouteKey fija de un solo par {es,en} — la mayoría de las páginas. */
+  routeKey?: RouteKey;
+  /**
+   * Par {es,en} explícito para páginas con slug traducido que no encajan en
+   * una RouteKey única (las 8 de detalle de servicios, con su propio par
+   * distinto cada una). Tiene prioridad sobre `routeKey` si ambos llegan,
+   * pero un consumidor nunca debería pasar los dos a la vez.
+   */
+  urls?: { es: string; en: string };
 }
 
-const { routeKey } = Astro.props;
+const { routeKey, urls } = Astro.props;
 
 // `site` está definido en astro.config.mjs (ver docs/ESTADO.md) y no se
 // toca en esta fase, así que Astro.site siempre existe en build estático.
 const origin = Astro.site!.origin;
 
-const esUrl = buildAbsoluteUrl(routes[routeKey].es, origin);
-const translated = getTranslatedEntry(routeKey);
-const enUrl = translated ? buildAbsoluteUrl(translated.en, origin) : null;
+let esUrl: string;
+let enUrl: string | null;
+if (urls) {
+  esUrl = buildAbsoluteUrl(urls.es, origin);
+  enUrl = buildAbsoluteUrl(urls.en, origin);
+} else {
+  esUrl = buildAbsoluteUrl(routes[routeKey!].es, origin);
+  const translated = getTranslatedEntry(routeKey!);
+  enUrl = translated ? buildAbsoluteUrl(translated.en, origin) : null;
+}
 const canonicalUrl = Astro.currentLocale === "en" && enUrl ? enUrl : esUrl;
 ---
 

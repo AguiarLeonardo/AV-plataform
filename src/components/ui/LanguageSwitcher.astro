@@ -9,10 +9,18 @@ import { getTranslatedEntry, type RouteKey } from "../../i18n/routes";
 
 interface Props {
   routeKey?: RouteKey;
+  /**
+   * Par {es,en} explícito — para páginas de detalle con slug traducido (una
+   * RouteKey fija no puede representar 8 pares distintos). Si se pasa,
+   * gana sobre `routeKey`. `null` explícito fuerza "no renderizar nada"
+   * (una página de detalle sin panorámica en el idioma hermano, si algún
+   * día existiera ese caso) sin caer al lookup de `routeKey`.
+   */
+  entry?: { es: string; en: string } | null;
 }
 
-const { routeKey } = Astro.props;
-const entry = routeKey ? getTranslatedEntry(routeKey) : null;
+const { routeKey, entry: explicitEntry } = Astro.props;
+const entry = explicitEntry !== undefined ? explicitEntry : routeKey ? getTranslatedEntry(routeKey) : null;
 ---
 
 {
