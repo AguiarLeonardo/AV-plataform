@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-30 — corresponde al branch `fix/visor-360-errores` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-08-30 — corresponde al branch `feat/i18n-servicios` (sin mergear; parte de `develop`).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -80,7 +80,9 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 
 ## 2. Estado del trabajo de i18n — CIERRE DE FASE 1
 
-**Fase 1 del i18n del sitio corporativo cerrada.** Infraestructura completa y estable; 6 de 11 páginas corporativas traducidas (home incluida) + el 404 global bilingüe. La traducción de `/servicios` y `/envases` (hub + rutas dinámicas) queda **aplazada deliberadamente** — no es deuda técnica ni falta de tiempo, es una dependencia real explicada en detalle más abajo. Todo `/store/*` sigue sin tocar (fuera de alcance de esta fase desde el inicio).
+**Fase 1 del i18n del sitio corporativo cerrada.** Infraestructura completa y estable; 6 de 11 páginas corporativas traducidas (home incluida) + el 404 global bilingüe. La traducción de `/servicios` y `/envases` (hub + rutas dinámicas) quedó **aplazada deliberadamente** — no era deuda técnica ni falta de tiempo, era una dependencia real explicada en detalle más abajo. Todo `/store/*` sigue sin tocar (fuera de alcance desde el inicio).
+
+**Fase 2 — `/servicios` traducido, levantando parcialmente el aplazamiento anterior** (branch `feat/i18n-servicios`). El catálogo de envases (`/envases` y sus rutas) sigue aplazado por el motivo original (migración a base de datos, sin cambios) — ver sección dedicada más abajo. Detalle completo de la Fase 2 en su propia sección, después del resumen de la Fase 1.
 
 ### Guía rápida para traducir una página nueva (leer esto primero si retomas el proyecto)
 1. **`src/i18n/routes.ts` es la única fuente de verdad de rutas.** Agrega la clave `en` a la entrada correspondiente (ej. `services: { es: "/servicios", en: "/en/services" }`). Eso solo ya activa: el `LanguageSwitcher` en esa página, el fallback del Navbar/Footer (que dejan de apuntar a la versión española), y los alternates del sitemap — **nada más que tocar en esos tres sitios**, todos leen de `routes.ts`.
@@ -102,8 +104,8 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 | `/terminos` | `/en/terms` | Fase 1b, misma lógica que `/en/privacy` |
 | `/404` (no existe como ruta) | igual | Cierre de Fase 1. Único 404.html global (ver más abajo), detecta idioma en cliente por `pathname`, no emite canonical/hreflang |
 
-### Páginas pendientes (4 corporativas + todo `/store/*`)
-`servicios` (hub + `[servicio]` dinámica), `envases` (hub + `[categoria]`/`producto/[producto]` dinámicas) — **APLAZADAS**, ver la sección dedicada justo abajo. Todo `/store/*` sin tocar, fuera de alcance de la Fase 1 desde el inicio.
+### Páginas pendientes (al cierre de la Fase 1; ver Fase 2 más abajo para `/servicios`)
+`servicios` (hub + `[servicio]` dinámica), `envases` (hub + `[categoria]`/`producto/[producto]` dinámicas) — **APLAZADAS** al cierre de la Fase 1, ver la sección dedicada justo abajo. Todo `/store/*` sin tocar, fuera de alcance desde el inicio. **Actualización Fase 2:** `servicios` ya se tradujo — ver sección "Fase 2" más abajo. `envases` sigue aplazado.
 
 ### ⏸️ Aplazamiento deliberado: `/servicios` y `/envases` (rutas dinámicas)
 
@@ -199,9 +201,12 @@ También verificado: cerrando el modal 1.5s después de abrirlo con la carga col
 | `src/pages/en/projects.astro`, `en/technical-support.astro` | Fase 1b. |
 | `src/pages/en/privacy.astro`, `en/terms.astro` | Fase 1b — avisos breves, no traducciones del documento. |
 | `src/pages/404.astro` | Cierre de Fase 1 — único 404 del proyecto (antes no existía ninguno, ni en español). Detección de idioma en cliente por `pathname`, sin `routeKey` (sin canonical/hreflang). |
+| `src/pages/en/services/index.astro` | Fase 2 — listado de servicios en inglés (`/en/services`). |
+| `src/pages/en/services/[service].astro` | Fase 2 — detalle de servicio en inglés, `getStaticPaths` propio sobre los 8 slugs traducidos (`serviceSlugMap`). |
+| `src/pages/en/packaging.astro` | Fase 2 — aviso del catálogo de envases en inglés (mismo patrón que `en/privacy.astro`/`en/terms.astro`). |
 
 ### Selector de idioma y navegación en páginas no traducidas
-Sin cambios de mecanismo desde la Fase 1a — política única leída de `routes.ts` en los tres consumidores (switcher, Navbar, `serialize()` del sitemap): el switcher no se renderiza si la ruta actual no está traducida; Navbar cae a la versión española para rutas sin `en`; el sitemap solo agrega alternates a pares traducidos. 6 rutas traducidas ahora, mecanismo idéntico, cero cambios de código adicionales.
+Mismo mecanismo desde la Fase 1a, con una vía adicional agregada en la Fase 2 (ver esa sección): política leída de `routes.ts` en los tres consumidores (switcher, Navbar, `serialize()` del sitemap) para RouteKeys fijas, más `getServiceDetailUrls`/`getAllTranslatedPairs` para los 8 pares de detalle de servicios (que no encajan en una RouteKey única). El switcher no se renderiza si la ruta actual no está traducida (o no pasó ni `routeKey` ni un par explícito); Navbar cae a la versión española para rutas sin `en`; el sitemap solo agrega alternates a pares traducidos.
 
 ### `StoreLayout.astro` — pendiente, no tocado
 Sigue con `<html lang="es">` hardcodeado.
@@ -221,11 +226,58 @@ Verificado en navegador (variante de detección de cliente): `http://localhost:4
 
 ### Deuda pendiente y bloqueantes que se mantienen
 1. **`StoreLayout.astro`** sigue con `<html lang="es">` hardcodeado — toda la sección `/store/*` permanece sin ninguna adaptación i18n (fuera de alcance desde el inicio de la Fase 1, no solo de este cierre).
-2. **`/servicios` y `/envases`** — aplazadas, ver sección dedicada arriba. No es un "olvido", es una decisión registrada con motivo y dependencia explícita.
-3. **Prerrequisito de tipos para cuando se retomen:** `packagingCatalog.ts` y `techCatalog.ts` necesitan `satisfies` en vez de su anotación de tipo explícita actual, tanto para heredar `Localized<T>` como para que los futuros slug-maps de rutas dinámicas sean exhaustivos (ver Fase 1a/1c).
+2. **`/servicios` y `/envases`** — aplazadas en el cierre de la Fase 1. **`/servicios` ya se tradujo en la Fase 2** (ver sección dedicada arriba); `/envases` (el catálogo) sigue aplazado, mismo motivo original. No es un "olvido", es una decisión registrada con motivo y dependencia explícita.
+3. **Prerrequisito de tipos para cuando se retome `/envases`:** `packagingCatalog.ts` y `techCatalog.ts` necesitan `satisfies` en vez de su anotación de tipo explícita actual — **pero eso NO basta por sí solo** (hallazgo de la Fase 2, ver sección dedicada): cada `slug`/identificador que deba quedar como literal necesita además `as const` en el campo individual, porque el campo está tipado como `string` en la interfaz (`PackagingCategory.slug`, `TechProduct.slug` o equivalente) y `satisfies` por sí solo ensancha ese campo a `string` de todas formas. Ver el fix aplicado a `services.ts` como referencia exacta del patrón a replicar.
 4. **`ClientLogosCarousel.tsx`** — sin texto de UI propio más allá de los 17 nombres de cliente (`alt` de cada logo); nada que traducir en el componente en sí.
 5. **PENDIENTE DE VERIFICACIÓN:** cuando `www.asiaven.com` migre a Vercel, confirmar con `curl -I` que ese host **no** devuelve `X-Robots-Tag`, mientras `av-plataform-ruby.vercel.app` sí lo hace (ya verificado en producción el 2026-08-28 — ver sección 8).
 6. **BLOQUEANTE DE LANZAMIENTO — datos de oficina de Miami ficticios.** Ver encabezado dedicado al inicio de este documento. Se mantiene sin cambios: no se tocó en este cierre, solo se reafirma que sigue pendiente.
+
+### Fase 2 — `/servicios` traducido (branch `feat/i18n-servicios`)
+
+**Alcance:** `/servicios` → `/en/services`, `/servicios/[slug]` → `/en/services/[slug-en]` (8 páginas de detalle, incluida `/servicios/envases` — es la ficha descriptiva del servicio, distinta de `/envases` el catálogo; no muestra productos directamente, así que entraba en el alcance). El catálogo de envases (`/envases` y sus rutas de detalle) **sigue sin traducirse**, mismo motivo que en la Fase 1 (migración a base de datos pendiente) — se agrega únicamente `/en/packaging`, un aviso breve (mismo patrón que `/en/privacy`/`/en/terms`) que enlaza a la versión española.
+
+**Prerrequisito resuelto — slugs de `services.ts` como unión de literales, NO `string`.** El diagnóstico original (comentario en `routes.ts` desde la Fase 1a) decía que bastaba con `satisfies Service[]` en vez de `: Service[]`. **Ese diagnóstico era incompleto y se comprobó incorrecto en esta fase**: `Service.slug` está tipado como `string` en la interfaz, y `satisfies` usa ese tipo como contexto para inferir el objeto literal, ensanchando cada `slug` a `string` de todas formas — verificado con un caso mínimo aislado (un slug inventado como `"nonsense"` compilaba sin error pese al `satisfies Service[]` ya vigente). El fix real: `as const` en cada `slug` individual (`"ascensores" as const`, etc.), NO en el objeto completo — así `images`/`features` del mismo objeto siguen siendo arrays mutables normales, sin arrastrar `readonly` a componentes que esperan `string[]` mutable. **Esto aplica también a `packagingCatalog.ts`/`techCatalog.ts` cuando les llegue su turno** — el punto 3 de "Deuda pendiente" de la Fase 1 (más abajo) queda corregido con este hallazgo.
+
+Verificado explícitamente (quitando a propósito una entrada de `serviceSlugMap`): el build falla con `Property 'mantenimiento' is missing in type ... but required in type Record<ServiceSlug, string>` en vez de compilar en silencio.
+
+**Slugs en inglés elegidos** (`serviceSlugMap` en `routes.ts`) — criterio: término del sector, no traducción literal:
+
+| Slug ES | Slug EN | Nota |
+|---|---|---|
+| `ascensores` | `elevators` | — |
+| `escaleras-mecanicas` | `escalators` | — |
+| `tecnologia-y-telecomunicaciones` | `technology-and-telecommunications` | — |
+| `envases` | `packaging` | Coincide con el slug de ruta de detalle; no colisiona con `routes.packaging` (`/en/packaging`) porque vive bajo `/en/services/` |
+| `construccion` | `construction` | — |
+| `recipientes-gas-licuado` | `lpg-containers` | **Sin confirmar** — ver lista de términos técnicos abajo |
+| `mantenimiento` | `maintenance` | — |
+| `compras-internacionales` | `international-procurement` | **Sin confirmar** — ver lista de términos técnicos abajo |
+
+**Términos técnicos sin confirmar (a criterio del dueño del proyecto):**
+- `recipientes-gas-licuado` → `lpg-containers`: "LPG" (Liquefied Petroleum Gas) es la abreviatura estándar del sector para gas licuado de petróleo. Alternativa más literal: `liquefied-gas-containers` (más largo, sin abreviatura de la industria).
+- `compras-internacionales` → `international-procurement`: "procurement" es el término corporativo/de cadena de suministro más estándar que "purchasing" para este tipo de servicio integral de importación. **Nota de inconsistencia:** el título ya traducido de este servicio en el diccionario sigue diciendo "International Purchasing" (de una fase anterior) — el slug usa el término más preciso del sector, pero el texto visible no se retradujo en esta fase (no era parte del alcance pedido). Si se corrige el título, este slug ya está alineado con la corrección.
+
+**Mecanismo de hreflang/selector para slugs traducidos:** `Hreflang.astro`, `LanguageSwitcher.astro`, `Navbar.astro` y `Layout.astro` ganan una vía alternativa a la `RouteKey` fija — un par `{es,en}` explícito (`dynamicHreflang` en `Layout`, propagado como `urls`/`entry`/`switcherEntry` respectivamente). Necesaria porque las 8 páginas de detalle no comparten una sola `RouteKey`: cada una tiene su propio par, calculado por `getServiceDetailUrls(esSlug)` — nunca derivando el slug hermano quitando/poniendo el prefijo `/en/` a mano, por indicación explícita de la tarea. El resto del sitio sigue usando solo `routeKey`, sin cambios.
+
+`astro.config.mjs` (`serialize()` del sitemap) se generalizó: en vez de `findRouteKeyForPath` + `getTranslatedEntry(routeKey)` (solo RouteKeys fijas), ahora usa `getAllTranslatedPairs()` — RouteKeys fijas + los 8 pares de servicios, con un único mecanismo de búsqueda de pares `{es,en}` por pathname.
+
+**`routes.packaging` gana `en: "/en/packaging"` — traducción unidireccional, a propósito.** `/envases/index.astro` no pasa `routeKey`, así que sigue sin mostrar selector ni hreflang aunque la entrada ya tenga `en` — la única función de ese `en` es darle a `/en/packaging` un destino al que apuntar su propio selector/hreflang. Verificado con grep sobre `dist/`: `envases/index.html` y sus rutas de detalle (`envases/[categoria]`, `envases/producto/[producto]`) siguen sin ningún `<link rel="canonical">`/`<link rel="alternate">`.
+
+**Decisión del dueño del proyecto — CTA a la Store y al catálogo de envases en las páginas en inglés.** Ninguno de los dos se oculta: el CTA se mantiene (`/store` y `/envases` respectivamente, ambos sin traducir), acompañado de una nota discreta en inglés (`<p class="text-xs text-gray-500">`, no un bloque de advertencia) indicando que ese destino sigue solo en español. Texto en diccionario (`services.detail.storeSpanishOnlyNote` / `catalogSpanishOnlyNote`), reutilizado tal cual en ambos casos.
+
+**Efecto en cascada — CTAs de la home que enlazaban a una ficha de servicio.** `Hero.astro` (slides de ascensores/envases/tecnología) y `Services.astro` (carrusel de servicios) construían el href con un slug fijo idéntico en ambos idiomas (`/servicios/ascensores` incluso en la versión en inglés de la home) — no era un bug hasta ahora, porque no existía nada mejor a lo que enlazar. Corregido: ambos resuelven el par `{es,en}` vía `getServiceDetailUrls` y toman el lado que corresponde al locale activo. `ServicesCarousel.tsx` (isla React) pasa a recibir el `href` ya resuelto en vez de un `slug` crudo — sigue sin saber nada de locales, mismo patrón que el resto de las islas.
+
+**Verificación ejecutada:**
+- `npm run build` → **0 errores**, **365 páginas** (355 + 10: `/en/services`, 8 detalles, `/en/packaging`). La tarea estimaba +11 — el aviso del catálogo (punto 5 de la tarea) **es** `/en/packaging`, no una página aparte, así que el conteo correcto es +10.
+- Canonical + hreflang verificados por grep en `dist/en/services/elevators/index.html` y `dist/en/services/packaging/index.html`: ambos con `canonical` propio, `hreflang="es"` apuntando al slug español correcto (`/servicios/ascensores`, `/servicios/envases`), `hreflang="en"` y `hreflang="x-default"` apuntando al español.
+- Confirmado en navegador: desde `/en/services/elevators`, el selector ES lleva a `/servicios/ascensores` (no a `/servicios` ni a `/en/services`).
+- Las 8 páginas de detalle en inglés existen, ninguna da 404 (`dist/en/services/{elevators,escalators,technology-and-telecommunications,packaging,construction,lpg-containers,maintenance,international-procurement}/index.html`, todas presentes).
+- `/envases` y sus rutas de detalle siguen sin hreflang ni selector (grep sin coincidencias).
+- Grep sobre las 10 páginas nuevas en inglés buscando frases en español conocidas (CTAs, títulos, avisos) — sin coincidencias.
+- Verificado en navegador que los subproductos de `/en/services/elevators` se muestran en inglés correctamente (ya estaban traducidos desde la Fase 1c/post-1c) — no se retradujeron.
+- Regresión: home en español (`/`) sigue enlazando a `/servicios/ascensores`, `/servicios/envases`, `/servicios/tecnologia-y-telecomunicaciones` — sin cambios.
+
+**La Store (`/store/*`) sigue sin traducir — decisión explícita, no un olvido.** Se traducirá solo si la empresa se expande a mercados donde el inglés sea necesario para vender (hoy el negocio es 100% hispanohablante); si ese día llega, sus propios slugs de categoría/producto (hoy en español, ej. `/store/ciberseguridad`) también se traducirían con el mismo criterio de esta fase (término del sector, no traducción literal) — no es un trabajo trivial de "agregar `en`", es un slug-map completo como el de `services.ts`.
 
 ---
 
