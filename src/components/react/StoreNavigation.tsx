@@ -2,6 +2,21 @@ import { useEffect, useState, type SubmitEvent } from "react";
 import { ShoppingCart, Search, Menu, X, ChevronDown } from "lucide-react";
 import { storeCategories, type StoreCategory } from "../../data/storeTaxonomy";
 import { CART_EVENT, getCartCount } from "../../store/quoteCart";
+import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
+
+// Catálogo apagado (ver storeFlags.ts): los 5 disparadores del navbar
+// (2 storeCategories + Equipo a Medida + Recipientes + Soporte Técnico)
+// dejan de abrir su mega-menú y pasan a ser enlaces directos — a
+// "Próximamente" para 4 de ellos, y directo al único producto real
+// (gas licuado) para "Recipientes", que es la única forma de llegar a esa
+// página por navegación normal (no hay ningún otro enlace hacia ella en el
+// sitio). El texto sigue en español, sin diccionario — este componente
+// nunca pasó por i18n y eso no cambia aquí.
+const disabledNavLinks: Record<"btoLink" | "recipientesLink" | "supportLink", string> = {
+  btoLink: "/store/medida/laptops",
+  recipientesLink: "/store/recipientes/gas-licuado",
+  supportLink: "/store/soporte/informacion",
+};
 
 // El mega menú de "Equipo a Medida" no agrupa por título de categoría — es
 // una fila horizontal simple de 4 tarjetas.
@@ -149,97 +164,131 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
             </a>
 
             <nav className="hidden items-center gap-6 md:flex">
-              {storeCategories.map((category, ci) => (
-                <button
-                  key={category.slug}
-                  type="button"
-                  onMouseEnter={() => {
-                    setHoverIndex(ci);
-                    setSupportOpen(false);
-                    setBtoOpen(false);
-                    setRecipientesOpen(false);
-                  }}
-                  onClick={() => {
-                    setHoverIndex((prev) => (prev === ci ? null : ci));
-                    setSupportOpen(false);
-                    setBtoOpen(false);
-                    setRecipientesOpen(false);
-                  }}
-                  className={`whitespace-nowrap text-sm transition-colors ${
-                    ci === active.categoryIndex
-                      ? "font-bold text-black"
-                      : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
-                  }`}
-                >
-                  {category.name}
-                </button>
-              ))}
-              <button
-                type="button"
-                onMouseEnter={() => {
-                  setHoverIndex(null);
-                  setSupportOpen(false);
-                  setBtoOpen(true);
-                  setRecipientesOpen(false);
-                }}
-                onClick={() => {
-                  setBtoOpen((prev) => !prev);
-                  setHoverIndex(null);
-                  setSupportOpen(false);
-                  setRecipientesOpen(false);
-                }}
-                className={`whitespace-nowrap text-sm transition-colors ${
-                  isBtoActive
-                    ? "font-bold text-black"
-                    : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
-                }`}
-              >
-                Equipo a Medida
-              </button>
-              <button
-                type="button"
-                onMouseEnter={() => {
-                  setHoverIndex(null);
-                  setSupportOpen(false);
-                  setBtoOpen(false);
-                  setRecipientesOpen(true);
-                }}
-                onClick={() => {
-                  setRecipientesOpen((prev) => !prev);
-                  setHoverIndex(null);
-                  setSupportOpen(false);
-                  setBtoOpen(false);
-                }}
-                className={`whitespace-nowrap text-sm transition-colors ${
-                  isRecipientesActive
-                    ? "font-bold text-black"
-                    : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
-                }`}
-              >
-                Recipientes
-              </button>
-              <button
-                type="button"
-                onMouseEnter={() => {
-                  setHoverIndex(null);
-                  setSupportOpen(true);
-                  setBtoOpen(false);
-                  setRecipientesOpen(false);
-                }}
-                onClick={() => {
-                  setSupportOpen((prev) => !prev);
-                  setHoverIndex(null);
-                  setBtoOpen(false);
-                  setRecipientesOpen(false);
-                }}
-                className={`whitespace-nowrap text-sm transition-colors ${
-                  isSupportActive
-                    ? "font-bold text-black"
-                    : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
-                }`}
-              >
-                Soporte Técnico
-              </button>
+              {STORE_CATALOG_LIVE ? (
+                <>
+                  {storeCategories.map((category, ci) => (
+                    <button
+                      key={category.slug}
+                      type="button"
+                      onMouseEnter={() => {
+                        setHoverIndex(ci);
+                        setSupportOpen(false);
+                        setBtoOpen(false);
+                        setRecipientesOpen(false);
+                      }}
+                      onClick={() => {
+                        setHoverIndex((prev) => (prev === ci ? null : ci));
+                        setSupportOpen(false);
+                        setBtoOpen(false);
+                        setRecipientesOpen(false);
+                      }}
+                      className={`whitespace-nowrap text-sm transition-colors ${
+                        ci === active.categoryIndex
+                          ? "font-bold text-black"
+                          : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                      }`}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onMouseEnter={() => {
+                      setHoverIndex(null);
+                      setSupportOpen(false);
+                      setBtoOpen(true);
+                      setRecipientesOpen(false);
+                    }}
+                    onClick={() => {
+                      setBtoOpen((prev) => !prev);
+                      setHoverIndex(null);
+                      setSupportOpen(false);
+                      setRecipientesOpen(false);
+                    }}
+                    className={`whitespace-nowrap text-sm transition-colors ${
+                      isBtoActive
+                        ? "font-bold text-black"
+                        : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                    }`}
+                  >
+                    Equipo a Medida
+                  </button>
+                  <button
+                    type="button"
+                    onMouseEnter={() => {
+                      setHoverIndex(null);
+                      setSupportOpen(false);
+                      setBtoOpen(false);
+                      setRecipientesOpen(true);
+                    }}
+                    onClick={() => {
+                      setRecipientesOpen((prev) => !prev);
+                      setHoverIndex(null);
+                      setSupportOpen(false);
+                      setBtoOpen(false);
+                    }}
+                    className={`whitespace-nowrap text-sm transition-colors ${
+                      isRecipientesActive
+                        ? "font-bold text-black"
+                        : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                    }`}
+                  >
+                    Recipientes
+                  </button>
+                  <button
+                    type="button"
+                    onMouseEnter={() => {
+                      setHoverIndex(null);
+                      setSupportOpen(true);
+                      setBtoOpen(false);
+                      setRecipientesOpen(false);
+                    }}
+                    onClick={() => {
+                      setSupportOpen((prev) => !prev);
+                      setHoverIndex(null);
+                      setBtoOpen(false);
+                      setRecipientesOpen(false);
+                    }}
+                    className={`whitespace-nowrap text-sm transition-colors ${
+                      isSupportActive
+                        ? "font-bold text-black"
+                        : "font-normal text-gray-600 hover:font-semibold hover:text-gray-900 focus-visible:font-semibold focus-visible:text-gray-900"
+                    }`}
+                  >
+                    Soporte Técnico
+                  </button>
+                </>
+              ) : (
+                <>
+                  {storeCategories.map((category) => (
+                    <a
+                      key={category.slug}
+                      href={category.href}
+                      className="whitespace-nowrap text-sm font-normal text-gray-600 no-underline transition-colors hover:font-semibold hover:text-gray-900"
+                    >
+                      {category.name}
+                    </a>
+                  ))}
+                  <a
+                    href={disabledNavLinks.btoLink}
+                    className="whitespace-nowrap text-sm font-normal text-gray-600 no-underline transition-colors hover:font-semibold hover:text-gray-900"
+                  >
+                    Equipo a Medida
+                  </a>
+                  <a
+                    href={disabledNavLinks.recipientesLink}
+                    className="whitespace-nowrap text-sm font-normal text-gray-600 no-underline transition-colors hover:font-semibold hover:text-gray-900"
+                  >
+                    Recipientes
+                  </a>
+                  <a
+                    href={disabledNavLinks.supportLink}
+                    className="whitespace-nowrap text-sm font-normal text-gray-600 no-underline transition-colors hover:font-semibold hover:text-gray-900"
+                  >
+                    Soporte Técnico
+                  </a>
+                </>
+              )}
             </nav>
 
             <div className="flex flex-shrink-0 items-center gap-5">
@@ -428,164 +477,190 @@ export default function StoreNavigation({ currentPath = "/store" }: Props) {
           </form>
 
           <div className="flex flex-col divide-y divide-gray-100 px-4 py-2">
-            {storeCategories.map((category, ci) => {
-              const expanded = mobileExpanded === category.slug;
-              return (
-                <div key={category.slug}>
+            {STORE_CATALOG_LIVE ? (
+              <>
+                {storeCategories.map((category, ci) => {
+                  const expanded = mobileExpanded === category.slug;
+                  return (
+                    <div key={category.slug}>
+                      <button
+                        type="button"
+                        onClick={() => setMobileExpanded((prev) => (prev === category.slug ? null : category.slug))}
+                        aria-expanded={expanded}
+                        className={`flex w-full items-center justify-between py-3 text-left text-sm ${
+                          ci === active.categoryIndex ? "font-bold text-black" : "text-gray-700"
+                        }`}
+                      >
+                        {category.name}
+                        {category.groups.length > 0 && (
+                          <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${expanded ? "rotate-180" : ""}`} strokeWidth={1.5} />
+                        )}
+                      </button>
+                      {expanded && category.groups.length > 0 && (
+                        <div className="flex flex-col gap-4 pb-4 pl-4">
+                          {category.groups.map((group, gi) => (
+                            <div key={group.slug}>
+                              <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
+                                {group.name}
+                              </span>
+                              <ul className="flex flex-col gap-2">
+                                {group.items.map((item) => (
+                                  <li key={item.slug}>
+                                    <a
+                                      href={item.href}
+                                      onClick={() => {
+                                        selectGroup(ci, gi);
+                                        closeMobileMenu();
+                                      }}
+                                      className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                                    >
+                                      {item.name}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                <div>
                   <button
                     type="button"
-                    onClick={() => setMobileExpanded((prev) => (prev === category.slug ? null : category.slug))}
-                    aria-expanded={expanded}
-                    className={`flex w-full items-center justify-between py-3 text-left text-sm ${
-                      ci === active.categoryIndex ? "font-bold text-black" : "text-gray-700"
-                    }`}
+                    onClick={() => setMobileExpanded((prev) => (prev === "bto" ? null : "bto"))}
+                    aria-expanded={mobileExpanded === "bto"}
+                    className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
                   >
-                    {category.name}
-                    {category.groups.length > 0 && (
-                      <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${expanded ? "rotate-180" : ""}`} strokeWidth={1.5} />
-                    )}
+                    Equipo a Medida
+                    <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "bto" ? "rotate-180" : ""}`} strokeWidth={1.5} />
                   </button>
-                  {expanded && category.groups.length > 0 && (
+                  {mobileExpanded === "bto" && (
+                    <ul className="flex flex-col gap-2 pb-4 pl-4">
+                      {btoItems.map((item) => (
+                        <li key={item.name}>
+                          <a
+                            href={item.href}
+                            onClick={closeMobileMenu}
+                            className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                          >
+                            {item.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded((prev) => (prev === "recipientes" ? null : "recipientes"))}
+                    aria-expanded={mobileExpanded === "recipientes"}
+                    className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
+                  >
+                    Recipientes
+                    <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "recipientes" ? "rotate-180" : ""}`} strokeWidth={1.5} />
+                  </button>
+                  {mobileExpanded === "recipientes" && (
                     <div className="flex flex-col gap-4 pb-4 pl-4">
-                      {category.groups.map((group, gi) => (
-                        <div key={group.slug}>
+                      {recipientesGroups.map((group) => (
+                        <div key={group.name}>
                           <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
                             {group.name}
                           </span>
                           <ul className="flex flex-col gap-2">
-                            {group.items.map((item) => (
-                              <li key={item.slug}>
-                                <a
-                                  href={item.href}
-                                  onClick={() => {
-                                    selectGroup(ci, gi);
-                                    closeMobileMenu();
-                                  }}
-                                  className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
-                                >
-                                  {item.name}
-                                </a>
-                              </li>
-                            ))}
+                            {group.items.map((item) =>
+                              item.href ? (
+                                <li key={item.name}>
+                                  <a
+                                    href={item.href}
+                                    onClick={closeMobileMenu}
+                                    className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                                  >
+                                    {item.name}
+                                  </a>
+                                </li>
+                              ) : (
+                                <li key={item.name}>
+                                  <span className="text-sm text-gray-600">{item.name}</span>
+                                </li>
+                              )
+                            )}
                           </ul>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
-              );
-            })}
 
-            <div>
-              <button
-                type="button"
-                onClick={() => setMobileExpanded((prev) => (prev === "bto" ? null : "bto"))}
-                aria-expanded={mobileExpanded === "bto"}
-                className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
-              >
-                Equipo a Medida
-                <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "bto" ? "rotate-180" : ""}`} strokeWidth={1.5} />
-              </button>
-              {mobileExpanded === "bto" && (
-                <ul className="flex flex-col gap-2 pb-4 pl-4">
-                  {btoItems.map((item) => (
-                    <li key={item.name}>
-                      <a
-                        href={item.href}
-                        onClick={closeMobileMenu}
-                        className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
-                      >
-                        {item.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div>
-              <button
-                type="button"
-                onClick={() => setMobileExpanded((prev) => (prev === "recipientes" ? null : "recipientes"))}
-                aria-expanded={mobileExpanded === "recipientes"}
-                className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
-              >
-                Recipientes
-                <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "recipientes" ? "rotate-180" : ""}`} strokeWidth={1.5} />
-              </button>
-              {mobileExpanded === "recipientes" && (
-                <div className="flex flex-col gap-4 pb-4 pl-4">
-                  {recipientesGroups.map((group) => (
-                    <div key={group.name}>
-                      <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
-                        {group.name}
-                      </span>
-                      <ul className="flex flex-col gap-2">
-                        {group.items.map((item) =>
-                          item.href ? (
-                            <li key={item.name}>
-                              <a
-                                href={item.href}
-                                onClick={closeMobileMenu}
-                                className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
-                              >
-                                {item.name}
-                              </a>
-                            </li>
-                          ) : (
-                            <li key={item.name}>
-                              <span className="text-sm text-gray-600">{item.name}</span>
-                            </li>
-                          )
-                        )}
-                      </ul>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded((prev) => (prev === "support" ? null : "support"))}
+                    aria-expanded={mobileExpanded === "support"}
+                    className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
+                  >
+                    Soporte Técnico
+                    <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "support" ? "rotate-180" : ""}`} strokeWidth={1.5} />
+                  </button>
+                  {mobileExpanded === "support" && (
+                    <div className="flex flex-col gap-4 pb-4 pl-4">
+                      {supportGroups.map((group) => (
+                        <div key={group.name}>
+                          <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
+                            {group.name}
+                          </span>
+                          <ul className="flex flex-col gap-2">
+                            {group.items.map((item) =>
+                              item.href ? (
+                                <li key={item.name}>
+                                  <a
+                                    href={item.href}
+                                    onClick={closeMobileMenu}
+                                    className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
+                                  >
+                                    {item.name}
+                                  </a>
+                                </li>
+                              ) : (
+                                <li key={item.name}>
+                                  <span className="text-sm text-gray-600">{item.name}</span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-
-            <div>
-              <button
-                type="button"
-                onClick={() => setMobileExpanded((prev) => (prev === "support" ? null : "support"))}
-                aria-expanded={mobileExpanded === "support"}
-                className="flex w-full items-center justify-between py-3 text-left text-sm text-gray-700"
-              >
-                Soporte Técnico
-                <ChevronDown className={`h-4 w-4 flex-shrink-0 transition-transform ${mobileExpanded === "support" ? "rotate-180" : ""}`} strokeWidth={1.5} />
-              </button>
-              {mobileExpanded === "support" && (
-                <div className="flex flex-col gap-4 pb-4 pl-4">
-                  {supportGroups.map((group) => (
-                    <div key={group.name}>
-                      <span className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-900 select-none">
-                        {group.name}
-                      </span>
-                      <ul className="flex flex-col gap-2">
-                        {group.items.map((item) =>
-                          item.href ? (
-                            <li key={item.name}>
-                              <a
-                                href={item.href}
-                                onClick={closeMobileMenu}
-                                className="text-sm text-gray-600 no-underline transition-colors hover:text-gray-900"
-                              >
-                                {item.name}
-                              </a>
-                            </li>
-                          ) : (
-                            <li key={item.name}>
-                              <span className="text-sm text-gray-600">{item.name}</span>
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+              </>
+            ) : (
+              <>
+                {storeCategories.map((category) => (
+                  <a
+                    key={category.slug}
+                    href={category.href}
+                    onClick={closeMobileMenu}
+                    className="py-3 text-left text-sm text-gray-700 no-underline"
+                  >
+                    {category.name}
+                  </a>
+                ))}
+                <a href={disabledNavLinks.btoLink} onClick={closeMobileMenu} className="py-3 text-left text-sm text-gray-700 no-underline">
+                  Equipo a Medida
+                </a>
+                <a href={disabledNavLinks.recipientesLink} onClick={closeMobileMenu} className="py-3 text-left text-sm text-gray-700 no-underline">
+                  Recipientes
+                </a>
+                <a href={disabledNavLinks.supportLink} onClick={closeMobileMenu} className="py-3 text-left text-sm text-gray-700 no-underline">
+                  Soporte Técnico
+                </a>
+              </>
+            )}
           </div>
         </div>
       )}
