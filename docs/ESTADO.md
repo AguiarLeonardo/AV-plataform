@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-30 — corresponde al branch `feat/i18n-servicios` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-08-31 — corresponde al branch `feat/ocultar-store` (sin mergear; parte de `develop`).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -9,6 +9,122 @@
 ## ⚠️ BLOQUEANTES DE LANZAMIENTO
 
 **Datos de la oficina de Miami son ficticios/provisionales** (confirmado por el dueño del proyecto). La dirección ("1234 Miami Ave, Suite 100, Miami, FL 33132") tiene forma genérica de placeholder, y el teléfono ("+1 (305) 555-0198") usa el prefijo `555`, reservado en Norteamérica para uso ficticio — nunca asignado a líneas reales. Aparece en `Footer.astro`, `contactanos.astro` y `en/contact.astro` (todos con comentario `⚠️ DATOS FICTICIOS/PROVISIONALES` en el código, junto al literal). **Antes de migrar el dominio a producción**: reemplazar por los datos reales de esa sede, o eliminar la sección por completo. No modificado en ninguna fase — solo señalizado.
+
+## 🔒 Store oculta temporalmente (branch `feat/ocultar-store`)
+
+**Motivo:** el catálogo de la Store (`techCatalog.ts`) tiene 126 productos con datos de relleno (imágenes de stock de Unsplash, precios simulados) — no debía publicarse así en producción. Se apagó de forma deliberadamente reversible: **nada se borró** (ni código, ni datos, ni componentes de la Store), todo queda detrás de un único flag.
+
+### El flag — único punto de control
+
+`src/config/storeFlags.ts` exporta `STORE_CATALOG_LIVE = false`. **Revertir esto cuando la base de datos de productos reales esté lista es cambiar ese valor a `true`** — no hace falta tocar ningún otro archivo para que el catálogo, la navegación con submenús y los CTAs hacia la Store vuelvan a su comportamiento original. El resto de esta sección documenta CÓMO cada archivo usa ese flag, para poder verificar la reversión si algo no vuelve como se espera.
+
+### Qué queda con contenido real (sin cambios de comportamiento)
+
+- **`/store/recipientes/gas-licuado`** — el único producto real de la Store hoy. No depende del flag, nunca se tocó.
+- **`/store/soporte/contacto-ventas`** — formulario de contacto genérico y real (no depende del catálogo falso); es el destino del CTA "Solicitar Cotización" de gas licuado, así que debía seguir funcionando. No depende del flag.
+- **`/store/envases/[slug]`** (67 páginas: 5 categorías + 62 productos) — **catálogo real de envases** (mismos datos que `/envases` corporativo), no relleno. Decisión explícita: **no se apaga con el flag**, a diferencia del resto de la Store, porque el motivo para ocultar la Store (datos falsos) no aplica aquí. Sigue generándose exactamente igual que antes de esta tarea.
+  - **Hallazgo a reportar, sin resolver aquí:** con la navegación de la Store simplificada (ver más abajo), **estas 67 páginas quedaron sin ningún enlace entrante en todo el sitio**. Antes tenían dos rutas de acceso: el submenú "Recipientes" → "Envases de Aluminio" de `StoreNavigation.tsx` (ahora ese botón enlaza directo a gas licuado, sin submenú) y el botón "Ver producto en la tienda" de `/envases/producto/[producto]` (ahora oculto tras el flag, ver más abajo). Siguen siendo accesibles por URL directa y aparecen en el sitemap, pero no hay forma de llegar a ellas navegando desde ninguna página del sitio. Queda a criterio del dueño del proyecto si esto amerita agregar de vuelta algún enlace.
+
+### Qué muestra "Próximamente" (`src/components/store/ComingSoon.astro`)
+
+Componente único y reutilizable — recibe `sectionName` y muestra `"{sectionName} — Próximamente"` (no un cartel idéntico en todas partes: "Productos — Próximamente", "Garantía — Próximamente", etc.). Siempre con `noindex,nofollow` (prop `noindex` nueva en `StoreLayout.astro`).
+
+Cada página sigue existiendo como archivo, con su contenido real intacto más abajo en el mismo archivo — solo se envuelve en `{STORE_CATALOG_LIVE ? (<real>) : <ComingSoon sectionName="..." />}`, así que revertir el flag basta para que todas vuelvan a mostrar su contenido real sin tocarlas una por una:
+
+| Archivo | `sectionName` |
+|---|---|
+| `store/index.astro` | Asiaven Store |
+| `store/garantia.astro` | Garantía |
+| `store/envios.astro` | Envíos |
+| `store/busqueda.astro` | Búsqueda |
+| `store/cotizacion.astro` | Cotización |
+| `store/medida/{laptops,desktops,workstations,servidores}.astro` | Equipo a Medida |
+| `store/soporte/descargas.astro` | Software y Drivers |
+| `store/soporte/faq.astro` | Preguntas Frecuentes |
+| `store/soporte/informacion.astro` | Soporte Técnico |
+| `store/soporte/ticket.astro` | Soporte y Solución de Problemas |
+| `store/soporte/asesoria-compra.astro` | Asesoría de Compra |
+
+`store/[categoria].astro` es un caso especial: su `getStaticPaths()`, cuando el flag está apagado, genera **solo** las 2 categorías de nivel superior (`/store/productos`, `/store/soluciones-empresariales`) como stubs de `ComingSoon` — los ~73 slugs de grupo/ítem (`/store/laptops`, `/store/equipos-de-computo`, etc.) **no se generan en absoluto** mientras el flag esté apagado.
+
+### Qué deja de generarse por completo (0 páginas en `dist/` mientras el flag esté apagado)
+
+- **`store/producto/[slug].astro`** — los 126 productos falsos. `getStaticPaths()` retorna `[]` si `!STORE_CATALOG_LIVE`.
+- **`store/[categoria].astro`** — los ~73 slugs de grupo/ítem (ver tabla arriba); solo se generan cuando el flag está en `true`.
+
+Verificado explícitamente: `/store/producto/mantenimiento-av-3` y `/store/laptops` devuelven **404** en el build real (`npm run preview`), no un cartel — coherente con "no queremos que existan ni que Google las indexe".
+
+### Navegación (`StoreNavigation.tsx`)
+
+Los 5 disparadores del navbar (2 `storeCategories` + "Equipo a Medida" + "Recipientes" + "Soporte Técnico") dejan de abrir su mega-menú y pasan a ser enlaces directos — guardado con `{STORE_CATALOG_LIVE ? <botones originales> : <enlaces>}` en el bloque desktop y en el acordeón móvil, así que revertir el flag restaura el comportamiento de submenú exacto sin tocar este archivo. Con el flag apagado:
+
+| Etiqueta | Enlace |
+|---|---|
+| Productos | `/store/productos` (Próximamente) |
+| Soluciones Empresariales | `/store/soluciones-empresariales` (Próximamente) |
+| Equipo a Medida | `/store/medida/laptops` (Próximamente) |
+| **Recipientes** | `/store/recipientes/gas-licuado` (**real** — es la única forma de llegar ahí por navegación normal) |
+| Soporte Técnico | `/store/soporte/informacion` (Próximamente) |
+
+Este componente nunca pasó por i18n (texto hardcodeado en español) — decisión consciente del dueño del proyecto, no tocada en esta tarea ni antes.
+
+### Enlace corporativo ocultado (no repuntado) — `/envases/producto/[producto]`
+
+El botón "Ver producto en la tienda" (llevaba a `/store/envases/{slug}`) se oculta con `{STORE_CATALOG_LIVE && (...)}` en vez de repuntarse a otro destino — un botón que promete un producto específico y entrega un cartel genérico de "Próximamente" es peor que no ofrecer el botón. El resto de la página (specs, breadcrumb) no cambió.
+
+### CTAs de servicios corporativos que hoy llevarían a "Próximamente" (reportados, sin cambios)
+
+- Navbar corporativo y Footer corporativo: el botón/enlace "Tienda" / "AV Store" sigue apuntando a `/store` — se deja así a propósito (recomendación aplicada): mostrar un "Próximamente" profesional es mejor que ocultar la existencia de la Store del sitio corporativo.
+- `/soporte-tecnico` y `/en/technical-support`: el CTA "Ver drivers" sigue apuntando a `/store/soporte/descargas`, que ahora muestra "Software y Drivers — Próximamente" en vez de la lista de descargas (esa lista ya era además contenido de relleno, con enlaces `href="#""). No se repuntó ni se ocultó — no es un enlace roto, solo lleva a un aviso.
+
+### Catálogos PDF (`public/documentos/catalogos/`)
+
+Ruta acordada, ya con los 2 archivos que subió el dueño del proyecto: `catalogo-envases.pdf` (7.2 MB, 15 páginas) y `catalogo-tecnologia.pdf` (2.9 MB, 2 páginas) — estaban subidos en `public/documentos/` a secas (root) y se movieron a la subcarpeta `catalogos/` para coincidir con la ruta acordada.
+
+**Comprobación de existencia en build-time — `src/utils/pdfExists.ts`.** Mismo criterio que `panorama360` opcional del visor 360: si el PDF no existe, el botón no se ofrece. **Hallazgo importante, verificado con `npm run build` + `npm run preview` reales (no `astro dev`):** la resolución de ruta vía `import.meta.url` (que parecía la opción "no depende de cwd") en realidad SÍ depende de dónde Vite decide colocar el chunk compilado — en el build real, el archivo termina en `dist/.prerender/chunks/pdfExists_[hash].mjs`, dos niveles de profundidad distintos a los de `src/utils/`, así que la ruta relativa calculada apuntaba a un `dist/public/` inexistente y el chequeo SIEMPRE daba `false` (confirmado con logging temporal antes del fix). La solución que sí funciona, verificada con el mismo build real: `path.join(process.cwd(), "public", "documentos", "catalogos", filename)` — asume que `npm run build`/`astro build` se invoca desde la raíz del repo, la misma asunción de la que ya depende cualquier import relativo de `astro.config.mjs`.
+
+Verificado en ambos sentidos: quitando temporalmente `catalogo-tecnologia.pdf` del disco y reconstruyendo, el botón correspondiente desaparece del HTML generado (0 coincidencias por grep) mientras el botón de envases (archivo presente) sigue apareciendo — confirma que el chequeo es específico por archivo, no global.
+
+`/servicios/tecnologia-y-telecomunicaciones`: el botón "Ir a la tienda" se reemplazó por "Ver catálogo (PDF)" → `catalogo-tecnologia.pdf` (nueva clave de diccionario `services.detail.techCatalogPdfCta`, ES/EN). `/servicios/envases`: el botón ya existente "Descargar catálogo (PDF)" pasó de `href="#"` a `catalogo-envases.pdf` (misma clave `catalogPdfCta`, sin clave nueva).
+
+**`storeCta`/`storeSpanishOnlyNote` (diccionario `services.detail`) se conservan sin uso, a propósito** — existían para el CTA hacia la Store que el punto anterior reemplaza. No se borraron: vuelven a hacer falta si se revierte el apagado de la Store y el CTA a `/store` regresa a `/servicios/tecnologia-y-telecomunicaciones`. Comentario explicativo ya agregado en `es.ts` junto a esas claves.
+
+### Divisiones especializadas de la home (`Affiliates.astro`)
+
+Las 4 tarjetas (`AV Constructora`, `AV Elevators`, `AV Maquinarias Pesadas`, `AV Tecnología`) tenían `href="#"` — enlaces rotos. Se cambió el elemento contenedor de `<a>` a `<div>` (mismas clases, sin ningún otro cambio de markup): las tarjetas ya no navegan a ningún lado, pero conservan exactamente el mismo hover/transición (que es puro CSS vía la clase `group`, no depende de que el elemento sea un enlace). Verificado en navegador.
+
+### i18n — fuera de alcance en esta tarea
+
+No se tocó nada de `src/i18n/*` salvo las 3 claves de diccionario ya mencionadas (nueva `techCatalogPdfCta`, conservación de `storeCta`/`storeSpanishOnlyNote`). La Store completa (`StoreNavigation.tsx`, `StoreLayout.astro`, `StoreFooter.astro`, todas las páginas `store/*`) permanece 100% en español, sin diccionario y sin `routeKey`/hreflang — decisión ya vigente desde antes de esta tarea, reafirmada aquí explícitamente.
+
+### Verificación ejecutada
+
+- `npm run build` → **0 errores, 185 páginas** (365 − 180). Diferencia explicada: 126 productos falsos (`store/producto/[slug]`) + 54 páginas de grupo/ítem del catálogo tech (`store/[categoria]`, de sus ~56 originales quedan solo las 2 de nivel superior) = 180 páginas que dejaron de generarse. `store/envases/*` (67 páginas) se mantiene sin cambios, no resta del conteo.
+- Tarjetas de divisiones: confirmado en navegador que son `<div>` sin `href`, con las mismas clases de hover/transición.
+- Producto de gas licuado: confirmado funcional — contenido real, CTA a `/store/soporte/contacto-ventas` (real), accesible desde el navbar vía "Recipientes".
+- Páginas "Próximamente": confirmado `noindex,nofollow` presente y `sectionName` contextual correcto en varias (`Productos`, `Soluciones Empresariales`).
+- 404 real confirmado para una ruta de grupo/ítem (`/store/laptops`) y un producto falso (`/store/producto/mantenimiento-av-3`).
+- Páginas corporativas traducidas sin regresión: `/servicios/envases` y `/servicios/tecnologia-y-telecomunicaciones` (ambos idiomas) con selector, hreflang y botones de PDF funcionando; `/soporte-tecnico` con su CTA intacto (lleva a un "Próximamente", no a un roto); Navbar/Footer corporativos con su enlace a `/store` intacto.
+
+### Listado de rutas `/store` en `dist/` (post-cambio)
+
+```
+store/index.html                              (Próximamente)
+store/productos/index.html                    (Próximamente — antes categoría de nivel superior)
+store/soluciones-empresariales/index.html      (Próximamente — antes categoría de nivel superior)
+store/garantia/index.html                      (Próximamente)
+store/envios/index.html                        (Próximamente)
+store/busqueda/index.html                      (Próximamente)
+store/cotizacion/index.html                    (Próximamente)
+store/medida/{laptops,desktops,workstations,servidores}/index.html   (Próximamente ×4)
+store/soporte/{descargas,faq,informacion,ticket,asesoria-compra}/index.html   (Próximamente ×5)
+store/soporte/contacto-ventas/index.html       (real)
+store/recipientes/gas-licuado/index.html       (real)
+store/envases/index.html                       (real — 67 páginas: 5 categorías + 62 productos, sin cambios)
+```
+`store/[categoria]` (grupos/ítems, ~73) y `store/producto/*` (126) — ausentes del build, confirmado.
+
+---
 
 **Las 3 panorámicas 360° de ascensores son versiones degradadas por WhatsApp** (confirmado por el dueño del proyecto: se descargaron vía WhatsApp, que recomprime y redimensiona todo lo que pasa por su compresión de imágenes). `ascensores-residenciales.jpg`, `ascensores-panoramicos.jpg` y `ascensores-lujo.jpg` (en `public/images/corporativo/producto-360/`) miden **1600×791px, ratio 2.0228** en vez de 2:1 exacto (deberían ser 1600×800) — verificado con dos métodos independientes (`file` y parseo manual del marcador SOF del JPEG). Lo habitual para panorámicas equirrectangulares en web es **4000–6000px de ancho**; estas están muy por debajo de eso además de con el ratio ligeramente incorrecto. **Antes de salir a producción**: reemplazar por los archivos originales sin recomprimir (ya se van a solicitar por un canal sin compresión) — las rutas no cambian, así que el reemplazo no requiere tocar código. No se recortaron ni modificaron deliberadamente al implementar el visor, por indicación explícita del dueño del proyecto.
 
