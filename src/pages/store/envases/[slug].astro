@@ -3,6 +3,7 @@ import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
 import { packagingCategories } from "../../../data/packagingCatalog";
 import { ChevronLeft } from "lucide-react";
+import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
 
 // Vista dedicada de Envases dentro de la Tienda — no participa del catálogo
 // general (techCatalog.ts) ni del sidebar de filtros. Una sola ruta dinámica
@@ -12,7 +13,20 @@ import { ChevronLeft } from "lucide-react";
 //   - slug de producto (62) -> ficha individual con specs y CTA de cotización.
 // Los slugs de categoría y de producto no se solapan (formatos distintos),
 // así que un único parámetro [slug] alcanza para ambos niveles.
+//
+// Catálogo apagado (ver storeFlags.ts): este contenido es un duplicado
+// exacto del catálogo corporativo /envases/* (misma fuente de datos,
+// packagingCatalog.ts, mismos títulos/specs) — ocultarlo no pierde
+// contenido y evita contenido duplicado de cara a Google. Además, tras
+// simplificar StoreNavigation.tsx, estas 67 páginas quedaron sin ningún
+// enlace entrante en todo el sitio (solo alcanzables por URL directa o
+// sitemap) dentro de una Store que anuncia "Próximamente" — confirmado en
+// la tarea anterior. getStaticPaths retorna [] mientras el flag esté
+// apagado, igual que producto/[slug].astro y los grupos/ítems de
+// [categoria].astro.
 export function getStaticPaths() {
+  if (!STORE_CATALOG_LIVE) return [];
+
   const categoryPaths = packagingCategories.map((category) => ({
     params: { slug: category.slug },
     props: { kind: "category" as const, category },
