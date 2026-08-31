@@ -211,6 +211,10 @@ const es = {
       buttonLabel: "Ver vista 360°",
       closeLabel: "Cerrar",
       loadingText: "Cargando panorámica…",
+      // {percent} se reemplaza en cliente por el porcentaje real de descarga
+      // (Content-Length + stream) — solo se usa cuando ese dato está
+      // disponible; si no, se cae a loadingText (indicador indeterminado).
+      loadingProgressText: "Cargando panorámica… {percent}%",
       errorText: "No se pudo cargar la vista 360°. Inténtalo de nuevo más tarde.",
     },
     detail: {

@@ -199,6 +199,7 @@ export default {
       buttonLabel: "View 360° tour",
       closeLabel: "Close",
       loadingText: "Loading panorama…",
+      loadingProgressText: "Loading panorama… {percent}%",
       errorText: "We couldn't load the 360° view. Please try again later.",
     },
     detail: {

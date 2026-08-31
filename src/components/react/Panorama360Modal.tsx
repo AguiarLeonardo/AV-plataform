@@ -18,6 +18,7 @@ interface Props {
   title: string;
   closeLabel: string;
   loadingText: string;
+  loadingProgressText: string;
   errorText: string;
   onClose: () => void;
   triggerRef: React.RefObject<HTMLElement | null>;
@@ -37,26 +38,35 @@ interface Props {
  * desaparece del DOM directamente, sin transición de tamaño), así que el
  * efecto que inicializa el visor siempre corre con el contenedor ya en su
  * tamaño final.
+ *
+ * La panorámica se descarga con fetch() en vez de dejar que Pannellum la
+ * pida por su cuenta, para poder leer el header Content-Length y el stream
+ * de la respuesta y mostrar un progreso real (no simulado). El blob
+ * resultante se pasa a Pannellum como blob: URL — Pannellum lo soporta
+ * nativamente (su propio código detecta el prefijo "blob:" para saltarse
+ * basePath), así que internamente vuelve a "cargarlo" de forma instantánea
+ * (un blob: ya está en memoria, no hay red de por medio) y punto.
  */
 // Cuánto esperar antes de dar la panorámica por caída, en vez de depender de
-// que el navegador emita su propio timeout de red (que puede tardar decenas
-// de segundos y deja el spinner girando sin dar ninguna información). 20s es
-// un punto medio deliberado: tolera una conexión lenta cargando un archivo de
-// varios MB (las panorámicas HD que van a reemplazar a las actuales) sin
-// llegar a los tiempos de espera "no hay respuesta" que un usuario ya
-// interpreta como error por su cuenta.
-const PANORAMA_LOAD_TIMEOUT_MS = 20_000;
+// que el navegador emita su propio timeout de red. 30s: las panorámicas HD
+// pesan ~2.3MB — en 3G decente/4G eso carga en segundos, y en el peor caso
+// razonable (3G lenta, ~46s calculados) igual se habría tardado demasiado
+// para valer la pena esperar; a los 30s el usuario recibe un mensaje en vez
+// de seguir mirando un indicador indefinidamente.
+const PANORAMA_LOAD_TIMEOUT_MS = 30_000;
 
 export default function Panorama360Modal({
   src,
   title,
   closeLabel,
   loadingText,
+  loadingProgressText,
   errorText,
   onClose,
   triggerRef,
 }: Props) {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [progress, setProgress] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<PannellumViewer | null>(null);
@@ -108,45 +118,88 @@ export default function Panorama360Modal({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Carga diferida de Pannellum + inicialización del visor.
+  // Descarga de la panorámica (con progreso) + carga diferida de Pannellum.
   useEffect(() => {
     let cancelled = false;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let objectUrl: string | null = null;
+    const controller = new AbortController();
     setStatus("loading");
+    setProgress(null);
 
     (async () => {
       try {
-        await Promise.all([import("pannellum/build/pannellum.css"), import("pannellum/build/pannellum.js")]);
+        timeoutId = setTimeout(() => {
+          controller.abort();
+          if (!cancelled) setStatus("error");
+        }, PANORAMA_LOAD_TIMEOUT_MS);
+
+        const [, , response] = await Promise.all([
+          import("pannellum/build/pannellum.css"),
+          import("pannellum/build/pannellum.js"),
+          fetch(src, { signal: controller.signal }),
+        ]);
         if (cancelled || !containerRef.current) return;
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const totalHeader = response.headers.get("Content-Length");
+        const total = totalHeader ? Number(totalHeader) : null;
+
+        let blob: Blob;
+        if (response.body && total) {
+          // Content-Length disponible: progreso real, no simulado.
+          const reader = response.body.getReader();
+          const chunks: Uint8Array[] = [];
+          let received = 0;
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            received += value.length;
+            if (!cancelled) setProgress(Math.min(100, Math.round((received / total) * 100)));
+          }
+          blob = new Blob(chunks as BlobPart[]);
+        } else {
+          // Sin Content-Length (o sin soporte de stream): indicador
+          // indeterminado — progress se queda en null, nunca se inventa un %.
+          blob = await response.blob();
+        }
+        if (cancelled || !containerRef.current) return;
+
+        objectUrl = URL.createObjectURL(blob);
 
         const pannellum = (window as unknown as { pannellum: PannellumGlobal }).pannellum;
         const viewer = pannellum.viewer(containerRef.current, {
           type: "equirectangular",
-          panorama: src,
+          panorama: objectUrl,
           autoLoad: true,
           showZoomCtrl: true,
         });
 
-        // Cubre el caso de red caída: si autoLoad se queda colgado pidiendo
-        // la imagen (sin disparar "error" — eso solo ocurre para respuestas
-        // de red que sí llegan, como un 404), este timeout fuerza el estado
-        // de error en vez de dejar el spinner indefinidamente.
-        timeoutId = setTimeout(() => {
-          if (!cancelled) setStatus("error");
-        }, PANORAMA_LOAD_TIMEOUT_MS);
-
         viewer.on("load", () => {
           clearTimeout(timeoutId);
+          if (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+            objectUrl = null;
+          }
           if (!cancelled) setStatus("ready");
         });
         viewer.on("error", () => {
           clearTimeout(timeoutId);
+          if (objectUrl) {
+            URL.revokeObjectURL(objectUrl);
+            objectUrl = null;
+          }
           if (!cancelled) setStatus("error");
         });
 
         viewerRef.current = viewer;
       } catch {
         clearTimeout(timeoutId);
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          objectUrl = null;
+        }
         if (!cancelled) setStatus("error");
       }
     })();
@@ -154,10 +207,15 @@ export default function Panorama360Modal({
     return () => {
       cancelled = true;
       clearTimeout(timeoutId);
+      controller.abort();
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
       viewerRef.current?.destroy();
       viewerRef.current = null;
     };
   }, [src]);
+
+  const loadingLabel =
+    progress !== null ? loadingProgressText.replace("{percent}", String(progress)) : loadingText;
 
   return (
     <div
@@ -186,8 +244,16 @@ export default function Panorama360Modal({
         <div ref={containerRef} className="h-full w-full" />
 
         {status === "loading" && (
-          <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center bg-black/60 text-sm font-medium text-white">
-            {loadingText}
+          <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-black/60 px-6 text-center text-sm font-medium text-white">
+            <span>{loadingLabel}</span>
+            {progress !== null && (
+              <div className="h-1.5 w-48 overflow-hidden rounded-full bg-white/20">
+                <div
+                  className="h-full rounded-full bg-white transition-[width] duration-150 ease-linear"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
           </div>
         )}
         {status === "error" && (

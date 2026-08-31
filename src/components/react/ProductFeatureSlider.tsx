@@ -18,6 +18,7 @@ interface Viewer360Labels {
   buttonLabel: string;
   closeLabel: string;
   loadingText: string;
+  loadingProgressText: string;
   errorText: string;
 }
 
@@ -142,6 +143,7 @@ export default function ProductFeatureSlider({ products, prevLabel, nextLabel, v
           title={openProduct.title}
           closeLabel={viewer360.closeLabel}
           loadingText={viewer360.loadingText}
+          loadingProgressText={viewer360.loadingProgressText}
           errorText={viewer360.errorText}
           onClose={() => setOpenPanoramaIndex(null)}
           triggerRef={activeTriggerRef}
