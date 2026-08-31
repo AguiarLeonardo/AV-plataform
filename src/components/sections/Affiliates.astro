@@ -1,5 +1,6 @@
 ---
 import { t } from "../../i18n/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 const affiliatesText = t(lang, "home.affiliates");
@@ -9,6 +10,7 @@ const images = [
   "/images/corporativo/afiliadas/division-movilidad-vertical.webp",
   "/images/corporativo/afiliadas/division-maquinaria.webp",
   "/images/corporativo/afiliadas/division-tecnologia.webp",
+  "/images/corporativo/afiliadas/av-envasados.webp",
 ];
 
 const affiliates = affiliatesText.divisions.map((division, index) => ({
@@ -35,41 +37,86 @@ const affiliates = affiliatesText.divisions.map((division, index) => ({
       </p>
     </div>
 
-    <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        affiliates.map(({ name, description, image }) => (
-          <div
-            class="group relative block h-80 overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl sm:h-96"
-          >
-            {/* Estado normal: foto + overlay oscuro. Ambos se desvanecen en hover. */}
-            <img
-              src={image}
-              alt={name}
-              class="absolute inset-0 h-full w-full object-cover transition-opacity duration-300 group-hover:opacity-0"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="absolute inset-0 bg-black/50 transition-opacity duration-300 group-hover:opacity-0" />
+    <!-- Carrusel de desplazamiento lateral (mismo patrón que la sección
+    "Recomendados para ti" de store/producto/[slug].astro: fila con
+    overflow-x-auto + scroll-snap y botones que hacen scrollBy, en vez del
+    carrusel de un slide a la vez de ServicesCarousel/ProductFeatureSlider
+    — ese patrón reemplaza todo el contenido a cada paso, y aquí se pidió
+    ver varias tarjetas visibles a la vez (3 en escritorio, 2 en móvil), que
+    es justo lo que ya resuelve el patrón de "Recomendados"). Es Astro
+    plano + <script> vanilla, sin isla de React: no hay estado que
+    gestionar más allá de la posición de scroll, que el navegador ya lleva
+    solo. -->
+    <div class="group relative mt-14">
+      <div
+        id="affiliates-scroll"
+        class="-mx-4 flex gap-6 overflow-x-auto px-4 pb-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:hidden"
+      >
+        {
+          affiliates.map(({ name, description, image }) => (
+            <div class="w-[calc(50%-0.75rem)] flex-none snap-start lg:w-[calc(33.333%-1rem)]">
+              <div class="group/card relative block h-80 overflow-hidden rounded-xl shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl sm:h-96">
+                {/* Estado normal: foto + overlay oscuro. Ambos se desvanecen en hover. */}
+                <img
+                  src={image}
+                  alt={name}
+                  class="absolute inset-0 h-full w-full object-cover transition-opacity duration-300 group-hover/card:opacity-0"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="absolute inset-0 bg-black/50 transition-opacity duration-300 group-hover/card:opacity-0" />
 
-            {/* Estado hover: fondo sólido del tema, se desvanece hacia adentro. */}
-            <div class="absolute inset-0 bg-corporativo-gray opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                {/* Estado hover: fondo sólido del tema, se desvanece hacia adentro. */}
+                <div class="absolute inset-0 bg-corporativo-gray opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" />
 
-            {/* Bloque de texto: anclado abajo (mt-auto) en ambos estados. El
-               párrafo colapsado (max-h-0) no reserva espacio, así que el
-               título queda pegado al borde inferior en reposo; al revelarse
-               el párrafo en hover, el bloque crece "hacia arriba" y el
-               título queda visualmente más alto dentro de la tarjeta. */}
-            <div class="absolute inset-0 flex flex-col justify-end p-6">
-              <h3 class="text-lg font-bold text-white transition-transform duration-300 group-hover:-translate-y-1 sm:text-xl">
-                {name}
-              </h3>
-              <p class="mt-3 max-h-0 overflow-hidden text-sm leading-relaxed text-gray-200 opacity-0 transition-all duration-300 group-hover:max-h-40 group-hover:opacity-100">
-                {description}
-              </p>
+                {/* Bloque de texto: anclado abajo (mt-auto) en ambos estados. El
+                   párrafo colapsado (max-h-0) no reserva espacio, así que el
+                   título queda pegado al borde inferior en reposo; al revelarse
+                   el párrafo en hover, el bloque crece "hacia arriba" y el
+                   título queda visualmente más alto dentro de la tarjeta. */}
+                <div class="absolute inset-0 flex flex-col justify-end p-6">
+                  <h3 class="text-lg font-bold text-white transition-transform duration-300 group-hover/card:-translate-y-1 sm:text-xl">
+                    {name}
+                  </h3>
+                  <p class="mt-3 max-h-0 overflow-hidden text-sm leading-relaxed text-gray-200 opacity-0 transition-all duration-300 group-hover/card:max-h-40 group-hover/card:opacity-100">
+                    {description}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        ))
-      }
+          ))
+        }
+      </div>
+
+      <button
+        type="button"
+        id="affiliates-prev"
+        aria-label={t(lang, "home.affiliates.carousel.prevLabel")}
+        class="absolute left-0 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-corporativo-gray shadow-md transition-colors hover:bg-gray-50 md:flex"
+      >
+        <ChevronLeft className="h-5 w-5" client:load />
+      </button>
+      <button
+        type="button"
+        id="affiliates-next"
+        aria-label={t(lang, "home.affiliates.carousel.nextLabel")}
+        class="absolute right-0 top-1/2 z-10 translate-x-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-corporativo-gray shadow-md transition-colors hover:bg-gray-50 md:flex"
+      >
+        <ChevronRight className="h-5 w-5" client:load />
+      </button>
     </div>
   </div>
 </section>
+
+<script>
+  const scrollContainer = document.getElementById("affiliates-scroll");
+  const prevBtn = document.getElementById("affiliates-prev");
+  const nextBtn = document.getElementById("affiliates-next");
+
+  prevBtn?.addEventListener("click", () => {
+    scrollContainer?.scrollBy({ left: -320, behavior: "smooth" });
+  });
+  nextBtn?.addEventListener("click", () => {
+    scrollContainer?.scrollBy({ left: 320, behavior: "smooth" });
+  });
+</script>

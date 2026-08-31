@@ -130,7 +130,15 @@ const es = {
           name: "AV Tecnología",
           description: "Soluciones tecnológicas, automatización y desarrollo de sistemas industriales.",
         },
+        {
+          name: "AV Envasados",
+          description: "Fabricación y distribución de envases de aluminio para la industria alimentaria y de bebidas.",
+        },
       ],
+      carousel: {
+        prevLabel: "División anterior",
+        nextLabel: "Siguiente división",
+      },
     },
   },
   common: {

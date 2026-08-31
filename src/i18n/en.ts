@@ -120,7 +120,15 @@ export default {
           name: "AV Tecnología",
           description: "Technology solutions, automation, and industrial systems development.",
         },
+        {
+          name: "AV Envasados",
+          description: "Manufacturing and distribution of aluminum packaging for the food and beverage industry.",
+        },
       ],
+      carousel: {
+        prevLabel: "Previous division",
+        nextLabel: "Next division",
+      },
     },
   },
   common: {
