@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import en from "../../i18n/en";
+import { getRouteHref } from "../../i18n/routes";
+---
+
+<Layout title={en.seo.packaging.title} description={en.seo.packaging.description} routeKey="packaging">
+  <div class="max-w-4xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{en.packaging.pageTitle}</h1>
+    <p class="text-base leading-relaxed text-gray-700">
+      {en.packaging.notice}
+    </p>
+    <a
+      href={getRouteHref("packaging", "es")}
+      class="mt-6 inline-flex items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+    >
+      {en.packaging.linkText}
+    </a>
+  </div>
+</Layout>
