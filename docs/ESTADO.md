@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-31 — corresponde al branch `feat/limpieza-corporativa` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-08-31 — corresponde al branch `feat/producto-gas-licuado` (sin mergear; parte de `develop`).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -26,7 +26,7 @@ Las 3 imágenes propias del servicio (`public/images/corporativo/servicios/mante
 
 ### 2. "Ascensores de Lujo" consolidado dentro de "Ascensores para Oficina"
 
-Subproducto "Ascensores de Lujo" eliminado de `services.ts`. Sus 3 características premium se agregaron a "Ascensores para Oficina" (que conserva las 9 que ya tenía), redactadas en el mismo estilo breve de las existentes:
+Subproducto "Ascensores de Lujo" eliminado de `services.ts`. Sus 3 características premium se agregaron a "Ascensores para Oficina" (que conserva las 9 que ya tenía), redactadas en el mismo estilo breve de las existentes — **actualización (branch `feat/producto-gas-licuado`): 3 de esas 12 se recortaron después, ver sección dedicada más abajo; quedaron 9.**
 
 | ES | EN |
 |---|---|
@@ -62,6 +62,48 @@ Archivo: `public/images/corporativo/logo-asiaven.svg` — SVG con colores hardco
 `npm run build` → **0 errores, 116 páginas** (118 − 2: `/servicios/mantenimiento` + `/en/services/maintenance`, únicas rutas que dejaron de generarse — la consolidación de Lujo/Oficina y el logo no agregan ni quitan páginas). Las 7 páginas de servicio restantes, en ambos idiomas, verificadas sin regresión (cada una con su `<h1>` presente).
 
 **Hallazgo, sin tocar:** al sincronizar con `develop` para esta rama, 3 archivos aparecieron modificados/nuevos en el working tree sin relación con esta tarea — `public/images/corporativo/servicios/recipientes-gas-licuado/cilindros-gas.webp` (modificado), `public/images/corporativo/afiliadas/av-envasados.webp` (nuevo) y `public/images/store/` (directorio nuevo). No se incluyeron en ningún commit de esta tarea; quedan sin commitear para que el equipo los revise por separado.
+
+---
+
+## 🛢️ Detalle de producto del cilindro de GLP + recorte de features (branch `feat/producto-gas-licuado`)
+
+### Parte 1 — Features de "Ascensores para Oficina" recortadas de 12 a 9
+
+Se eliminaron 3 (en ambos idiomas): "Reducción de espacios" / "Reduced space requirements", "Acabado premium en cabina" / "Premium cabin finish", "Piso de mármol" / "Marble flooring". Se conservó "Aire acondicionado" / "Air conditioning". Quedan 9, en línea con el rango de 6-9 del resto de tipos de ascensor.
+
+**Verificado en viewport de laptop (1366×768):** la tarjeta de Oficina sigue desbordando levemente (530px de contenido contra 500px del contenedor — el visor 360 que Oficina ganó en la tarea anterior agrega el botón "Ver vista 360°", que por sí solo ya empuja el contenido más allá de 500px incluso con 9 features), pero confirmado programáticamente que el contenido sigue siendo alcanzable de principio a fin: título completamente visible en `scrollTop=0`, botón de vista 360 completamente visible en `scrollTop=scrollHeight` — mismo mecanismo de scroll-anclado-arriba ya verificado para el resto de tarjetas (ver "Corrección de desbordamiento en ProductFeatureSlider.tsx" más abajo).
+
+### Parte 2 — Detalle de producto real: Cilindro de GLP de 10 kg
+
+`/store/recipientes/gas-licuado` (sobrevive al flag `STORE_CATALOG_LIVE`, ver sección de la Store más abajo) pasa de un simple aviso "Cotización a medida" a una ficha de producto completa, con el mismo patrón visual que `store/producto/[slug].astro` (galería a la izquierda, datos a la derecha, mismo comportamiento de miniaturas — no se inventó un layout nuevo). A diferencia de esa ruta (126 productos de relleno del catálogo tech, con precio ficticio y carrito), este es un único producto real, sin `getStaticPaths` ni datos de `techCatalog.ts`, sin precio (se cotiza por WhatsApp) y sin sección de "recomendados" ni "Promesa Asiaven" (esa última se omitió a propósito: su texto de garantía de 3 años/soporte swap es específico de equipos tecnológicos y no necesariamente aplica a un recipiente a presión regulado — no se quiso hacer una afirmación sin confirmar).
+
+**Imágenes:** `public/images/store/productos/bombona-glp-10kg/bombona-glp-10kg-{1,2,3}.webp` — galería de 3 con el mismo comportamiento de clic-para-cambiar-imagen-principal que el resto de fichas de producto.
+
+**Dos bloques de datos, distintos a propósito** (un comprador de un recipiente a presión los lee de forma distinta):
+- **Identificación y normativa:** Producto, Código SENCAMER (`20649085-378302`), Norma de fabricación (`COVENIN 649:1997`).
+- **Especificaciones técnicas** (8, reproducidas exactamente como las entregó el dueño del proyecto — sin redondear, sin reformular, sin convertir unidades): Medio a llenar, Capacidad volumétrica (`> 24 L`), Capacidad máxima de carga (`10 kg`), Diámetro interno (`304 mm`), Presión de diseño (`1653 kPa`), Presión de prueba hidráulica (`3307 kPa`), Presión de estallido (`> 6614 kPa`), Material del cuerpo (`Acero HP325, estándar GB/T6653-2017, equivalente a SG325 según norma JIS`).
+
+**Sin precio** — el único CTA es "Solicitar cotización por WhatsApp", entre ambos bloques de datos.
+
+**Patrón nuevo — CTA de WhatsApp con mensaje precargado, para replicar en el corporativo.** `https://wa.me/5822129924333?text=${encodeURIComponent(mensaje)}` — el mismo número ya usado en `WhatsAppButton.astro` y `store/soporte/asesoria-compra.astro`, pero es la primera vez que se precarga un mensaje (esos dos usos existentes no llevan `?text=`). Mensaje: *"Hola, me interesa el cilindro de GLP de 10 kg de Asiaven. Quisiera solicitar una cotización."*, codificado con `encodeURIComponent`. Verificado el `href` completo generado en el HTML — decodifica exactamente al mensaje esperado. **Este patrón (número + mensaje precargado + `encodeURIComponent`) es el que se debería reutilizar la próxima vez que se necesite un CTA de WhatsApp con contexto**, en vez de un enlace desnudo al número.
+
+Esta página **no se tradujo** — la Store sigue fuera de i18n hasta nuevo aviso (decisión ya vigente); el mensaje de WhatsApp va solo en español.
+
+### Botón desde `/servicios/recipientes-gas-licuado` hacia el producto
+
+**Revisado antes de agregar nada:** esta página de servicio caía en la rama por defecto de `[servicio].astro` (ningún caso especial como tecnología o envases) — mostraba un único botón "Solicitar Cotización" → `/contactanos` (formulario de contacto genérico), sin ningún enlace hacia la Store. No competía con nada porque no existía ningún enlace a la Store ahí.
+
+Se agregó una rama nueva (`service.slug === "recipientes-gas-licuado"`) con **ambos** botones lado a lado: el CTA de contacto existente (sin tocar) más uno nuevo "Ver producto en la tienda" / "View product in the store" → `/store/recipientes/gas-licuado` (nueva clave de diccionario `services.detail.viewProductCta`, ES/EN). No compiten porque llevan a destinos distintos y complementarios (contacto genérico vs. ficha del producto real). En la versión en inglés, el botón nuevo lleva la misma nota discreta ya usada para el catálogo de envases (`storeSpanishOnlyNote`, reutilizada, sin clave nueva) — la Store sigue sin traducir.
+
+### Verificación ejecutada
+
+- `npm run build` → **0 errores, 116 páginas** (sin cambio respecto a la base — ninguna de las dos partes agrega ni quita rutas, solo contenido).
+- `/store/recipientes/gas-licuado`: confirmado en navegador galería (clic en miniatura cambia la imagen principal), bloque de identificación, bloque de especificaciones y CTA, con el mismo aspecto que otras fichas de producto de la Store.
+- `href` de WhatsApp completo, pegado del HTML generado:
+  `https://wa.me/5822129924333?text=Hola%2C%20me%20interesa%20el%20cilindro%20de%20GLP%20de%2010%20kg%20de%20Asiaven.%20Quisiera%20solicitar%20una%20cotizaci%C3%B3n.`
+- Grep sobre el HTML generado confirmando las 3 identificaciones y las 8 especificaciones presentes exactamente (sin redondeos ni reformulaciones).
+- Botón desde `/servicios/recipientes-gas-licuado` confirmado en ambos idiomas: ES lleva a `/store/recipientes/gas-licuado` junto al CTA de contacto existente; EN (`/en/services/lpg-containers`) igual, con la nota discreta visible.
+- Tarjeta de Oficina con 9 features confirmada legible de principio a fin en 1366×768 (ver Parte 1).
 
 ---
 
