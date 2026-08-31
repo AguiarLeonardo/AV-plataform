@@ -1,0 +1,117 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import ServiceSlider from "../../../components/react/ServiceSlider.tsx";
+import ProductFeatureSlider from "../../../components/react/ProductFeatureSlider.tsx";
+import { services, type SubProduct } from "../../../data/services";
+import { Download } from "lucide-react";
+import { localize, t } from "../../../i18n/utils";
+import { getRouteHref, getServiceDetailUrls, serviceSlugMap } from "../../../i18n/routes";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { service: serviceSlugMap[service.slug] },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+// Contraparte en inglés de src/pages/servicios/[servicio].astro — archivo
+// aparte con su propio getStaticPaths sobre los slugs traducidos
+// (serviceSlugMap), mismo patrón que contactanos.astro / en/contact.astro.
+// `service.slug` sigue siendo el slug ESPAÑOL (viene de services.ts sin
+// tocar) aunque la URL de esta página use el slug traducido — por eso las
+// comparaciones `service.slug === "envases"` de abajo funcionan igual que
+// en el archivo español.
+const lang = "en" as const;
+const detailUrls = getServiceDetailUrls(service.slug);
+
+const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
+  title: localize(subProduct.title, lang),
+  image: subProduct.image,
+  features: localize(subProduct.features, lang),
+  panorama360: subProduct.panorama360,
+}));
+---
+
+<Layout title={`${localize(service.title, lang)} - Asiaven`} dynamicHreflang={detailUrls}>
+  <div class="max-w-7xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <ServiceSlider images={service.images} client:load />
+
+      <div class="prose prose-lg text-gray-700">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          {localize(service.title, lang)}
+        </h1>
+        {localize(service.fullDescription, lang).map((paragraph) => (
+          <p class="mb-6 leading-relaxed">{paragraph}</p>
+        ))}
+        {service.slug === "tecnologia-y-telecomunicaciones" ? (
+          <div class="mt-8 flex flex-col gap-2 items-start w-full">
+            <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full">
+              <a
+                href="/store"
+                class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+              >
+                {t(lang, "services.detail.storeCta")} &rarr;
+              </a>
+              <a
+                href={getRouteHref("support", lang)}
+                class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+              >
+                {t(lang, "services.detail.supportCta")} &rarr;
+              </a>
+            </div>
+            {/* Decisión del dueño del proyecto: el CTA a la Store se mantiene
+            en inglés (no se oculta), con esta señal discreta de que la
+            Store en sí sigue solo en español. */}
+            <p class="text-xs text-gray-500">{t(lang, "services.detail.storeSpanishOnlyNote")}</p>
+          </div>
+        ) : service.slug === "envases" ? (
+          <div class="flex flex-col gap-2 items-start w-full">
+            <div class="flex flex-wrap items-center gap-4">
+              <a
+                href="/envases"
+                class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+              >
+                {t(lang, "services.detail.catalogCta")} &rarr;
+              </a>
+              <a
+                href="#"
+                class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+              >
+                <Download className="h-4 w-4" />
+                {t(lang, "services.detail.catalogPdfCta")}
+              </a>
+            </div>
+            {/* Mismo tratamiento que el CTA a la Store: el catálogo de envases
+            tampoco está traducido (ver docs/ESTADO.md), así que el enlace se
+            mantiene con esta misma señal discreta. */}
+            <p class="text-xs text-gray-500">{t(lang, "services.detail.catalogSpanishOnlyNote")}</p>
+          </div>
+        ) : (
+          <a
+            href={getRouteHref("contact", lang)}
+            class="inline-flex w-fit items-center self-start gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
+          >
+            {t(lang, "services.detail.quoteCta")} &rarr;
+          </a>
+        )}
+      </div>
+    </div>
+
+    {subProducts && service.subProductsHeading && (
+      <div class="mt-20">
+        <h2 class="text-3xl font-bold mb-10 text-center text-corporativo-gray">
+          {localize(service.subProductsHeading, lang)}
+        </h2>
+        <ProductFeatureSlider
+          products={subProducts}
+          prevLabel={t(lang, "services.carousel.prevLabel")}
+          nextLabel={t(lang, "services.carousel.nextLabel")}
+          viewer360={t(lang, "services.viewer360")}
+          client:load
+        />
+      </div>
+    )}
+  </div>
+</Layout>

@@ -2,9 +2,10 @@
 import Layout from "../../layouts/Layout.astro";
 import ServiceSlider from "../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../components/react/ProductFeatureSlider.tsx";
-import { services } from "../../data/services";
+import { services, type SubProduct } from "../../data/services";
 import { Download } from "lucide-react";
 import { localize, t } from "../../i18n/utils";
+import { getRouteHref, getServiceDetailUrls } from "../../i18n/routes";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -14,18 +15,20 @@ export function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-// Ruta 100% española esta fase (no traducida todavía), pero se deriva el
-// locale igual que en cualquier otra página en vez de asumir "es" a mano:
-// cuando esta ruta se traduzca en la Fase 1d, alcanza con que le llegue el
-// locale correcto — no hay accesos .es literales que perseguir.
-const lang = Astro.currentLocale === "en" ? "en" : "es";
+// Ruta 100% española: su contraparte en inglés vive en un archivo aparte
+// (src/pages/en/services/[service].astro), con su propio getStaticPaths
+// sobre los slugs traducidos — mismo patrón que el resto del sitio
+// (contactanos.astro / en/contact.astro), no una sola ruta sirviendo ambos
+// locales.
+const lang = "es" as const;
+const detailUrls = getServiceDetailUrls(service.slug);
 
 // Subproductos (elevatorsData/escalatorsData ya no viven aquí — se movieron
 // a services.ts como Service.subProducts). Se resuelven a strings planos
 // antes de pasarlos a ProductFeatureSlider, que sigue sin saber nada de
 // locales. Genérico: si otro servicio agrega subProducts mañana, esto
 // funciona sin tocar el .astro.
-const subProducts = service.subProducts?.map((subProduct) => ({
+const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
   title: localize(subProduct.title, lang),
   image: subProduct.image,
   features: localize(subProduct.features, lang),
@@ -33,7 +36,7 @@ const subProducts = service.subProducts?.map((subProduct) => ({
 }));
 ---
 
-<Layout title={`${localize(service.title, lang)} - Asiaven`}>
+<Layout title={`${localize(service.title, lang)} - Asiaven`} dynamicHreflang={detailUrls}>
   <div class="max-w-7xl mx-auto px-4 pt-24 pb-16 md:pt-32 md:pb-24">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <ServiceSlider images={service.images} client:load />
@@ -51,13 +54,13 @@ const subProducts = service.subProducts?.map((subProduct) => ({
               href="/store"
               class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
             >
-              Ir a la tienda &rarr;
+              {t(lang, "services.detail.storeCta")} &rarr;
             </a>
             <a
-              href="/soporte-tecnico"
+              href={getRouteHref("support", lang)}
               class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
             >
-              Soporte Técnico &rarr;
+              {t(lang, "services.detail.supportCta")} &rarr;
             </a>
           </div>
         ) : service.slug === "envases" ? (
@@ -66,22 +69,22 @@ const subProducts = service.subProducts?.map((subProduct) => ({
               href="/envases"
               class="inline-flex w-fit items-center gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
             >
-              Ver catálogo completo &rarr;
+              {t(lang, "services.detail.catalogCta")} &rarr;
             </a>
             <a
               href="#"
               class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
             >
               <Download className="h-4 w-4" />
-              Descargar catálogo (PDF)
+              {t(lang, "services.detail.catalogPdfCta")}
             </a>
           </div>
         ) : (
           <a
-            href="/contactanos"
+            href={getRouteHref("contact", lang)}
             class="inline-flex w-fit items-center self-start gap-2 rounded-lg bg-corporativo-blue px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-corporativo-blue/90 no-underline"
           >
-            Solicitar Cotización &rarr;
+            {t(lang, "services.detail.quoteCta")} &rarr;
           </a>
         )}
       </div>
