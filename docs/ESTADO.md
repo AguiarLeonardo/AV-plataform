@@ -1,6 +1,6 @@
 # Estado Actual del Proyecto — Auditoría de Reconocimiento
 
-**Última actualización:** 2026-08-31 — corresponde al branch `feat/ocultar-store` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-08-31 — corresponde al branch `feat/limpieza-corporativa` (sin mergear; parte de `develop`).
 
 *Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
 
@@ -9,6 +9,61 @@
 ## ⚠️ BLOQUEANTES DE LANZAMIENTO
 
 **Datos de la oficina de Miami son ficticios/provisionales** (confirmado por el dueño del proyecto). La dirección ("1234 Miami Ave, Suite 100, Miami, FL 33132") tiene forma genérica de placeholder, y el teléfono ("+1 (305) 555-0198") usa el prefijo `555`, reservado en Norteamérica para uso ficticio — nunca asignado a líneas reales. Aparece en `Footer.astro`, `contactanos.astro` y `en/contact.astro` (todos con comentario `⚠️ DATOS FICTICIOS/PROVISIONALES` en el código, junto al literal). **Antes de migrar el dominio a producción**: reemplazar por los datos reales de esa sede, o eliminar la sección por completo. No modificado en ninguna fase — solo señalizado.
+
+## 🧹 Limpieza estructural del sitio corporativo (branch `feat/limpieza-corporativa`)
+
+Tres cambios independientes, comiteados por separado.
+
+### 1. Servicio "Mantenimiento" eliminado
+
+Decisión del dueño del proyecto: era redundante — el mantenimiento de ascensores y escaleras ya está cubierto dentro de esos dos servicios, y su contenido no aportaba nada que no estuviera ya cubierto en otro. Eliminado de `services.ts` (registro completo) y de `serviceSlugMap` en `routes.ts`. `/servicios/mantenimiento` y `/en/services/maintenance` ya no se generan — confirmado ausentes de `dist/`.
+
+**Enlaces revisados antes de eliminar:** grep exhaustivo de `"mantenimiento"` y de `servicios/mantenimiento`/`services/maintenance` en todo `src/` y `astro.config.mjs`. Único resultado relevante: las 3 rutas de imagen propias del servicio (eliminadas junto con su registro). El resto de las coincidencias de la palabra "mantenimiento" son contenido no relacionado (FAQ de soporte técnico, la subcategoría "Mantenimiento" de la Store dentro de `techCatalog.ts`/`storeTaxonomy.ts` — un concepto de catálogo de la Store, sin relación con el servicio corporativo eliminado). **No había ningún enlace hardcodeado** en home, Navbar, Footer ni otras páginas de servicio — el listado de servicios (`/servicios`, `/en/services`) genera sus tarjetas iterando el array `services`, así que desapareció automáticamente al quitar el registro; lo mismo para el sitemap, que deriva sus pares `{es,en}` de `serviceSlugMap`.
+
+**Sobre el 404 / redirect:** revisado `vercel.json` — no tiene ninguna redirección configurada todavía, y el despliegue actual (`av-plataform-ruby.vercel.app`) ya envía `X-Robots-Tag: noindex, nofollow` a todo el sitio. El dominio real (`www.asiaven.com`) no ha lanzado esta versión del sitio todavía. **Recomendación: no hace falta agregar un redirect.** No hay indexación real que proteger (el único despliegue existente ya es noindex) y no hay lanzamiento previo cuyas URLs pudieran estar compartidas externamente. Si en el futuro el sitio ya está en producción y se elimina un servicio así, ahí sí correspondería evaluar un redirect en `vercel.json`.
+
+Las 3 imágenes propias del servicio (`public/images/corporativo/servicios/mantenimiento/*.webp`) quedaron huérfanas en disco — no se borraron (no era parte del pedido), solo se dejó de referenciarlas.
+
+### 2. "Ascensores de Lujo" consolidado dentro de "Ascensores para Oficina"
+
+Subproducto "Ascensores de Lujo" eliminado de `services.ts`. Sus 3 características premium se agregaron a "Ascensores para Oficina" (que conserva las 9 que ya tenía), redactadas en el mismo estilo breve de las existentes:
+
+| ES | EN |
+|---|---|
+| Acabado premium en cabina | Premium cabin finish |
+| Piso de mármol | Marble flooring |
+| Aire acondicionado | Air conditioning |
+
+"Piso de mármol" se redactó tal cual (no genérico) porque el dueño del proyecto confirmó explícitamente que el acabado del piso es de mármol o de ese estilo — a diferencia de la redacción deliberadamente genérica que se usó en su momento para "Terminaciones premium en cabina" (la feature de Lujo que ahora se retira), donde no había esa confirmación.
+
+**Panorámica 360:** el archivo `ascensores-lujo.jpg` fue renombrado por el dueño del proyecto a `ascensores-oficina.jpg` (fuera de esta tarea, ya en el working tree al empezar). El campo `panorama360` de "Ascensores para Oficina" ahora apunta a ese archivo. Resultado: **4 tipos de ascensor** (antes 5), y **Oficina gana visor 360** (antes no lo tenía). Verificado en navegador: el botón "Ver vista 360°" de Oficina abre el visor y carga el canvas correctamente con el archivo renombrado.
+
+**Verificado sin referencias huérfanas** a `ascensores-lujo`/`"Ascensores de Lujo"`/`"Luxury Elevators"` en `src/` (grep exhaustivo) — el único resto es el comentario explicativo de esta misma consolidación en `services.ts`. **`ascensores-lujo.webp`** (la imagen de tarjeta, distinta de la panorámica) **queda sin uso en disco — no se borró**, ya que el pedido fue reportarlo, no eliminarlo.
+
+### 3. Logo en vez del texto "ASIAVEN" (Navbar y Footer corporativos)
+
+Archivo: `public/images/corporativo/logo-asiaven.svg` — SVG con colores hardcodeados por `path` (`fill="rgb(85,85,85)"` etc., sin `viewBox`, solo `width`/`height="500"`).
+
+**Método elegido: inline con `currentColor`, no `<img>`.** Un `<img src="logo.svg">` no permite recolorear por CSS — el navegador lo trata como una imagen opaca, sin acceso a sus colores internos. Se optó por leer el archivo en build-time (`src/components/ui/AsiavenLogo.astro`, mismo patrón de `process.cwd()` ya usado y verificado en `pdfExists.ts` — no `import.meta.url`) y transformarlo antes de insertarlo inline:
+- Cada `fill="rgb(...)"` / `stroke="rgb(...)"` literal se reemplaza por `currentColor` — el logo hereda el `color` CSS de su contenedor (blanco en ambos, vía la clase `text-white` ya existente en los enlaces del Navbar/Footer).
+- Se agrega `viewBox="0 0 500 500"` (el archivo no lo trae) para que las clases de tamaño (`h-9 w-9` en Navbar, `h-10 w-10` en Footer) lo escalen proporcionalmente sin deformarlo ni recortarlo, en vez de depender del `width`/`height` fijo original.
+
+**Accesibilidad:** el SVG inline lleva `aria-hidden="true"` (es puramente decorativo una vez inline); el `<a>` que lo envuelve lleva `aria-label="ASIAVEN"`, así que el enlace sigue anunciándose igual que antes para lectores de pantalla. El enlace sigue yendo al home del idioma activo (`getRouteHref("home", lang)`, sin cambios en esa lógica).
+
+**Verificado con `npm run build` + `npm run preview`:**
+- Confirmado por `grep` sobre el HTML generado: 0 ocurrencias de `fill="rgb`/`stroke="rgb` restantes, 2 `viewBox="0 0 500 500"` (Navbar + Footer), 2 `aria-label="ASIAVEN"`.
+- Confirmado en navegador (JS, `getComputedStyle`) que ambos SVG resuelven `color: rgb(255, 255, 255)` — blanco — con las dimensiones esperadas (36×36 Navbar, 40×40 Footer) y el `viewBox` correcto, es decir, sin deformación.
+- Confirmado visualmente (captura de pantalla) en desktop (top de página) y en el menú móvil abierto (375×812) que el logo se ve blanco y nítido.
+- **Limitación del entorno de prueba, no del código:** la herramienta de captura de pantalla de esta sesión devolvió una imagen en blanco al capturar con la página desplazada hacia el footer (funciona bien en la parte superior de la página) — un problema de la herramienta ya observado antes en este proyecto con contenido WebGL, aquí con contenido normal DOM/SVG desplazado. La verificación del logo del Footer se apoya en la evidencia de `getComputedStyle` + `getBoundingClientRect` (confirmando que el elemento está en el viewport, visible, con el color y tamaño correctos), no en una captura visual directa de esa sección.
+- Confirmado en ambos idiomas (ES: `href="/"`, EN: `href="/en"`).
+
+### Verificación general de los 3 cambios
+
+`npm run build` → **0 errores, 116 páginas** (118 − 2: `/servicios/mantenimiento` + `/en/services/maintenance`, únicas rutas que dejaron de generarse — la consolidación de Lujo/Oficina y el logo no agregan ni quitan páginas). Las 7 páginas de servicio restantes, en ambos idiomas, verificadas sin regresión (cada una con su `<h1>` presente).
+
+**Hallazgo, sin tocar:** al sincronizar con `develop` para esta rama, 3 archivos aparecieron modificados/nuevos en el working tree sin relación con esta tarea — `public/images/corporativo/servicios/recipientes-gas-licuado/cilindros-gas.webp` (modificado), `public/images/corporativo/afiliadas/av-envasados.webp` (nuevo) y `public/images/store/` (directorio nuevo). No se incluyeron en ningún commit de esta tarea; quedan sin commitear para que el equipo los revise por separado.
+
+---
 
 ## 🔒 Store oculta temporalmente (branch `feat/ocultar-store`)
 
@@ -305,7 +360,9 @@ Se agregó un quinto `SubProduct` al registro `ascensores` en `services.ts` (`ti
 **Features de "Ascensores de Lujo" corregidas (branch `fix/tarjetas-producto`).** Las 3 features inventadas sin aprobar (iluminación LED de diseño, panel táctil de control, personalización con materiales concretos) fueron rechazadas por el dueño del proyecto y reemplazadas: ahora son las mismas 8 features de "Ascensores Residenciales" (excepto "Reducción de espacios", que no aplica a Lujo) más una única feature nueva y genérica sobre el acabado ("Terminaciones premium en cabina" / "Premium cabin finishes") que deliberadamente no nombra materiales concretos (mármol, piedra natural, maderas específicas), ya que no está confirmado qué ofrece Asiaven realmente. Total: 9 features (antes 11). Ya no es un pendiente de revisión — el contenido inventado sin aprobar fue removido.
 
 ### Visor 360° en `/servicios/ascensores`
-`SubProduct.panorama360?: string` (no localizado, no se traduce) — solo lo tienen los tipos que ya cuentan con panorámica equirrectangular: **Residenciales, Panorámicos y Lujo**. **Oficina y Hospitales no tienen el campo** (no hay imagen todavía) y por lo tanto no muestran ningún botón — mismo criterio que el `LanguageSwitcher` en páginas no traducidas: nada se renderiza en vez de un botón deshabilitado o un "próximamente".
+`SubProduct.panorama360?: string` (no localizado, no se traduce) — solo lo tienen los tipos que ya cuentan con panorámica equirrectangular: **Residenciales, Panorámicos y Oficina**. **Solo Hospitales no tiene el campo** (no hay imagen todavía) y por lo tanto no muestra ningún botón — mismo criterio que el `LanguageSwitcher` en páginas no traducidas: nada se renderiza en vez de un botón deshabilitado o un "próximamente".
+
+**Actualización (branch `feat/limpieza-corporativa`):** "Ascensores de Lujo" se eliminó como tarjeta propia (consolidado dentro de "Ascensores para Oficina", ver sección dedicada más abajo) — su panorámica (`ascensores-lujo.jpg`, renombrada por el dueño del proyecto a `ascensores-oficina.jpg`) pasó a ser la de Oficina. Antes eran 3 de 5 tipos con panorámica (Residenciales, Panorámicos, Lujo); ahora son 3 de 4 (Residenciales, Panorámicos, Oficina) — Hospitales sigue siendo el único sin visor 360.
 
 **Convención de nombres** — `public/images/corporativo/producto-360/{slug-del-tipo}.jpg` (kebab-case español, coincide con el nombre del archivo en `producto-detalle/` pero con extensión `.jpg` simple, sin el `.webp` de las fotos normales — las panorámicas son JPEG equirrectangular, formato que Pannellum espera).
 
@@ -525,7 +582,7 @@ src/
 │       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos
 ├── data/
 │   ├── packagingCatalog.ts        — catálogo de Envases (ver sección 6)
-│   ├── services.ts                — catálogo de 8 servicios corporativos (ver sección 6)
+│   ├── services.ts                — catálogo de 7 servicios corporativos (ver sección 6; era 8, ver "Limpieza estructural" más abajo)
 │   ├── storeTaxonomy.ts           — árbol de navegación de 3 niveles de la Store (Categoría→Grupo→Ítem)
 │   └── techCatalog.ts             — catálogo de 126 productos placeholder de la Store (ver sección 6)
 ├── layouts/
