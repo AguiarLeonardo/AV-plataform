@@ -4,7 +4,7 @@ export interface SubProduct {
   title: Localized<string>;
   image: string;
   features: Localized<string[]>;
-  /** Panorámica equirrectangular para el visor 360 — opcional, no se traduce. Solo residenciales/panorámicos/lujo la tienen hoy; oficina y hospitales no tienen imagen todavía. */
+  /** Panorámica equirrectangular para el visor 360 — opcional, no se traduce. Solo residenciales/panorámicos/oficina la tienen hoy; hospitales no tiene imagen todavía. */
   panorama360?: string;
 }
 
@@ -80,8 +80,13 @@ export const services = [
         },
       },
       {
+        // Consolidación: "Ascensores de Lujo" se eliminó como tarjeta propia
+        // (contenido redundante con este tipo) y sus 3 características
+        // premium se agregaron aquí, más el visor 360 que traía (el archivo
+        // ascensores-lujo.jpg fue renombrado a ascensores-oficina.jpg).
         title: { es: "Ascensores para Oficina", en: "Office Elevators" },
         image: "/images/corporativo/producto-detalle/ascensores-oficina.webp",
+        panorama360: "/images/corporativo/producto-360/ascensores-oficina.jpg",
         features: {
           es: [
             "Bajo consumo energético",
@@ -93,6 +98,9 @@ export const services = [
             "Innovadores y confiables sistemas electrónicos",
             "Confort durante el recorrido",
             "Reducción de espacios",
+            "Acabado premium en cabina",
+            "Piso de mármol",
+            "Aire acondicionado",
           ],
           en: [
             "Low energy consumption",
@@ -104,6 +112,9 @@ export const services = [
             "Innovative and reliable electronic systems",
             "Comfort throughout the ride",
             "Reduced space requirements",
+            "Premium cabin finish",
+            "Marble flooring",
+            "Air conditioning",
           ],
         },
       },
@@ -153,42 +164,6 @@ export const services = [
             "Low maintenance requirements (minimizing out-of-service time)",
             "High-rotation components",
             "The best components to provide the comfort required during elevator use",
-          ],
-        },
-      },
-      {
-        // Features: las 8 primeras son las de "Ascensores Residenciales" tal
-        // cual (se omite "Reducción de espacios"), más 1 sola feature nueva
-        // y genérica sobre el acabado de lujo — sin nombrar materiales
-        // concretos, porque no está confirmado qué ofrece Asiaven. Las 3
-        // features anteriores (iluminación LED, panel táctil, materiales
-        // específicos) se retiraron: eran afirmaciones comerciales
-        // inventadas que el dueño del proyecto no aprobó.
-        title: { es: "Ascensores de Lujo", en: "Luxury Elevators" },
-        image: "/images/corporativo/producto-detalle/ascensores-lujo.webp",
-        panorama360: "/images/corporativo/producto-360/ascensores-lujo.jpg",
-        features: {
-          es: [
-            "Bajo consumo energético",
-            "Baja contaminación sónica",
-            "Velocidades desde 1 m/s hasta 1,75 m/s",
-            "Materiales de cabina de alta calidad",
-            "Modernos sistemas de seguridad",
-            "Modernos sistemas de operadores de puertas",
-            "Innovadores y confiables sistemas electrónicos",
-            "Confort durante el recorrido",
-            "Terminaciones premium en cabina",
-          ],
-          en: [
-            "Low energy consumption",
-            "Low noise pollution",
-            "Speeds from 1 m/s up to 1.75 m/s",
-            "High-quality cabin materials",
-            "Modern safety systems",
-            "Modern door operator systems",
-            "Innovative and reliable electronic systems",
-            "Comfort throughout the ride",
-            "Premium cabin finishes",
           ],
         },
       },
