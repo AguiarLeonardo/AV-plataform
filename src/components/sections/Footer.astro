@@ -3,6 +3,7 @@ import { MapPin, Mail, Phone } from "lucide-react";
 import { t } from "../../i18n/utils";
 import { getRouteHref } from "../../i18n/routes";
 import { STORE_CATALOG_LIVE } from "../../config/storeFlags";
+import AsiavenLogo from "../ui/AsiavenLogo.astro";
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 const currentYear = new Date().getFullYear();
@@ -86,7 +87,9 @@ const legalLinks = [
   <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
     <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <a href={getRouteHref("home", lang)} class="text-2xl font-bold tracking-widest text-white">ASIAVEN</a>
+        <a href={getRouteHref("home", lang)} aria-label="ASIAVEN" class="inline-block text-white">
+          <AsiavenLogo class="h-10 w-10" />
+        </a>
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">{corporateDescription}</p>
         <div class="mt-6 flex items-center gap-4">
           {socialLinks.map(({ label, href, path }) => (

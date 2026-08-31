@@ -1,0 +1,35 @@
+---
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+/**
+ * El SVG fuente (public/images/corporativo/logo-asiaven.svg) trae sus
+ * colores hardcodeados por path (`fill="rgb(...)"` / `stroke="rgb(...)"`) y
+ * no tiene `viewBox` (solo `width`/`height="500"`). Ninguna de las dos cosas
+ * permite pintarlo de blanco por CSS si se inserta con <img>: el navegador
+ * trata el SVG como una imagen opaca en ese caso, sin acceso a sus colores
+ * internos.
+ *
+ * Se inserta inline en su lugar: se lee el archivo en build-time (mismo
+ * patrón ya usado en pdfExists.ts — `process.cwd()`, no `import.meta.url`,
+ * verificado en esa tarea que es lo que funciona en el build real) y se
+ * reemplazan los `rgb(...)` literales por `currentColor`, para que el color
+ * del logo herede el `color` CSS del elemento que lo envuelve (blanco en
+ * Navbar/Footer, ambos con fondo oscuro). Se agrega el `viewBox` que falta
+ * para que las clases de tamaño (`h-*`/`w-*`) lo escalen sin deformarlo ni
+ * recortarlo, en vez de depender del width/height fijo original.
+ */
+const svgPath = join(process.cwd(), "public", "images", "corporativo", "logo-asiaven.svg");
+const rawSvg = readFileSync(svgPath, "utf-8");
+const paintableSvg = rawSvg
+  .replace("<svg ", '<svg viewBox="0 0 500 500" aria-hidden="true" focusable="false" ')
+  .replace(/fill="rgb\([^)]+\)"/g, 'fill="currentColor"')
+  .replace(/stroke="rgb\([^)]+\)"/g, 'stroke="currentColor"');
+
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+---
+
+<Fragment set:html={paintableSvg.replace("<svg ", `<svg class="${className}" `)} />
