@@ -113,7 +113,6 @@ export const serviceSlugMap: Record<ServiceSlug, string> = {
   envases: "packaging",
   construccion: "construction",
   "recipientes-gas-licuado": "lpg-containers",
-  mantenimiento: "maintenance",
   "compras-internacionales": "international-procurement",
 } as const;
 

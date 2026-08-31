@@ -364,31 +364,6 @@ export const services = [
     ],
   },
   {
-    slug: "mantenimiento" as const,
-    title: { es: "Mantenimiento", en: "Maintenance" },
-    shortDescription: {
-      es: "Servicio preventivo y correctivo para garantizar el funcionamiento óptimo de todos nuestros equipos instalados.",
-      en: "Preventive and corrective service to ensure the optimal operation of all our installed equipment.",
-    },
-    fullDescription: {
-      es: [
-        "Nuestro servicio de mantenimiento está diseñado para garantizar la continuidad operativa de infraestructuras críticas, mediante contratos adaptados a las necesidades específicas de cada cliente y equipo instalado.",
-        "Contamos con un sistema de monitoreo continuo y protocolos de respuesta rápida que permiten anticipar fallas antes de que afecten la operación, reduciendo costos asociados a paradas no programadas.",
-        "El equipo técnico de Asiaven combina experiencia de campo con herramientas de diagnóstico modernas, asegurando intervenciones precisas y un historial documentado del estado de cada activo bajo mantenimiento.",
-      ],
-      en: [
-        "Our maintenance service is designed to ensure the operational continuity of critical infrastructure, through contracts tailored to the specific needs of each client and installed equipment.",
-        "We have a continuous monitoring system and rapid-response protocols that anticipate failures before they affect operations, reducing costs associated with unplanned downtime.",
-        "Asiaven's technical team combines field experience with modern diagnostic tools, ensuring precise interventions and a documented history of the condition of every asset under maintenance.",
-      ],
-    },
-    images: [
-      "/images/corporativo/servicios/mantenimiento/tecnico-realizando-mantenimiento.webp",
-      "/images/corporativo/servicios/mantenimiento/taller-de-mantenimiento.webp",
-      "/images/corporativo/servicios/mantenimiento/almacen-de-mantenimiento.webp",
-    ],
-  },
-  {
     slug: "compras-internacionales" as const,
     title: { es: "Compras Internacionales", en: "International Procurement" },
     shortDescription: {
