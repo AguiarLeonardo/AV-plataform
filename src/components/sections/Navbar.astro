@@ -17,7 +17,10 @@ const lang = Astro.currentLocale === "en" ? "en" : "es";
 // "Nosotros/About" es un ancla dentro del home, no una routeKey propia.
 const navLinks = [
   { label: t(lang, "nav.home"), href: getRouteHref("home", lang) },
-  { label: t(lang, "nav.about"), href: `${getRouteHref("home", lang)}#nosotros` },
+  {
+    label: t(lang, "nav.about"),
+    href: `${getRouteHref("home", lang)}#nosotros`,
+  },
   { label: t(lang, "nav.projects"), href: getRouteHref("projects", lang) },
   { label: t(lang, "nav.services"), href: getRouteHref("services", lang) },
 ];
@@ -29,10 +32,15 @@ const openMenuLabel = t(lang, "nav.openMenu");
 ---
 
 <header class="sticky top-0 z-50 w-full bg-corporativo-gray shadow-sm">
-  <nav class="mx-auto flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:px-16">
-    <a href={getRouteHref("home", lang)} class="flex flex-shrink-0 items-center gap-3 text-white select-none md:gap-2 lg:gap-3">
-      <AsiavenLogo class="h-16 w-16 flex-shrink-0" />
-      <span class="text-2xl font-bold tracking-widest uppercase md:text-lg lg:text-2xl">ASIAVEN</span>
+  <nav
+    class="mx-auto flex w-full items-center justify-between px-4 py-3 sm:px-8 lg:px-16"
+  >
+    <a
+      href={getRouteHref("home", lang)}
+      aria-label="ASIAVEN"
+      class="flex-shrink-0 text-white select-none"
+    >
+      <AsiavenLogo class="h-20 flex-shrink-0" />
     </a>
 
     <button
@@ -42,29 +50,48 @@ const openMenuLabel = t(lang, "nav.openMenu");
       aria-label={openMenuLabel}
       aria-expanded="false"
     >
-      <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path id="icon-open" stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-        <path id="icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      <svg
+        class="size-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+      >
+        <path
+          id="icon-open"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+        <path
+          id="icon-close"
+          class="hidden"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18 18 6M6 6l12 12"></path>
       </svg>
     </button>
 
-    <div id="nav-links" class="hidden items-center gap-4 md:flex lg:gap-8">
-      {navLinks.map(({ label, href }) => (
-        <a
-          href={href}
-          class="text-sm font-medium tracking-wide text-white/80 transition-colors duration-200 hover:text-corporativo-blue"
-        >
-          {label}
-        </a>
-      ))}
-      {STORE_CATALOG_LIVE && (
-        <a
-          href="/store"
-          class="ml-4 rounded bg-white px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
-        >
-          {storeLabel}
-        </a>
-      )}
+    <div id="nav-links" class="hidden items-center gap-8 md:flex">
+      {
+        navLinks.map(({ label, href }) => (
+          <a
+            href={href}
+            class="text-sm font-medium tracking-wide text-white/80 transition-colors duration-200 hover:text-corporativo-blue"
+          >
+            {label}
+          </a>
+        ))
+      }
+      {
+        STORE_CATALOG_LIVE && (
+          <a
+            href="/store"
+            class="ml-4 rounded bg-white px-4 py-2 text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
+          >
+            {storeLabel}
+          </a>
+        )
+      }
       <a
         href={contactHref}
         class="rounded-lg bg-corporativo-blue px-6 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
@@ -77,22 +104,26 @@ const openMenuLabel = t(lang, "nav.openMenu");
 
   <div id="mobile-menu" class="hidden border-t border-white/10 md:hidden">
     <div class="flex flex-col gap-1 px-6 py-4">
-      {navLinks.map(({ label, href }) => (
-        <a
-          href={href}
-          class="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors duration-200 hover:bg-white/10 hover:text-white"
-        >
-          {label}
-        </a>
-      ))}
-      {STORE_CATALOG_LIVE && (
-        <a
-          href="/store"
-          class="mt-2 rounded bg-white px-3 py-2.5 text-center text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
-        >
-          {storeLabel}
-        </a>
-      )}
+      {
+        navLinks.map(({ label, href }) => (
+          <a
+            href={href}
+            class="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+          >
+            {label}
+          </a>
+        ))
+      }
+      {
+        STORE_CATALOG_LIVE && (
+          <a
+            href="/store"
+            class="mt-2 rounded bg-white px-3 py-2.5 text-center text-sm font-semibold text-corporativo-blue transition-colors duration-200 hover:bg-gray-100"
+          >
+            {storeLabel}
+          </a>
+        )
+      }
       <a
         href={contactHref}
         class="mt-2 rounded-lg bg-corporativo-blue px-6 py-2.5 text-center text-sm font-semibold text-white transition-colors duration-200 hover:bg-corporativo-blue/90"
@@ -119,4 +150,22 @@ const openMenuLabel = t(lang, "nav.openMenu");
     iconOpen?.classList.toggle("hidden");
     iconClose?.classList.toggle("hidden");
   });
+
+  // --header-height (definida con un valor de respaldo en global.css) la
+  // consumen HeroSlider.tsx y CorporateVideo.astro para restarle el alto
+  // real del header a un 100dvh — evita que ese cálculo se desincronice en
+  // silencio la próxima vez que el navbar cambie de alto (ya pasó 2 veces:
+  // el offset quedó fijo en 72px y luego en 100px mientras el navbar crecía
+  // a 104px, y nadie lo notó hasta que alguien vio el desajuste de scroll).
+  const header = document.querySelector("header");
+  const setHeaderHeightVar = () => {
+    if (!header) return;
+    document.documentElement.style.setProperty("--header-height", `${header.getBoundingClientRect().height}px`);
+  };
+  setHeaderHeightVar();
+  if (header && "ResizeObserver" in window) {
+    new ResizeObserver(setHeaderHeightVar).observe(header);
+  } else {
+    window.addEventListener("resize", setHeaderHeightVar);
+  }
 </script>

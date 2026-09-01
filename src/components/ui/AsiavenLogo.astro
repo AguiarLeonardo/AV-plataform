@@ -3,28 +3,65 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * El SVG fuente (public/images/corporativo/logo-asiaven.svg) trae sus
- * colores hardcodeados por path (`fill="rgb(...)"` / `stroke="rgb(...)"`) y
- * no tiene `viewBox` (solo `width`/`height="500"`). Ninguna de las dos cosas
+ * El SVG fuente (public/images/corporativo/logo-asiaven.svg) trae colores
+ * hardcodeados y ninguno de los dos archivos que ha tenido este proyecto
  * permite pintarlo de blanco por CSS si se inserta con <img>: el navegador
- * trata el SVG como una imagen opaca en ese caso, sin acceso a sus colores
- * internos.
+ * lo trata como una imagen opaca en ese caso, sin acceso a sus colores
+ * internos. Se inserta inline en su lugar (leído en build-time, mismo
+ * patrón que pdfExists.ts — `process.cwd()`, no `import.meta.url`).
  *
- * Se inserta inline en su lugar: se lee el archivo en build-time (mismo
- * patrón ya usado en pdfExists.ts — `process.cwd()`, no `import.meta.url`,
- * verificado en esa tarea que es lo que funciona en el build real) y se
- * reemplazan los `rgb(...)` literales por `currentColor`, para que el color
- * del logo herede el `color` CSS del elemento que lo envuelve (blanco en
- * Navbar/Footer, ambos con fondo oscuro). Se agrega el `viewBox` que falta
- * para que las clases de tamaño (`h-*`/`w-*`) lo escalen sin deformarlo ni
- * recortarlo, en vez de depender del width/height fijo original.
+ * El archivo ha cambiado de formato una vez y el reemplazo ingenuo original
+ * (pensado solo para el primer archivo) rompió con el segundo — por eso
+ * ahora el parseo es más defensivo en dos puntos concretos:
+ *
+ * 1. Color: el primer archivo pintaba cada `<path>` con `fill="rgb(...)"` /
+ *    `stroke="rgb(...)"`. El segundo pinta un `<g>` que envuelve todo con
+ *    `fill="#000000"` (hex, no rgb()) y `stroke="none"` — el regex viejo
+ *    (`/fill="rgb\(...\)"/`) no matcheaba nada ahí, así que el logo se veía
+ *    negro sólido en vez de heredar `currentColor`. El regex ahora cubre
+ *    ambas notaciones (`rgb(...)` y hex de 3/4/6/8 dígitos), sin importar
+ *    en qué elemento esté el atributo.
+ * 2. viewBox: el primer archivo no traía `viewBox` (solo `width`/`height`
+ *    fijos), así que hacía falta agregarle uno para que las clases de
+ *    tamaño (`h-*`/`w-*`) lo escalen sin deformarlo. El segundo archivo SÍ
+ *    trae su propio `viewBox` (y no es cuadrado: `0 0 262 186`) — inyectar
+ *    otro a la fuerza como antes duplica el atributo en el mismo `<svg>`;
+ *    el navegador conserva el PRIMERO que encuentra y descarta el segundo,
+ *    así que el `viewBox="0 0 500 500"` inyectado ganaba y el contenido
+ *    real (dibujado para un lienzo de 262×186) se veía diminuto y corrido
+ *    hacia una esquina dentro de ese cuadrado de 500×500 equivocado.
+ *    Ahora solo se inyecta un viewBox si el archivo no trae uno propio
+ *    (derivado de sus atributos `width`/`height`); si ya trae el suyo, se
+ *    respeta tal cual y se preserva su proporción real.
+ *
+ * Tercer punto, encontrado al usar solo `h-*` sin `w-*` (el logo no es
+ * cuadrado, forzar un `w-*` junto al `h-*` lo deformaría): el segundo
+ * archivo declara `width="262.000000pt" height="186.000000pt"` en el propio
+ * `<svg>`. Un navegador usa esos atributos como tamaño intrínseco para la
+ * dimensión que NO fija una clase CSS — con solo `h-20` en la clase, el
+ * alto lo pone Tailwind pero el ancho lo seguía poniendo el atributo
+ * `width="262pt"` (262pt ≈ 349px), sin relación con el alto ni con el
+ * `viewBox`, deformando la proporción real (262:186). Se quitan los
+ * atributos `width`/`height` del `<svg>` raíz (ya capturados arriba para el
+ * `viewBox` de respaldo) para que el tamaño final dependa solo de la clase
+ * CSS que se le pase más el `viewBox`, que sí preserva la proporción.
  */
 const svgPath = join(process.cwd(), "public", "images", "corporativo", "logo-asiaven.svg");
 const rawSvg = readFileSync(svgPath, "utf-8");
+
+const hasViewBox = /<svg\b[^>]*\bviewBox=/.test(rawSvg);
+const widthMatch = rawSvg.match(/<svg\b[^>]*\bwidth="([\d.]+)/);
+const heightMatch = rawSvg.match(/<svg\b[^>]*\bheight="([\d.]+)/);
+const fallbackViewBox =
+  !hasViewBox && widthMatch && heightMatch ? `viewBox="0 0 ${widthMatch[1]} ${heightMatch[1]}" ` : "";
+
+const colorAttr = /(fill|stroke)="(rgb\([^)]+\)|#[0-9a-fA-F]{3,8})"/g;
 const paintableSvg = rawSvg
-  .replace("<svg ", '<svg viewBox="0 0 500 500" aria-hidden="true" focusable="false" ')
-  .replace(/fill="rgb\([^)]+\)"/g, 'fill="currentColor"')
-  .replace(/stroke="rgb\([^)]+\)"/g, 'stroke="currentColor"');
+  .replace(/<svg\b([^>]*)>/, (_match, attrs) => {
+    const withoutSize = attrs.replace(/\s(width|height)="[^"]*"/g, "");
+    return `<svg ${fallbackViewBox}aria-hidden="true" focusable="false"${withoutSize}>`;
+  })
+  .replace(colorAttr, (_match, attr) => `${attr}="currentColor"`);
 
 interface Props {
   class?: string;
