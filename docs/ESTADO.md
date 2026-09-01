@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `fix/ajustes-glp-logo` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `fix/logo-navbar` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -389,6 +389,26 @@ Ambos construidos con `buildWhatsappHref()` (ver centralización del número má
 - Logo confirmado en escritorio y menú móvil, ES y EN: 56×56px, centrado verticalmente junto al resto de elementos del navbar (`getBoundingClientRect` sin desalineación).
 - Grep de `"Petr"` sobre todo `src/` → única coincidencia es el comentario explicativo del cambio en el código, no texto visible al usuario.
 - 2 hrefs de WhatsApp completos verificados (ficha de producto y servicio corporativo ES), ambos con el mensaje nuevo y el número ya centralizado.
+
+---
+
+## 🅰️ Logo del navbar: más grande + texto "ASIAVEN" recuperado (branch `fix/logo-navbar`)
+
+**Logo:** de 56px (`h-14`, tarea anterior) a **64px** (`h-16`).
+
+**Texto "ASIAVEN" de vuelta, a la derecha del logo.** Un solo `<a>` envuelve logo + `<span>` de texto (en vez de dos enlaces separados al mismo destino — un solo enlace es lo correcto para no crear una parada de tabulación/lector de pantalla redundante). Estilo tipográfico recuperado tal cual estaba antes de reemplazarlo por el logo (rescatado del historial de git, commit anterior a `86dc197 "logo en vez del texto ASIAVEN"`): `text-2xl font-bold tracking-widest uppercase text-white` (el color ahora se hereda del `<a>` contenedor en vez de repetirse). Alineación vertical vía `items-center` + `gap-3` entre logo y texto.
+
+**Accesibilidad — `aria-label="ASIAVEN"` retirado del `<a>` del navbar.** Existía porque el logo, sin texto visible al lado, no tenía de dónde derivar un nombre accesible. Con el texto visible de vuelta dentro del mismo enlace, el nombre accesible se computa solo de ese contenido (el SVG del logo ya lleva `aria-hidden="true"` desde que se insertó inline — no compite). Confirmado en el HTML generado: 0 coincidencias de `aria-label="ASIAVEN"` dentro de `<header>` en ambos idiomas (la única coincidencia en toda la página es la del Footer, que no se tocó en esta tarea y sigue teniendo su propio `aria-label` en su propio enlace — no es una duplicación, son dos elementos distintos).
+
+**Hallazgo no pedido, corregido con aprobación:** al agrandar el bloque logo+texto (de 56px a ~194px de ancho), se probó todo el rango de anchos entre el breakpoint móvil y el de escritorio y se encontró que exactamente en 768px (el ancho de un iPad en vertical) el navbar desbordaba ~33px, y en la banda 768–900px el bloque de marca quedaba pegado a los enlaces de navegación (0px de separación) aunque técnicamente no desbordara. Consultado el dueño del proyecto, se achicó el texto y el espaciado solo en esa banda intermedia (`md:text-lg md:gap-2` en el bloque de marca, `md:gap-4` en los enlaces de navegación, ambos revertidos a su tamaño completo en `lg:`) y se agregó un `gap-4` mínimo garantizado en el `<nav>` — el texto vuelve a su tamaño completo (`text-2xl`) a partir de 1024px. Verificado sin overflow ni bloques pegados en 320, 375, 768, 800, 900, 1023, 1024 y 1280px.
+
+**Móvil (task 4):** con el logo+texto más anchos, se verificó que siguen cabiendo junto al botón de menú hamburguesa sin encoger el logo ni desbordar, con margen de sobra (109px libres en 375px de ancho, 54px en 320px, el teléfono más angosto común) — no hizo falta ningún ajuste específico de móvil.
+
+### Verificación ejecutada
+- `npm run build` → **0 errores, 116 páginas**.
+- Logo + texto verificados alineados en escritorio (1024px, 1280px) y menú móvil (320px, 375px), ambos idiomas — `getBoundingClientRect()` sin desalineación vertical.
+- Confirmado que el conjunto enlaza a `/` (ES) y `/en` (EN) — grep sobre `dist/` dentro de `<header>`.
+- Confirmado 0 `aria-label="ASIAVEN"` dentro de `<header>` en el HTML generado (ES y EN) — el nombre accesible del enlace se deriva solo del texto visible.
 
 ---
 
@@ -794,7 +814,7 @@ src/
 │   │   ├── StoreProductCard.astro — tarjeta de producto con toggle "ver más/menos" y botón "Agregar a Cotización" (lógica en <script>); usado en /store/index, /store/[categoria], /store/producto/[slug]
 │   │   └── StoreShowcaseCard.astro— tarjeta de vitrina con badge (Nuevo/Oferta/Más Vendido); no se encontró import activo en las páginas revisadas
 │   └── ui/
-│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente); usado en Navbar.astro/Footer.astro en vez del texto "ASIAVEN"
+│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente); usado en Footer.astro solo, y en Navbar.astro junto al texto "ASIAVEN" (recuperado, ver "Logo del navbar" más arriba) — ya no lo reemplaza
 │       ├── LanguageSwitcher.astro — selector de idioma server-only, cero JS; no renderiza nada si la ruta actual no está traducida
 │       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos y sus contrapartes en inglés
 ├── config/
