@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `fix/whatsapp-numero` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `fix/ajustes-glp-logo` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -343,6 +343,52 @@ Imagen ya presente en el repo: `public/images/corporativo/afiliadas/av-envasados
   - `/servicios/ascensores`: `https://wa.me/584122712253?text=Hola%2C%20quisiera%20solicitar%20una%20cotizaci%C3%B3n%20para%20el%20servicio%20de%20ascensores%20de%20Asiaven.%20Tipo%20de%20inter%C3%A9s%3A%20%5Bindicar%20tipo%5D`
   - `/store/recipientes/gas-licuado`: `https://wa.me/584122712253?text=Hola%2C%20me%20interesa%20el%20cilindro%20de%20GLP%20de%2010%20kg%20de%20Asiaven.%20Quisiera%20solicitar%20una%20cotizaci%C3%B3n.`
 - Confirmado por grep sobre `dist/` que `212-9924333` (teléfono de la oficina de Venezuela) sigue apareciendo sin cambios en `contactanos/index.html`, `en/contact/index.html`, y en el footer de `index.html`/`en/index.html`.
+
+---
+
+## 🛢️📏 Ajustes en el detalle del cilindro de GLP y tamaño del logo (branch `fix/ajustes-glp-logo`)
+
+### Logo del navbar más grande
+
+`AsiavenLogo` en `Navbar.astro` pasó de `h-9 w-9` (36px) a `h-14 w-14` (56px). El `<nav>` no tenía una altura fija por CSS (crecía con su contenido) — para no dejar un header desproporcionadamente más alto, el padding vertical bajó de `py-4` a `py-3`. Resultado: header de 80px (antes 72px), +8px, con el logo y el resto de elementos (incluido el botón "Contáctanos") verticalmente centrados (confirmado por `getBoundingClientRect()` en el navegador). El logo del Footer (`h-10 w-10`, 40px) no se tocó — evaluado visualmente y por geometría, la relación entre ambos (navbar más grande que footer) no se ve descuadrada; el navbar es el punto de contacto de marca principal, tiene sentido que sea el más grande de los dos.
+
+### Nombre del producto: se retira "de Petróleo"
+
+El cilindro pasa de "Cilindro de Gas Licuado de Petróleo (GLP) de 10 kg" a **"Cilindro de Gas Licuado (GLP) de 10 kg"** — decisión del dueño del proyecto, para evitar la connotación de esa palabra en el contexto local. Localizadas y cambiadas las 3 apariciones de la frase completa, las 3 en `store/recipientes/gas-licuado.astro` (título del producto, campo "Producto" de identificación, y la especificación "Medio a llenar" — ninguna es una cita literal de la norma COVENIN 649:1997 ni del código SENCAMER: esos dos campos solo muestran el número/código de la norma, sin nombre de producto, así que no aplica ninguna excepción normativa). El servicio corporativo (`/servicios/recipientes-gas-licuado`, ambos idiomas) y sus mensajes de WhatsApp ya decían solo "gas licuado" — no tenían la frase completa, nada que cambiar ahí. **En inglés no había ninguna aparición de "Liquefied Petroleum Gas"** en ningún archivo (el título ya es "Liquefied Gas Containers") — el motivo del cambio es específico del contexto en español, no hay nada que retirar del lado inglés.
+
+### Galería vertical (Store, `store/recipientes/gas-licuado.astro`)
+
+Las miniaturas pasan a una columna a la izquierda de la imagen principal en escritorio, vía `flex-col` (mobile) → `sm:flex-row-reverse` en el contenedor: el primer hijo en el DOM (imagen principal) queda a la derecha y el segundo (miniaturas) a la izquierda cuando la fila se invierte, sin duplicar markup para cada breakpoint. **En móvil no se fuerza la columna vertical** — se decidió mantener la fila horizontal de miniaturas debajo de la imagen (el comportamiento que ya tenía), porque forzar una columna angosta a los ~375px de un teléfono habría dejado la imagen principal comprimida en el espacio restante. El clic para cambiar de imagen (lógica en `<script>`, sin tocar) sigue funcionando igual.
+
+### Especificaciones técnicas en cuadrícula
+
+`specs` pasa de `grid-cols-2` (fijo, sin variante responsive) a `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` — 1 columna en móvil (los 8 items no quedan apretados en pantallas angostas), 2 en tablet, 3 en escritorio. Los datos no se tocaron (ver grep de verificación más abajo) — solo cambió la disposición. El bloque "Identificación y normativa" ya usaba `grid-cols-1 sm:grid-cols-2` desde antes y se evaluó que su formato actual sigue funcionando (solo 3 items, no se satura) — no se tocó.
+
+### Aviso de venta exclusiva a distribuidores
+
+**Dato de negocio nuevo del dueño del proyecto: la venta de cilindros de gas licuado es exclusiva para distribuidores oficiales, sin excepción de canal** — aplica tanto a la ficha de producto de la Store como al servicio corporativo (ambos idiomas). Texto exacto agregado (pendiente de aprobación formal, redactado sin inventar condiciones/requisitos de acreditación que no se dieron):
+
+- ES: *"Venta exclusiva para distribuidores oficiales. Este producto no se comercializa a particulares."* (Store) / *"Venta exclusiva para distribuidores oficiales. Este servicio no se ofrece a particulares."* (servicio corporativo — clave nueva `services.detail.distributorsOnlyNotice`, ES/EN).
+- EN: *"Exclusive sale to official distributors. This service is not offered to individual customers."*
+
+Ubicado justo antes del CTA de WhatsApp en ambas páginas (no al final) — con peso visual medio (borde+fondo ámbar, ícono `AlertTriangle`, mismo tono ya usado en el proyecto para advertencias), visible sin ser una alerta agresiva. En la ficha de producto de la Store va solo en español (la Store sigue fuera de i18n); en el servicio corporativo va traducido en ambos idiomas, porque esa página sí está traducida.
+
+### Mensaje de WhatsApp actualizado (consecuencia del aviso de distribuidores)
+
+Ambos CTAs de WhatsApp relacionados con recipientes de gas licuado ahora declaran "soy distribuidor" en el mensaje, para filtrar consultas de particulares antes de que lleguen al gerente de operaciones:
+- Ficha de producto (Store): *"Hola, me interesa el cilindro de GLP de 10 kg de Asiaven. Soy distribuidor y quisiera solicitar una cotización."*
+- Servicio corporativo (ES): *"...gas licuado de Asiaven. Soy distribuidor."* / (EN): *"...liquefied gas containers service. I am a distributor."*
+
+Ambos construidos con `buildWhatsappHref()` (ver centralización del número más arriba), no con URLs armadas a mano.
+
+### Verificación ejecutada
+
+- `npm run build` → **0 errores, 116 páginas** (sin cambio).
+- Grep de las 8 especificaciones sobre `dist/store/recipientes/gas-licuado/index.html` → los 7 valores numéricos/técnicos idénticos a antes del cambio de layout; solo "Medio a llenar" cambia de texto ("Gas Licuado (GLP)" en vez de "...de Petróleo (GLP)"), por el renombrado autorizado, no por el cambio de layout.
+- Galería verificada por geometría: en escritorio, `flex-direction: row-reverse` confirmado, miniaturas a la izquierda; en 375px, `flex-direction: column` con la fila de miniaturas (flex-direction: row) debajo de la imagen. Clic en miniatura confirmado cambiando `src` de la imagen principal en ambos viewports.
+- Logo confirmado en escritorio y menú móvil, ES y EN: 56×56px, centrado verticalmente junto al resto de elementos del navbar (`getBoundingClientRect` sin desalineación).
+- Grep de `"Petr"` sobre todo `src/` → única coincidencia es el comentario explicativo del cambio en el código, no texto visible al usuario.
+- 2 hrefs de WhatsApp completos verificados (ficha de producto y servicio corporativo ES), ambos con el mensaje nuevo y el número ya centralizado.
 
 ---
 
