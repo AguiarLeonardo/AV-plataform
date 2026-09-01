@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `feat/video-en-y-brochure` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `fix/texto-brochure` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -526,6 +526,19 @@ Probado `h-16` (64px) primero, como sugería el dueño del proyecto — visualme
 | Brochure en inglés (si se decide traducirlo) | `public/documentos/brochure-asiaven-en.pdf` | Hoy no aplica — el botón en `/en/projects` ya descarga el PDF en español, sin caída que implementar todavía (no hay chequeo `hasEnglishBrochure` en el código actual, ver nota arriba de cómo agregarlo si este archivo llega a existir). |
 
 (El video en inglés y el brochure en español, ambos pedidos originalmente como "pendientes de material", **ya llegaron** durante esta misma tarea — ver Partes 1 y 2 arriba. Esta tabla solo lista lo que sigue genuinamente pendiente al cierre de esta tarea.)
+
+---
+
+## ✏️ Texto del botón del brochure corregido (branch `fix/texto-brochure`)
+
+**El texto "Ver más proyectos" (confirmado en la tarea anterior) se cambia de nuevo** — seguía describiendo navegación, no descarga, y conceptualmente coincidía con el CTA del Hero. Nuevo texto, en `projects.brochureCta` (ambos diccionarios): **"Descargar brochure"** (ES) / **"Download brochure"** (EN) — dice exactamente qué hace el botón y qué se obtiene. Se evita a propósito la palabra "catálogo": en este sitio ya designa otra cosa (los catálogos PDF de producto de envases y tecnología, `services.detail.catalogPdfCta`/`techCatalogPdfCta`) — usarla aquí también habría sido confuso.
+
+Nada más cambió: mismo ícono `Download`, mismo `download` en el `<a>`, misma ubicación y estilo.
+
+**Verificación ejecutada:**
+- `npm run build` → 0 errores, 116 páginas.
+- Grep sobre `dist/`: `download` y la clase `lucide-download` siguen presentes en el botón, en ambos idiomas.
+- Confirmado en navegador que el botón no se descuadra con el texto nuevo, en ambos idiomas.
 
 ---
 
