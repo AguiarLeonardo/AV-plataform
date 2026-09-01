@@ -1,8 +1,10 @@
-# Estado Actual del Proyecto — Auditoría de Reconocimiento
+# Estado Actual del Proyecto
 
-**Última actualización:** 2026-08-31 — corresponde al branch `feat/whatsapp-y-divisiones` (sin mergear; parte de `develop`).
+**Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-*Documento generado originalmente por una auditoría de solo lectura y actualizado tras la tarea de saneamiento de dependencias. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Si algo cambia después de la fecha de arriba, este documento queda desactualizado en ese punto — no se actualiza automáticamente.*
+**Última actualización:** 2026-09-01 — corresponde al branch `chore/consolidar-docs` (sin mergear; parte de `develop`).
+
+*Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
 ---
 
@@ -325,10 +327,12 @@ Imagen ya presente en el repo: `public/images/corporativo/afiliadas/av-envasados
 
 **Versiones** (de `package.json`, rangos declarados con `^`):
 - Astro: `^7.0.7`
-- React: `^19.2.7` / `react-dom: ^19.2.7`
+- React: `^19.2.7` / `react-dom: ^19.2.7` (`@types/react` `^19.2.17`, `@types/react-dom` `^19.2.3`)
 - `@astrojs/react`: `^6.0.1`
+- `@astrojs/sitemap`: `^3.7.3`
 - Tailwind CSS: `^4.3.2` (vía `@tailwindcss/vite`)
 - `lucide-react`: `^1.24.0`
+- `pannellum`: `^2.5.7` (visor 360°, cargado con `import()` dinámico — ver sección del visor 360° más arriba)
 - TypeScript: `^6.0.3` (devDependency) — **pinneado deliberadamente a la major 6**, no a la 7: TypeScript 7 es el nuevo compilador nativo y todavía no expone la API programática que `@astrojs/check` necesita para funcionar (`astro check` falla con un error explícito en TS7). `@astrojs/check@^0.9.10` declara como peer dependency `typescript: "^5.0.0 || ^6.0.0"`, así que 6.x es además la versión más nueva compatible.
 - `@astrojs/check`: `^0.9.10` (devDependency)
 - Node requerido: `>=22.12.0` (campo `engines`)
@@ -337,23 +341,43 @@ Imagen ya presente en el repo: `public/images/corporativo/afiliadas/av-envasados
 ```js
 // @ts-check
 import { defineConfig } from 'astro/config';
+
 import tailwindcss from '@tailwindcss/vite';
+
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+
+import { getAllTranslatedPairs, buildAbsoluteUrl } from './src/i18n/routes.ts';
+import { getLangFromUrl } from './src/i18n/utils.ts';
+
+function findTranslatedPair(pathname, locale) {
+  return getAllTranslatedPairs().find((pair) => (locale === 'en' ? pair.en === pathname : pair.es === pathname));
+}
 
 export default defineConfig({
   site: 'https://www.asiaven.com',
   trailingSlash: 'never',
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
   vite: {
     plugins: [tailwindcss()]
   },
-  integrations: [react()]
+  integrations: [
+    react(),
+    sitemap({
+      serialize(item) { /* ver src/i18n/routes.ts:getAllTranslatedPairs() */ },
+    }),
+  ]
 });
 ```
-- `site`: **definido** — `https://www.asiaven.com` (dominio de producción; usado para URLs absolutas en canonical/hreflang/sitemap el día que existan, y por integraciones que lo requieran).
+- `site`: **definido** — `https://www.asiaven.com` (dominio de producción; usado para URLs absolutas en canonical/hreflang/sitemap, y por integraciones que lo requieran).
 - `trailingSlash`: **definido** — `'never'` (sin barra final en las rutas generadas).
 - `output`: **no definido** → por defecto `static` (SSG).
-- `i18n`: **no definido** (sigue fuera de alcance — ver sección 2).
-- Integraciones instaladas: únicamente `@astrojs/react`. No hay `@astrojs/sitemap` ni ninguna otra. `@astrojs/check` está instalado pero no es una integración de Astro (es una devDependency de CLI usada por el script `check`, ver más abajo).
+- `i18n`: **definido** (`defaultLocale: 'es'`, `locales: ['es', 'en']`, `prefixDefaultLocale: false`) — pero es solo el switch de enrutamiento nativo de Astro (evita que `/` redirija a `/es/`); el mecanismo real de traducción (diccionarios, `t()`/`localize()`, `routes.ts`) sigue siendo el propio del proyecto, no el i18n integrado de Astro. Ver sección 2.
+- Integraciones instaladas: `@astrojs/react` y `@astrojs/sitemap`. `@astrojs/sitemap` usa un `serialize()` a medida (no la opción `i18n` integrada del paquete, que asume que ambos locales repiten el mismo slug — no es el caso aquí, ver el comentario en el propio `astro.config.mjs`): resuelve el par `{es,en}` de cada URL vía `getAllTranslatedPairs()` (la misma fuente que usan `Hreflang.astro` y `LanguageSwitcher.astro`) y le agrega los `<xhtml:link>` de hreflang al sitemap. `@astrojs/check` está instalado pero no es una integración de Astro (es una devDependency de CLI usada por el script `check`, ver más abajo).
 
 **`tsconfig.json`** (contenido íntegro):
 ```json
@@ -381,7 +405,9 @@ Extiende el preset `strict` de Astro. `strict` está activo por herencia del pre
 
 **Gestor de paquetes:** npm — existe `package-lock.json` en la raíz. No hay `pnpm-lock.yaml` ni `yarn.lock`.
 
-**Configuración de despliegue:** existe `vercel.json` en la raíz (agregado en la tarea de saneamiento) — su único contenido es una regla de `headers` condicionada por host (ver sección de indexación más abajo), no configura build/output/rutas. No hay `netlify.toml`, `wrangler.toml`, ni directorio `.github/` (por tanto tampoco `.github/workflows/`). Sigue sin haber evidencia en el repo de qué proyecto/organización de Vercel sirve el despliegue; según el historial de trabajo previo documentado en `ESTADO_PROYECTO.md`, el proyecto se despliega en Vercel mediante integración Git del dashboard (configuración fuera del repo).
+**Configuración de despliegue:** existe `vercel.json` en la raíz (agregado en la tarea de saneamiento) — su único contenido es una regla de `headers` condicionada por host (ver sección de indexación más abajo), no configura build/output/rutas. No hay `netlify.toml`, `wrangler.toml`, ni directorio `.github/` (por tanto tampoco `.github/workflows/`). Sigue sin haber evidencia en el repo de qué proyecto/organización de Vercel sirve el despliegue — el proyecto se despliega en Vercel mediante integración Git del dashboard (configuración fuera del repo, no versionada).
+
+**⚠️ Incidente resuelto — lectura obligatoria si un deploy de Vercel vuelve a fallar con "filename too long".** Vercel falló repetidamente con `Unable to unpack repo: there was at least one filename that was too long`, incluso tras recrear el proyecto de Vercel y migrar a un repositorio de GitHub nuevo. **Causa raíz real:** `CLAUDE.md` había quedado trackeado en git con modo `120000` (symlink) en vez de `100644` (archivo regular) — arrastrado desde una sesión donde se reemplazó el contenido de un symlink roto sin corregir el bit de modo. En Windows (`core.symlinks=false`) esto pasaba desapercibido; en el build machine Linux de Vercel, git sí intentaba crear un symlink real usando el contenido del markdown como "destino", lo cual disparaba el error. **Fix:** `git rm --cached CLAUDE.md && git add CLAUDE.md` (re-trackea con el modo correcto). **Si el error reaparece:** verificar primero `git ls-tree -r HEAD | awk '$1=="120000"'` (lista symlinks mal registrados) antes de sospechar del historial o de Vercel. Como parte de este incidente también se hizo un saneamiento completo del historial de git (`filter-branch` + force-push en todas las ramas) para eliminar trailers `Co-Authored-By: Claude` de commits antiguos — es el origen de la regla de IP en `CLAUDE.md`.
 
 ---
 
@@ -604,15 +630,14 @@ Verificado explícitamente (quitando a propósito una entrada de `serviceSlugMap
 - Verificado en navegador que los subproductos de `/en/services/elevators` se muestran en inglés correctamente (ya estaban traducidos desde la Fase 1c/post-1c) — no se retradujeron.
 - Regresión: home en español (`/`) sigue enlazando a `/servicios/ascensores`, `/servicios/envases`, `/servicios/tecnologia-y-telecomunicaciones` — sin cambios.
 
-**Deuda técnica — CTA "Descargar catálogo (PDF)" apunta a `href="#"` en ambos idiomas.** En `/servicios/envases` y su contraparte `/en/services/packaging`, el botón de descarga del catálogo en PDF es un placeholder roto desde antes de esta fase (nunca se implementó, no se introdujo ni se corrigió en ninguna de las tareas de i18n). El dueño del proyecto va a montar los PDF próximamente. Hasta entonces es un enlace roto visible también para clientes internacionales, no solo en la versión española.
-
 **La Store (`/store/*`) sigue sin traducir — decisión explícita, no un olvido.** Se traducirá solo si la empresa se expande a mercados donde el inglés sea necesario para vender (hoy el negocio es 100% hispanohablante); si ese día llega, sus propios slugs de categoría/producto (hoy en español, ej. `/store/ciberseguridad`) también se traducirían con el mismo criterio de esta fase (término del sector, no traducción literal) — no es un trabajo trivial de "agregar `en`", es un slug-map completo como el de `services.ts`.
 
 ---
 
 ## 3. Mapa de rutas
 
-### Sitio corporativo (`Layout.astro`)
+### Sitio corporativo (`Layout.astro`) — español
+
 | Ruta URL | Archivo | Tipo | Origen de slugs (si dinámica) |
 |---|---|---|---|
 | `/` | `src/pages/index.astro` | Estática | — |
@@ -622,35 +647,55 @@ Verificado explícitamente (quitando a propósito una entrada de `serviceSlugMap
 | `/soporte-tecnico` | `src/pages/soporte-tecnico.astro` | Estática | — |
 | `/proyectos` | `src/pages/proyectos/index.astro` | Estática | — |
 | `/servicios` | `src/pages/servicios/index.astro` | Estática | — |
-| `/servicios/[servicio]` | `src/pages/servicios/[servicio].astro` | Dinámica | `getStaticPaths` itera `services` de `src/data/services.ts` (8 registros) |
+| `/servicios/[servicio]` | `src/pages/servicios/[servicio].astro` | Dinámica | `getStaticPaths` itera `services` de `src/data/services.ts` (**7 registros** — Mantenimiento eliminado, ver "Limpieza estructural" más arriba) |
 | `/envases` | `src/pages/envases/index.astro` | Estática | — |
 | `/envases/[categoria]` | `src/pages/envases/[categoria].astro` | Dinámica | itera `packagingCategories` de `src/data/packagingCatalog.ts` (5 categorías) |
 | `/envases/producto/[producto]` | `src/pages/envases/producto/[producto].astro` | Dinámica | itera los productos anidados dentro de `packagingCategories` (62 productos, vía subcategorías) |
+| `/404` | `src/pages/404.astro` | Estática (404 global, bilingüe en cliente) | — |
 
-### Asiaven Store (`StoreLayout.astro`)
+### Sitio corporativo — inglés (mismo `Layout.astro`, ver sección 2 para el alcance de i18n)
+
 | Ruta URL | Archivo | Tipo | Origen de slugs (si dinámica) |
 |---|---|---|---|
-| `/store` | `src/pages/store/index.astro` | Estática | — |
-| `/store/[categoria]` | `src/pages/store/[categoria].astro` | Dinámica | itera categorías/grupos/ítems de `src/data/storeTaxonomy.ts` |
-| `/store/producto/[slug]` | `src/pages/store/producto/[slug].astro` | Dinámica | itera `techProducts` de `src/data/techCatalog.ts` (126 registros) |
-| `/store/envases/[slug]` | `src/pages/store/envases/[slug].astro` | Dinámica | itera `packagingCategories` de `src/data/packagingCatalog.ts` (categoría + producto, dual) |
-| `/store/busqueda` | `src/pages/store/busqueda.astro` | Estática (contenido 100% client-side vía `SearchResults` hidratado) | — |
-| `/store/cotizacion` | `src/pages/store/cotizacion.astro` | Estática | — |
-| `/store/garantia` | `src/pages/store/garantia.astro` | Estática | — |
-| `/store/envios` | `src/pages/store/envios.astro` | Estática | — |
-| `/store/recipientes/gas-licuado` | `src/pages/store/recipientes/gas-licuado.astro` | Estática | — |
-| `/store/medida/laptops` | `src/pages/store/medida/laptops.astro` | Estática | — |
-| `/store/medida/desktops` | `src/pages/store/medida/desktops.astro` | Estática | — |
-| `/store/medida/workstations` | `src/pages/store/medida/workstations.astro` | Estática | — |
-| `/store/medida/servidores` | `src/pages/store/medida/servidores.astro` | Estática | — |
-| `/store/soporte/ticket` | `src/pages/store/soporte/ticket.astro` | Estática | — |
-| `/store/soporte/contacto-ventas` | `src/pages/store/soporte/contacto-ventas.astro` | Estática | — |
-| `/store/soporte/faq` | `src/pages/store/soporte/faq.astro` | Estática | — |
-| `/store/soporte/descargas` | `src/pages/store/soporte/descargas.astro` | Estática | — |
-| `/store/soporte/informacion` | `src/pages/store/soporte/informacion.astro` | Estática | — |
-| `/store/soporte/asesoria-compra` | `src/pages/store/soporte/asesoria-compra.astro` | Estática | — |
+| `/en` | `src/pages/en/index.astro` | Estática | — |
+| `/en/contact` | `src/pages/en/contact.astro` | Estática | — |
+| `/en/privacy` | `src/pages/en/privacy.astro` | Estática | — |
+| `/en/terms` | `src/pages/en/terms.astro` | Estática | — |
+| `/en/technical-support` | `src/pages/en/technical-support.astro` | Estática | — |
+| `/en/projects` | `src/pages/en/projects.astro` | Estática | — |
+| `/en/services` | `src/pages/en/services/index.astro` | Estática | — |
+| `/en/services/[service]` | `src/pages/en/services/[service].astro` | Dinámica | `getStaticPaths` propio sobre los 7 slugs traducidos de `serviceSlugMap` (`routes.ts`) |
+| `/en/packaging` | `src/pages/en/packaging.astro` | Estática | Aviso breve, enlaza a `/envases` (catálogo sin traducir, ver sección 2) |
 
-El build genera **348 páginas HTML** en total (ver sección 8), consistente con la suma de rutas estáticas + todas las combinaciones dinámicas de `[servicio]` (8), `[categoria]`/`producto/[producto]` de envases (5 + 62), `[categoria]` y `producto/[slug]` de Store (decenas de categorías/grupos/ítems de `storeTaxonomy.ts` + 126 productos), y `/store/envases/[slug]` (5 + 62).
+`/envases` (catálogo) y todo `/store/*` no tienen contraparte en inglés — fuera de alcance, ver sección 2.
+
+### Asiaven Store (`StoreLayout.astro`) — sin traducir, 100% español
+
+**Con el flag `STORE_CATALOG_LIVE = false` (estado actual — ver sección dedicada más arriba), las 3 rutas dinámicas no generan las páginas de catálogo real: `getStaticPaths()` retorna `[]`.** La columna "Origen de slugs" describe la fuente de datos tal como está escrita en el código, no lo que efectivamente se genera hoy.
+
+| Ruta URL | Archivo | Tipo | Origen de slugs (si dinámica) |
+|---|---|---|---|
+| `/store` | `src/pages/store/index.astro` | Estática (hoy "Próximamente") | — |
+| `/store/[categoria]` | `src/pages/store/[categoria].astro` | Dinámica | itera categorías/grupos/ítems de `src/data/storeTaxonomy.ts` — **con el flag apagado, solo genera los 2 stubs de nivel superior** (`/store/productos`, `/store/soluciones-empresariales`), los ~73 slugs de grupo/ítem no se generan |
+| `/store/producto/[slug]` | `src/pages/store/producto/[slug].astro` | Dinámica | itera `techProducts` de `src/data/techCatalog.ts` (126 registros) — **0 páginas mientras el flag esté apagado** |
+| `/store/envases/[slug]` | `src/pages/store/envases/[slug].astro` | Dinámica | itera `packagingCategories` de `src/data/packagingCatalog.ts` (categoría + producto, dual; 5 + 62) — **0 páginas mientras el flag esté apagado** |
+| `/store/busqueda` | `src/pages/store/busqueda.astro` | Estática (hoy "Próximamente") | — |
+| `/store/cotizacion` | `src/pages/store/cotizacion.astro` | Estática (hoy "Próximamente") | — |
+| `/store/garantia` | `src/pages/store/garantia.astro` | Estática (hoy "Próximamente") | — |
+| `/store/envios` | `src/pages/store/envios.astro` | Estática (hoy "Próximamente") | — |
+| `/store/recipientes/gas-licuado` | `src/pages/store/recipientes/gas-licuado.astro` | Estática — **real, no depende del flag** (ficha de producto del cilindro de GLP) | — |
+| `/store/medida/laptops` | `src/pages/store/medida/laptops.astro` | Estática (hoy "Próximamente") | — |
+| `/store/medida/desktops` | `src/pages/store/medida/desktops.astro` | Estática (hoy "Próximamente") | — |
+| `/store/medida/workstations` | `src/pages/store/medida/workstations.astro` | Estática (hoy "Próximamente") | — |
+| `/store/medida/servidores` | `src/pages/store/medida/servidores.astro` | Estática (hoy "Próximamente") | — |
+| `/store/soporte/ticket` | `src/pages/store/soporte/ticket.astro` | Estática (hoy "Próximamente") | — |
+| `/store/soporte/contacto-ventas` | `src/pages/store/soporte/contacto-ventas.astro` | Estática — **real, no depende del flag** | — |
+| `/store/soporte/faq` | `src/pages/store/soporte/faq.astro` | Estática (hoy "Próximamente") | — |
+| `/store/soporte/descargas` | `src/pages/store/soporte/descargas.astro` | Estática (hoy "Próximamente") | — |
+| `/store/soporte/informacion` | `src/pages/store/soporte/informacion.astro` | Estática (hoy "Próximamente") | — |
+| `/store/soporte/asesoria-compra` | `src/pages/store/soporte/asesoria-compra.astro` | Estática (hoy "Próximamente") | — |
+
+El build genera **116 páginas HTML** en total con el flag en su estado actual (`false`) — confirmado con `npm run build` (ver sección 8). Si `STORE_CATALOG_LIVE` se pone en `true`, el total sube porque las 3 rutas dinámicas de la Store vuelven a generar sus combinaciones completas (~73 de `[categoria]` + 126 de `producto/[slug]` + 67 de `envases/[slug]`) — ese conteo mayor no se ha vuelto a medir desde que el flag se apagó, así que no se documenta una cifra exacta aquí para evitar otra cifra que quede obsoleta.
 
 ---
 
@@ -659,42 +704,61 @@ El build genera **348 páginas HTML** en total (ver sección 8), consistente con
 ```
 src/
 ├── components/
-│   ├── react/                     (14 archivos .tsx — ver sección 5)
+│   ├── react/                     (15 archivos .tsx — ver sección 5)
 │   ├── sections/
-│   │   ├── About.astro            — bloque "Excelencia y Solidez Corporativa" con 3 íconos+texto; usado en / (index.astro)
-│   │   ├── Affiliates.astro       — grid de 4 tarjetas hover "Divisiones" (AV Constructora/Elevators/Maquinarias/Tecnología); usado en /
-│   │   ├── CorporateVideo.astro   — sección de video full-bleed con botón mute/unmute; usado en /
-│   │   ├── Footer.astro           — footer 100% corporativo (marca, enlaces, 2 sedes, legal, redes); usado en Layout.astro (todo el sitio corporativo)
-│   │   ├── Hero.astro             — wrapper de una sola línea que monta <HeroSlider client:load />; usado en /
-│   │   ├── MissionVision.astro    — bloque 2 columnas Misión/Visión con imagen de fondo; usado en /
-│   │   ├── Navbar.astro           — navbar corporativo (Inicio/Nosotros/Proyectos/Servicios + CTAs Tienda/Contáctanos); usado en Layout.astro (todo el sitio corporativo)
-│   │   ├── Services.astro         — wrapper que monta <ServicesCarousel client:visible />; usado en /
-│   │   ├── StatsStrip.astro       — franja de 4 cifras (802+, 18+, 50+, 30+); usado en /
-│   │   └── WhatsAppButton.astro   — botón flotante fijo a wa.me; usado en Layout.astro (todo el sitio corporativo)
+│   │   ├── About.astro            — bloque "Excelencia y Solidez Corporativa" con 3 íconos+texto; usado en / y /en
+│   │   ├── Affiliates.astro       — carrusel de desplazamiento lateral de 5 tarjetas "Divisiones" (AV Constructora/Elevators/Maquinarias/Tecnología/Envasados), sin enlace, 3 visibles en escritorio/2 en móvil; usado en / y /en (ver "CTA de WhatsApp + carrusel de divisiones" más arriba)
+│   │   ├── CorporateVideo.astro   — sección de video full-bleed con botón mute/unmute; usado en / y /en
+│   │   ├── Footer.astro           — footer 100% corporativo (marca, enlaces, 2 sedes, legal, redes); usado en Layout.astro (todo el sitio corporativo, ES/EN)
+│   │   ├── Hero.astro             — wrapper que monta <HeroSlider client:load />; usado en / y /en
+│   │   ├── MissionVision.astro    — bloque 2 columnas Misión/Visión con imagen de fondo; usado en / y /en
+│   │   ├── Navbar.astro           — navbar corporativo (Inicio/Nosotros/Proyectos/Servicios + CTA Contáctanos; botón Tienda oculto tras `STORE_CATALOG_LIVE`); usado en Layout.astro (todo el sitio corporativo, ES/EN)
+│   │   ├── Services.astro         — wrapper que monta <ServicesCarousel client:visible />; usado en / y /en
+│   │   ├── StatsStrip.astro       — franja de 4 cifras (802+, 18+, 50+, 30+); usado en / y /en
+│   │   └── WhatsAppButton.astro   — botón flotante fijo a wa.me (sin mensaje precargado, distinto de los CTAs de cotización por servicio); usado en Layout.astro (todo el sitio corporativo)
+│   ├── seo/
+│   │   └── Hreflang.astro         — canonical + alternate es/en + x-default; solo si la página pasó `routeKey` o un par `{es,en}` explícito (ver sección 2)
 │   ├── store/
 │   │   ├── CatalogControls.astro  — selector de orden ("Ordenar por") con lógica de reordenado en <script>; usado en /store/[categoria]
+│   │   ├── ComingSoon.astro       — cartel "{sectionName} — Próximamente" con `noindex,nofollow`; usado en toda página de la Store mientras `STORE_CATALOG_LIVE` esté en `false` (ver sección dedicada más arriba)
 │   │   ├── StoreFooter.astro      — footer 100% Store (marca, categorías, soporte, contacto ventas, legal); usado en StoreLayout.astro (todo /store/*)
 │   │   ├── StoreProductCard.astro — tarjeta de producto con toggle "ver más/menos" y botón "Agregar a Cotización" (lógica en <script>); usado en /store/index, /store/[categoria], /store/producto/[slug]
 │   │   └── StoreShowcaseCard.astro— tarjeta de vitrina con badge (Nuevo/Oferta/Más Vendido); no se encontró import activo en las páginas revisadas
 │   └── ui/
-│       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos
+│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente); usado en Navbar.astro/Footer.astro en vez del texto "ASIAVEN"
+│       ├── LanguageSwitcher.astro — selector de idioma server-only, cero JS; no renderiza nada si la ruta actual no está traducida
+│       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos y sus contrapartes en inglés
+├── config/
+│   └── storeFlags.ts              — `STORE_CATALOG_LIVE`, único flag que apaga/enciende el catálogo real de la Store (ver sección dedicada más arriba)
 ├── data/
 │   ├── packagingCatalog.ts        — catálogo de Envases (ver sección 6)
-│   ├── services.ts                — catálogo de 7 servicios corporativos (ver sección 6; era 8, ver "Limpieza estructural" más abajo)
+│   ├── services.ts                — catálogo de 7 servicios corporativos, con `Localized<T>` (ver sección 6)
 │   ├── storeTaxonomy.ts           — árbol de navegación de 3 niveles de la Store (Categoría→Grupo→Ítem)
 │   └── techCatalog.ts             — catálogo de 126 productos placeholder de la Store (ver sección 6)
+├── i18n/
+│   ├── routes.ts                  — fuente única de rutas estáticas + slug-maps de servicios (ver sección 2)
+│   ├── es.ts / en.ts              — diccionarios
+│   ├── index.ts                   — `dictionaries`, `type Locale`
+│   └── utils.ts                   — `t()`, `localize()`, `Localized<T>`, `getLangFromUrl()`
 ├── layouts/
-│   ├── Layout.astro                — layout raíz del sitio corporativo (Navbar+Footer+WhatsAppButton, `<html lang="es">` hardcodeado)
-│   └── StoreLayout.astro           — layout raíz de la Store (StoreFooter, `<html lang="es">` hardcodeado)
-├── pages/                          (27 rutas — ver sección 3 para el mapa completo)
+│   ├── Layout.astro                — layout raíz del sitio corporativo (Navbar+Footer+WhatsAppButton). `<html lang={Astro.currentLocale ?? "es"}>` — dinámico, NO hardcodeado (cambió en la Fase 1c de i18n)
+│   └── StoreLayout.astro           — layout raíz de la Store (StoreFooter). `<html lang="es">` — este sí sigue hardcodeado; la Store no participa de i18n (ver sección 2)
+├── pages/                          (40 archivos — ver sección 3 para el mapa completo, ES + EN + Store)
 ├── store/
 │   └── quoteCart.ts                — utilidades de carrito de cotización sobre localStorage + CustomEvent
 ├── styles/
 │   └── global.css                  — theming Tailwind v4 (@theme), sin tailwind.config.mjs
 └── utils/
     ├── fakePrice.ts                 — genera un precio determinístico simulado a partir del id de producto
-    └── formSupport.ts               — helper vanilla compartido para formularios de soporte (toggle B2B/B2C)
+    ├── formSupport.ts               — helper vanilla compartido para formularios de soporte (toggle B2B/B2C)
+    └── pdfExists.ts                 — comprobación de existencia de PDF en build-time (ver "Catálogos PDF" más arriba)
 ```
+
+**Regla de aislamiento entre los dos ecosistemas (corporativo / Store), auditada:** cada uno tiene exactamente **un** enlace puente hacia el otro — `Footer.astro` (corporativo) → "AV Store" → `/store` (hoy oculto tras `STORE_CATALOG_LIVE`, ver sección dedicada más arriba); `StoreFooter.astro` (Store) → "Sitio Corporativo Asiaven" → `/`. Ningún otro enlace cruza entre ambos, salvo las excepciones ya documentadas explícitamente (los CTAs de Envases hacia `/store/envases/*` y el enlace de vuelta del Hero de la Store).
+
+**Formularios híbridos B2C/B2B:** todo formulario con campo "Empresa" es personal por defecto, con un toggle sutil ("¿Compras para una empresa?") que revela los campos de empresa. Dos implementaciones del mismo patrón, según el tipo de componente: en React (`BTOForm.tsx`, `QuoteRequestForm.tsx`) es estado `isBusiness` con el campo condicional desmontado del DOM; en HTML plano (`store/soporte/ticket.astro`, `store/soporte/contacto-ventas.astro`) es la clase `.business-fields.hidden` más `initSupportForm()` (`src/utils/formSupport.ts`).
+
+**`lucide-react` (`^1.24.0`) no incluye íconos de marca** — Facebook/LinkedIn/Instagram/TikTok en `Footer.astro` usan SVGs custom en vez de la librería de íconos (mismo criterio que el ícono de WhatsApp, ver regla de íconos de marca más abajo).
 
 ---
 
@@ -710,12 +774,13 @@ src/
 | `CatalogFilters.tsx` | `client:load` (en `store/[categoria].astro`) | Ninguna | **Sí, extenso** — "Disponibilidad", "Precio", "Línea de Producto", "Especificaciones", las 4 opciones de línea, labels RAM/almacenamiento, botones "Limpiar todo"/"Filtros"/"Ver Resultados". ~20 cadenas. UI funcional a nivel de estado, pero no filtra la grilla real (nota propia en el código). |
 | `ProductFeatureSlider.tsx` | `client:load` (en `servicios/[servicio].astro`) | `products: {title, image, features: string[]}[]`, tipo derivado de `SubProduct` (`src/data/services.ts`) vía mapped type — actualizado post-1c, antes eran datos embebidos en la página | Parcial — el contenido viene por prop, ya resuelto con `localize()` desde `service.subProducts`; los 2 `aria-label` ("Producto anterior/siguiente") siguen hardcodeados. |
 | `ServiceSlider.tsx` | `client:load` (en `servicios/[servicio].astro`) | `images: string[]` | Solo `aria-label`s (4: "Imagen anterior/siguiente", "Ir a la imagen N"). |
+| `Panorama360Modal.tsx` | Ninguna directa — se monta dentro de `ProductFeatureSlider.tsx` (no tiene su propia directiva en ningún `.astro`) | Labels de estado de carga/error vía `Viewer360Labels` (namespace `services.viewer360` del diccionario) | Parcial — el texto llega por prop ya traducido; la lógica de fetch con progreso real, `AbortController` y timeout de 30s vive aquí (ver "Timeout de 30s + indicador de progreso real" más arriba). |
 | `QuoteCartList.tsx` | `client:load` (en `store/cotizacion.astro`) | Ninguna | **Sí** — "Tu cotización está vacía", "Agrega productos...", "Volver a la tienda", "Eliminar", "Total estimado". ~6 cadenas. |
 | `QuoteRequestForm.tsx` | `client:load` (en `store/cotizacion.astro`) | Ninguna | **Sí, extenso** — todos los labels de formulario, mensaje de éxito (incluye el correo `ventas@asiaven.com` embebido en el texto), botón de envío. ~12 cadenas. |
 | `SearchResultCard.tsx` | Ninguna directa — se renderiza dentro de `SearchResults.tsx` (que sí tiene `client:load`), por eso no aparece con su propia directiva en ningún `.astro` | `product: TechProduct` | **Sí** — "Ver más/Ver menos", "¡Agregado!", "Agregar a Cotización", "Saber más". ~4 cadenas. |
 | `SearchResults.tsx` | `client:load` (en `store/busqueda.astro`) | Ninguna | **Sí** — título "Resultados de búsqueda", mensajes de conteo/pluralización, mensaje de "sin resultados", CTA "Solicitar Cotización →". ~6 cadenas, con lógica de pluralización en español embebida. |
 | `StoreHeroSlider.tsx` | `client:load` (en `store/index.astro`) | Ninguna | **Sí, extenso** — los 3 slides completos (título, subtítulo, CTA) + el link "Volver al sitio corporativo" + 5 `aria-label`. ~15 cadenas. |
-| `StoreNavigation.tsx` | `client:load` (en las ~20 páginas de `/store/*`) | `currentPath?: string` | **Sí, muy extenso** — es el componente con más texto hardcodeado del proyecto: los 4 grupos "Equipo a Medida" (`btoItems`), los 2 grupos "Recipientes" (`recipientesGroups`, 6 ítems), los 2 grupos "Soporte Técnico" (`supportGroups`, 7 ítems), las etiquetas de los botones raíz ("Equipo a Medida", "Recipientes", "Soporte Técnico"), placeholders de búsqueda, `aria-label`s. ~30+ cadenas. |
+| `StoreNavigation.tsx` | `client:load` (en las ~20 páginas de `/store/*`) | `currentPath?: string` | **Sí, muy extenso** — es el componente con más texto hardcodeado del proyecto: los 4 grupos "Equipo a Medida" (`btoItems`), los 2 grupos "Recipientes" (`recipientesGroups`, 6 ítems), los 2 grupos "Soporte Técnico" (`supportGroups`, 7 ítems), las etiquetas de los botones raíz ("Equipo a Medida", "Recipientes", "Soporte Técnico"), placeholders de búsqueda, `aria-label`s. ~30+ cadenas. **Con `STORE_CATALOG_LIVE = false` (estado actual), sus 5 disparadores raíz no abren mega-menú: son enlaces directos** (ver "Store oculta temporalmente" más arriba) — mismo componente, comportamiento condicionado por el flag. |
 
 **Superficie total de contenido dentro de islas de React (no en `.astro`):** los componentes con mayor concentración de texto hardcodeado son `StoreNavigation.tsx`, `HeroSlider.tsx`, `StoreHeroSlider.tsx`, `BTOForm.tsx` y `CatalogFilters.tsx` — juntos concentran la mayoría del texto de UI de la Store y toda la copy del Hero corporativo. Ningún componente React usa Context ni ningún mecanismo de estado compartido entre islas; cada uno se hidrata de forma aislada.
 
@@ -723,17 +788,29 @@ src/
 
 ## 6. Capa de datos
 
-### `src/data/services.ts` — 8 registros
+### `src/data/services.ts` — 7 registros
+
+Eran 8; el servicio "Mantenimiento" se eliminó (ver "Limpieza estructural del sitio corporativo" más arriba) — quedan ascensores, escaleras-mecanicas, tecnologia-y-telecomunicaciones, envases, construccion, recipientes-gas-licuado, compras-internacionales.
+
 ```ts
+export interface SubProduct {
+  title: Localized<string>;
+  image: string;
+  features: Localized<string[]>;
+  panorama360?: string; // opcional, no localizado — ver visor 360° más arriba
+}
+
 export interface Service {
-  slug: string;
-  title: string;
-  shortDescription: string;
-  fullDescription: string[];
+  slug: string; // cada entrada real lo fija con `as const` — ver Fase 2 de i18n
+  title: Localized<string>;
+  shortDescription: Localized<string>;
+  fullDescription: Localized<string[]>;
   images: string[];
+  subProducts?: SubProduct[]; // solo ascensores y escaleras-mecanicas lo tienen hoy
+  subProductsHeading?: Localized<string>;
 }
 ```
-Campos de texto visible al usuario: `title`, `shortDescription`, `fullDescription` (array de párrafos) → 3 de 5 campos son texto de usuario (`slug` e `images` no lo son). No hay tipos derivados en otros archivos.
+`Localized<T>` (`{ es: T; en: T }`, definido en `src/i18n/utils.ts`) migró estos campos desde `string`/`string[]` planos en la Fase 1c de i18n (ver sección 2) — nunca se accede a `.es`/`.en` de estos campos a mano en un `.astro`, siempre vía `localize()`. Campos de texto visible al usuario: `title`, `shortDescription`, `fullDescription`, y dentro de `subProducts`: `title`/`features` (`subProductsHeading` también). No hay tipos derivados en otros archivos salvo `ProductFeatureSlider.tsx`, que deriva su tipo de props de `SubProduct` vía mapped type.
 
 ### `src/data/packagingCatalog.ts` — 5 categorías / 11 subcategorías / 62 productos (cifra reportada en documentación previa del proyecto, no recontada línea por línea en esta auditoría)
 ```ts
@@ -788,7 +865,7 @@ Registro de ejemplo:
   features: ["Procesador: Intel Core i3-13100", "Memoria: 8 GB DDR4", "..."],
 }
 ```
-Campos de texto visible: `title`, `category`, `subcategoryName`, `description`, `features` (array) → 5 de 9 campos. `image` sigue siendo URL de Unsplash (no migrado a asset local, confirmado por grep — ver también nota en `ESTADO_PROYECTO.md`).
+Campos de texto visible: `title`, `category`, `subcategoryName`, `description`, `features` (array) → 5 de 9 campos. `image` sigue siendo URL de Unsplash (no migrado a asset local, confirmado por grep) — coherente con que todo el catálogo de la Store sigue detrás del flag `STORE_CATALOG_LIVE`, ver sección dedicada más arriba.
 
 ### `src/data/storeTaxonomy.ts` — árbol de navegación (no un catálogo de productos)
 No se documenta como "N registros" porque es una jerarquía Categoría→Grupo→Ítem, no una lista plana. Alimenta el menú de `StoreNavigation.tsx` y `getStaticPaths` de `/store/[categoria]`.
@@ -811,9 +888,9 @@ Nota: esta es una estimación de orden de magnitud a partir de la lectura manual
 
 ## 8. Estado de salud
 
-**Build:** ✅ Pasa. `npm run build` (ahora `astro check && astro build`) completa sin errores — **348 páginas generadas**. El conteo de páginas se mantuvo en 348 en cada verificación a lo largo de todo el saneamiento de dependencias (antes y después de `npm audit fix`, de instalar TypeScript, de corregir tipos, y de agregar `site`/`trailingSlash`).
+**Build:** ✅ Pasa. `npm run build` (`astro check && astro build`) completa sin errores — **116 páginas generadas** (cifra vigente al día de esta actualización, con `STORE_CATALOG_LIVE = false` — ver el mapa de rutas en la sección 3 para cómo llegar a esa cifra y qué la cambiaría).
 
-**Verificación de tipos:** ✅ Habilitada y haciéndose cumplir. `typescript@^6.0.3` + `@astrojs/check@^0.9.10` instalados como devDependencies (ver sección 1 para el porqué del pin a la major 6). `npm run check` (`astro check`) reporta **0 errores, 0 warnings, 0 hints** en 70 archivos — se corrigieron los 5 hallazgos que existían (1 error de `useRef` sin argumento inicial, y 4 usos de `React.FormEvent`/`FormEvent`, deprecados en el paquete de tipos instalado, reemplazados por `SubmitEvent<T>` — el tipo no deprecado correcto para handlers de `onSubmit`). El script `build` ahora ejecuta `astro check` antes de `astro build`, así que un error de tipos rompe el build.
+**Verificación de tipos:** ✅ Habilitada y haciéndose cumplir. `typescript@^6.0.3` + `@astrojs/check@^0.9.10` instalados como devDependencies (ver sección 1 para el porqué del pin a la major 6). `npm run check` (`astro check`) reporta **0 errores, 0 warnings, 0 hints** en 93 archivos. El script `build` ejecuta `astro check` antes de `astro build`, así que un error de tipos rompe el build.
 
 **Vulnerabilidades (`npm audit`):** **0** — antes había 4 (2 moderate, 2 high: Astro XSS en View Transitions, js-yaml, nanoid, postcss), resueltas con `npm audit fix` sin `--force` (67 paquetes transitivos actualizados dentro de rango semver; ningún rango de `package.json` cambió).
 
@@ -827,25 +904,35 @@ Nota: esta es una estimación de orden de magnitud a partir de la lectura manual
 
 ## 9. Git
 
-- **Branch de esta actualización:** `chore/saneamiento-deps` (creada desde `main` en `7546078`, aún sin mergear al momento de escribir esto).
-- **Commits de la rama** (más reciente primero):
+Esta sección describe el estado de `develop` al momento de la última actualización de este documento (ver fecha al inicio) — no el historial de una tarea puntual (para eso, ver los encabezados `(branch feat/...)`/`(branch fix/...)` de cada sección de tarea más arriba, que sí quedan fijos en el tiempo a propósito).
+
+- **`develop` sincronizado con `origin/develop`** (0 commits de diferencia en cualquier dirección). Últimos commits (más reciente primero):
   ```
-  5b2eb91 chore(seo): noindex en el dominio de preview
-  1a325c5 chore(ts): corregir tipos y anadir check al build
-  72d78f5 chore(config): definir site de produccion
-  2792bd9 docs: corregir años en el mercado a 18+
-  b8cea4e chore(ts): instalar typescript y @astrojs/check
-  0cad219 chore(deps): npm audit fix
+  77ce763 Update cilindros-gas.webp
+  55fb8f3 docs: registrar CTA de WhatsApp y carrusel de divisiones en ESTADO.md
+  c63449e feat(home): agrega division AV Envasados y convierte el grid en carrusel
+  e816b67 feat(servicios): boton de cotizacion abre WhatsApp con mensaje precargado
+  c1dc6b5 docs: registrar ficha de producto de GLP y recorte de features
+  38f7c9c feat(store): ficha de producto real del cilindro de GLP de 10kg
   ```
-- **Base en `main` antes de esta rama:**
-  ```
-  7546078 update fotos de cilindros
-  4883836 Merge branch 'develop' into main
-  5ce60a8 Merge branch 'feat/landing-video-hero-final' into develop
-  6d634fb feat(ui): video corporativo a pantalla completa estilo Hero + docs actualizados
-  02489fc Merge branch 'develop'
-  ```
-  Nota: el commit `7546078 "update fotos de cilindros"` es posterior al último trabajo registrado en `ESTADO_PROYECTO.md` — no hay contexto de sesión sobre su contenido exacto más allá del mensaje del commit.
+- **`develop` está 12 commits adelante de `origin/main`** (0 detrás) — no mergeado a `main` todavía.
+- El merge de `feat/whatsapp-y-divisiones` a `develop` (y su push a `origin/develop`) lo hizo el dueño del proyecto directamente, fuera de una sesión de este asistente — es intencional, no un error a revertir.
+- Ramas `feat/...`/`fix/...` que ya son ancestros de `develop` (por tanto redundantes, seguras de borrar en local): revisar con `git branch --merged develop` antes de asumir que una rama sigue viva.
+
+---
+
+## 10. Documentos de referencia
+
+Archivos de la raíz que son fuente de datos o de reglas, no código — releerlos antes de tocar lo que describen:
+
+| Archivo | Para qué sirve |
+|---|---|
+| `CLAUDE.md` | Instrucciones del asistente para este proyecto — regla de IP (cero firmas de IA en commits/código), instrucciones de arranque del dev server. Leer siempre antes de commitear. |
+| `CONVENCIONES.md` | Arquitectura, stack, reglas de negocio y de UI/UX del sitio corporativo, más la base de conocimiento corporativo (cifras oficiales, slogans, client roster). |
+| `categorias_productos_asiaven.md` | Taxonomía de navegación de la Store (3 niveles: Categoría → Grupo → Ítem). Releer antes de tocar `src/data/storeTaxonomy.ts`. |
+| `catalogo_latas_asiaven.md` | Specs reales del catálogo de Envases. Fuente de `src/data/packagingCatalog.ts`. |
+| `INVENTARIO_IMAGENES.md` | Checklist de imágenes por sección del sitio — mayormente resuelto para sitio corporativo/Envases; la Store sigue en placeholders de Unsplash. |
+| `README.md` | Punto de entrada para alguien nuevo en el repo — stack, comandos de desarrollo, y apunta aquí (`docs/ESTADO.md`) para el estado del proyecto. |
 
 ---
 

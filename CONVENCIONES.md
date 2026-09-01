@@ -35,7 +35,7 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 ### 3. Buenas Prácticas de Código
 
 - **Manejo de Íconos de Marca:** Los logotipos de marcas externas (ej. WhatsApp) no usan Lucide. Se inyectan mediante código `<svg>` nativo para evitar fallos de renderizado de la librería.
-- **Flexbox para Grillas Irregulares:** Cuando una cuadrícula CSS (`grid`) deja elementos desbalanceados en la última fila (ej. 8 servicios en 3 columnas), se utiliza `flex flex-wrap` con anchos calculados (`calc()`) para forzar el centrado perfecto de la última fila.
+- **Flexbox para Grillas Irregulares:** Cuando una cuadrícula CSS (`grid`) deja elementos desbalanceados en la última fila (ej. 7 servicios en 3 columnas), se utiliza `flex flex-wrap` con anchos calculados (`calc()`) para forzar el centrado perfecto de la última fila.
 - **Componentes Reutilizables:** Centralización de elementos repetitivos, como el `PageHeader.astro`, que estandariza la cabecera de todas las páginas internas.
 
 ---
@@ -44,7 +44,7 @@ Desarrollo de la plataforma corporativa web (B2B) para **Asiaven**, un holding i
 
 ### Sitio Corporativo
 - `/` **(Landing Page):** Contiene el Hero (peekaboo), franja de estadísticas, Misión/Visión, y el carrusel interactivo de servicios.
-- `/servicios` **(Catálogo):** Muestra el portafolio completo (8 servicios actuales). Implementa una cuadrícula basada en Flexbox centrada.
+- `/servicios` **(Catálogo):** Muestra el portafolio completo (7 servicios actuales). Implementa una cuadrícula basada en Flexbox centrada.
 - `/servicios/[servicio]` **(Rutas Dinámicas):** Plantilla base para renderizar información específica de cada servicio basándose en un parámetro (slug).
 - `/proyectos` **(Client Roster):** Lista de experiencia y clientes corporativos.
 - `/contactanos`, `/soporte-tecnico`, `/privacidad`, `/terminos` — páginas de soporte institucional.
@@ -61,7 +61,7 @@ Ecosistema independiente con su propio layout y navegación (`StoreLayout.astro`
 - **Soporte**: `/store/soporte/{ticket,contacto-ventas,faq,descargas,informacion,asesoria-compra}` — centro de soporte técnico VIP.
 - **Políticas y búsqueda**: `/store/garantia`, `/store/envios`, `/store/busqueda`.
 
-Ver [`ESTADO_PROYECTO.md`](./ESTADO_PROYECTO.md) para el detalle completo y actualizado de cada ruta y componente.
+Ver [`docs/ESTADO.md`](./docs/ESTADO.md) para el detalle completo y actualizado de cada ruta y componente.
 
 ---
 
@@ -89,15 +89,16 @@ Claude: Cada vez que inicies una sesión o vayas a crear un nuevo componente, de
 * **30+** Trabajadores y sumando.
 * **51K** Seguidores.
 
-### Catálogo Oficial de Servicios (8 Servicios)
+### Catálogo Oficial de Servicios (7 Servicios)
 1. Ascensores
 2. Escaleras Mecánicas
 3. Tecnología y Telecomunicaciones
 4. Envases
 5. Construcción
 6. Recipientes de Gas Licuado
-7. Mantenimiento
-8. Compras Internacionales
+7. Compras Internacionales
+
+(El servicio "Mantenimiento" se eliminó por redundante — ya cubierto dentro de Ascensores y Escaleras Mecánicas. Ver `docs/ESTADO.md`.)
 
 ### División Tecnológica (Equipos AV)
 * **Portafolio:** Laptops, All-in-One, Mini-PCs, Workstations y Monitores corporativos.
