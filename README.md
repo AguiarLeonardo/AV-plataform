@@ -24,4 +24,4 @@ npm run preview  # previsualizar el build localmente
 
 ## Estado del Proyecto
 
-El estado detallado de las tareas, arquitectura, decisiones de diseño y deuda técnica pendiente se documenta en [`ESTADO_PROYECTO.md`](./ESTADO_PROYECTO.md) — es la fuente de verdad para retomar el desarrollo entre sesiones. Las convenciones de negocio, marca y UI/UX del sitio corporativo están en [`CONVENCIONES.md`](./CONVENCIONES.md).
+El estado detallado de las tareas, arquitectura, decisiones de diseño y deuda técnica pendiente se documenta en [`docs/ESTADO.md`](./docs/ESTADO.md) — es la **única** fuente de verdad para retomar el desarrollo entre sesiones. Las convenciones de negocio, marca y UI/UX del sitio corporativo están en [`CONVENCIONES.md`](./CONVENCIONES.md).
