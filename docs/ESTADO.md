@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `chore/consolidar-docs` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `fix/whatsapp-numero` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -320,6 +320,29 @@ Imagen ya presente en el repo: `public/images/corporativo/afiliadas/av-envasados
 - Carrusel verificado por geometría en el navegador (no por captura de pantalla — ver limitación abajo): 5 tarjetas en el DOM, **exactamente 3 completamente visibles en 1280px de ancho** (la 4ª asoma un 6%), **exactamente 2 completamente visibles en 375px** (la 3ª asoma un 5%). 0 elementos `<a>` dentro del carrusel — ninguna tarjeta navega al hacer click. Botones prev/next confirmados invocando `scrollBy` con la dirección y magnitud correctas (mismo código, verificado con `behavior:"instant"`).
 - **Limitación del entorno de prueba, no del código:** en esta sesión, `scrollBy({..., behavior:"smooth"})` no avanza el scroll dentro del navegador de pruebas (probablemente `requestAnimationFrame` congelado en una pestaña no compuesta activamente) — con `behavior:"instant"` el mismo contenedor sí se desplaza correctamente a la posición esperada. El listener del botón se confirmó invocado (log manual) y llamando a `scrollBy` con los argumentos correctos; el comportamiento suave en un navegador real no debería verse afectado.
 - Sin regresión visual en el resto del home: confirmado por texto de página (`get_page_text`) que Hero, franja de estadísticas, secciones de servicios destacados, "Excelencia y Solidez Corporativa" y Misión/Visión se renderizan sin cambios.
+
+---
+
+## 📞 Centralización y actualización del número de WhatsApp (branch `fix/whatsapp-numero`)
+
+**El número de WhatsApp vivía repetido literalmente en 5 archivos** (no solo en los 3 que se sospechaba): el botón flotante (`WhatsAppButton.astro`), las 2 plantillas de detalle de servicio (`servicios/[servicio].astro` y `en/services/[service].astro` — una sola aparición del literal por archivo, ya que ambas construyen un `whatsappHref` compartido por las 7 páginas de servicio vía el diccionario, no 7 apariciones), el CTA del cilindro de GLP (`store/recipientes/gas-licuado.astro`), y un **CTA no listado en el pedido original**: el botón "¿Prefieres hablar directamente con un asesor?" de `store/soporte/asesoria-compra.astro` (Store, sin mensaje precargado) — se encontró por grep exhaustivo antes de tocar nada y se reporta aquí porque no estaba entre los sitios conocidos.
+
+**Centralizado en `src/config/whatsapp.ts`** — mismo patrón de constante nombrada que `src/config/storeFlags.ts`, con un helper adicional (`buildWhatsappHref(message?)`) porque, a diferencia del flag (un valor booleano que cada archivo usa a su manera), los 5 sitios repetían también la misma construcción de URL (`https://wa.me/...` + `?text=${encodeURIComponent(...)}` cuando hay mensaje) — centralizar solo el número habría dejado ese fragmento de lógica duplicado igual. `WHATSAPP_NUMBER` queda exportado por si algo necesita el valor crudo, pero todos los call-sites actuales usan el helper.
+
+**Número actualizado:** de `5822129924333` a **`584122712253`** (el del gerente de operaciones) — decisión del dueño del proyecto, aplica a **todos** los enlaces de WhatsApp sin excepción, incluido el botón flotante. Los mensajes precargados de cada CTA no cambiaron — solo el número de destino.
+
+**Qué NO se tocó, a propósito:** el teléfono `+58 212-9924333` de la oficina de Venezuela (`Footer.astro`, `StoreFooter.astro`, `contactanos.astro`, `en/contact.astro`) — es un dato de contacto de la empresa (texto plano, ningún `tel:`/`wa.me`), no un destino de enlace, y es un número distinto al de WhatsApp a propósito. Verificado que ningún archivo usa el mismo número para ambos propósitos — no hubo ningún caso ambiguo que reportar.
+
+**Dónde vive ahora el número — para cambiarlo la próxima vez:** una sola línea, `WHATSAPP_NUMBER` en `src/config/whatsapp.ts`. Ningún otro archivo debe tener el número escrito literalmente; todo enlace de WhatsApp se construye con `buildWhatsappHref()` de ese mismo archivo.
+
+### Verificación ejecutada
+- `npm run build` → **0 errores, 116 páginas** (sin cambio — esta tarea no agrega ni quita rutas).
+- `grep -rn "5822129924333" src/` y sobre `dist/` → **0 coincidencias** en ambos, confirmando que el número anterior no queda en ningún enlace `wa.me` ni en ningún otro lugar del código o del HTML generado.
+- `grep -o 'wa.me/[0-9]*' dist -r` → el nuevo número (`584122712253`) aparece en el botón flotante (todas las páginas) y en los 7 CTAs de servicio (ES+EN) generados en `dist/`. El CTA de `store/soporte/asesoria-compra` no aparece en este grep porque esa página muestra "Próximamente" mientras `STORE_CATALOG_LIVE` esté en `false` (ver sección dedicada más arriba) — el código fuente ya está corregido y se activará junto con el resto de la Store cuando el flag vuelva a `true`.
+- 2 hrefs completos verificados con mensaje intacto, solo el número cambiado:
+  - `/servicios/ascensores`: `https://wa.me/584122712253?text=Hola%2C%20quisiera%20solicitar%20una%20cotizaci%C3%B3n%20para%20el%20servicio%20de%20ascensores%20de%20Asiaven.%20Tipo%20de%20inter%C3%A9s%3A%20%5Bindicar%20tipo%5D`
+  - `/store/recipientes/gas-licuado`: `https://wa.me/584122712253?text=Hola%2C%20me%20interesa%20el%20cilindro%20de%20GLP%20de%2010%20kg%20de%20Asiaven.%20Quisiera%20solicitar%20una%20cotizaci%C3%B3n.`
+- Confirmado por grep sobre `dist/` que `212-9924333` (teléfono de la oficina de Venezuela) sigue apareciendo sin cambios en `contactanos/index.html`, `en/contact/index.html`, y en el footer de `index.html`/`en/index.html`.
 
 ---
 
@@ -729,7 +752,8 @@ src/
 │       ├── LanguageSwitcher.astro — selector de idioma server-only, cero JS; no renderiza nada si la ruta actual no está traducida
 │       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos y sus contrapartes en inglés
 ├── config/
-│   └── storeFlags.ts              — `STORE_CATALOG_LIVE`, único flag que apaga/enciende el catálogo real de la Store (ver sección dedicada más arriba)
+│   ├── storeFlags.ts              — `STORE_CATALOG_LIVE`, único flag que apaga/enciende el catálogo real de la Store (ver sección dedicada más arriba)
+│   └── whatsapp.ts                — `WHATSAPP_NUMBER` + `buildWhatsappHref()`, único punto de control del número de WhatsApp (ver "Centralización y actualización del número de WhatsApp" más arriba)
 ├── data/
 │   ├── packagingCatalog.ts        — catálogo de Envases (ver sección 6)
 │   ├── services.ts                — catálogo de 7 servicios corporativos, con `Localized<T>` (ver sección 6)
