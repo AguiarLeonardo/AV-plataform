@@ -1,9 +1,23 @@
 ---
 import { Volume2, VolumeX } from "lucide-react";
 import { t } from "../../i18n/utils";
+import { publicFileExists } from "../../utils/fileExists";
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 const video = t(lang, "home.video");
+
+// Video en inglés: mismo directorio y nombre que el español, sufijo -en (ver
+// docs/ESTADO.md — la ruta con subcarpeta "corporativo" que se asumió en un
+// momento nunca fue la convención real). Si falta cualquiera de los dos
+// formatos en inglés, cae completo al par en español en vez de mezclar
+// formatos de idiomas distintos o mostrar un reproductor vacío — mismo
+// criterio que catalogPdfExists: si no hay archivo, no se ofrece.
+const hasEnglishVideo =
+  lang === "en" &&
+  publicFileExists("videos", "video-corporativo-en.webm") &&
+  publicFileExists("videos", "video-corporativo-en.mp4");
+const videoWebm = hasEnglishVideo ? "/videos/video-corporativo-en.webm" : "/videos/video-corporativo.webm";
+const videoMp4 = hasEnglishVideo ? "/videos/video-corporativo-en.mp4" : "/videos/video-corporativo.mp4";
 ---
 
 <section class="w-full">
@@ -19,8 +33,8 @@ const video = t(lang, "home.video");
       playsinline
       preload="metadata"
     >
-      <source src="/videos/video-corporativo.webm" type="video/webm" />
-      <source src="/videos/video-corporativo.mp4" type="video/mp4" />
+      <source src={videoWebm} type="video/webm" />
+      <source src={videoMp4} type="video/mp4" />
       <p class="flex h-full w-full items-center justify-center bg-corporativo-gray px-6 text-center text-sm text-gray-300">
         {video.fallbackText}
       </p>
