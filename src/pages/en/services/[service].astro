@@ -7,6 +7,7 @@ import { Download } from "lucide-react";
 import { localize, t } from "../../../i18n/utils";
 import { getRouteHref, getServiceDetailUrls, serviceSlugMap } from "../../../i18n/routes";
 import { catalogPdfExists } from "../../../utils/pdfExists";
+import { buildWhatsappHref } from "../../../config/whatsapp";
 
 const techCatalogPdfExists = catalogPdfExists("catalogo-tecnologia.pdf");
 const envasesCatalogPdfExists = catalogPdfExists("catalogo-envases.pdf");
@@ -40,7 +41,7 @@ const subProducts = service.subProducts?.map((subProduct: SubProduct) => ({
 // mecanismo, mensaje en inglés (sales debe esperar la conversación en ese
 // idioma en estas páginas).
 const whatsappMessages = t(lang, "services").whatsappQuote;
-const whatsappHref = `https://wa.me/5822129924333?text=${encodeURIComponent(whatsappMessages[service.slug])}`;
+const whatsappHref = buildWhatsappHref(whatsappMessages[service.slug]);
 ---
 
 <Layout title={`${localize(service.title, lang)} - Asiaven`} dynamicHreflang={detailUrls}>

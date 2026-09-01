@@ -12,6 +12,7 @@ import {
   AlertTriangle,
   Layers,
 } from "lucide-react";
+import { buildWhatsappHref } from "../../../config/whatsapp";
 
 // Único producto real de la Store hoy (ver docs/ESTADO.md) — a diferencia
 // de store/producto/[slug].astro (126 productos de relleno del catálogo
@@ -59,7 +60,7 @@ const specs = [
 // docs/ESTADO.md).
 const whatsappMessage =
   "Hola, me interesa el cilindro de GLP de 10 kg de Asiaven. Quisiera solicitar una cotización.";
-const whatsappHref = `https://wa.me/5822129924333?text=${encodeURIComponent(whatsappMessage)}`;
+const whatsappHref = buildWhatsappHref(whatsappMessage);
 ---
 
 <StoreLayout title={`${productTitle} - Asiaven Store`}>

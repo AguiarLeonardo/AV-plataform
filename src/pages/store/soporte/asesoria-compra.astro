@@ -3,6 +3,7 @@ import StoreLayout from "../../../layouts/StoreLayout.astro";
 import StoreNavigation from "../../../components/react/StoreNavigation.tsx";
 import ComingSoon from "../../../components/store/ComingSoon.astro";
 import { STORE_CATALOG_LIVE } from "../../../config/storeFlags";
+import { buildWhatsappHref } from "../../../config/whatsapp";
 import { Search, FileText, Truck } from "lucide-react";
 
 const steps = [
@@ -61,7 +62,7 @@ const steps = [
         Escríbenos por WhatsApp y un especialista comercial te ayuda a definir la mejor solución para tu empresa.
       </p>
       <a
-        href="https://wa.me/5822129924333"
+        href={buildWhatsappHref()}
         target="_blank"
         rel="noopener noreferrer"
         class="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-[#25D366] no-underline shadow-lg transition-colors hover:bg-gray-100"

@@ -1,11 +1,12 @@
 ---
 import { t } from "../../i18n/utils";
+import { buildWhatsappHref } from "../../config/whatsapp";
 
 const lang = Astro.currentLocale === "en" ? "en" : "es";
 ---
 
 <a
-  href="https://wa.me/5822129924333"
+  href={buildWhatsappHref()}
   target="_blank"
   rel="noopener noreferrer"
   class="fixed bottom-6 right-6 z-[100] bg-[#25D366] hover:-translate-y-2 transition-transform shadow-2xl p-4 rounded-full flex items-center justify-center"
