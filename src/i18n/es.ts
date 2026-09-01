@@ -243,6 +243,10 @@ const es = {
       catalogPdfCta: "Descargar catálogo (PDF)",
       // Mismo caso que storeSpanishOnlyNote: no se muestra en español.
       catalogSpanishOnlyNote: "Nuestro catálogo está disponible en español.",
+      // Aviso de venta exclusiva a distribuidores — solo en la rama de
+      // recipientes-gas-licuado (mismo aviso que en la ficha de producto de
+      // la Store). Pendiente de aprobación del dueño del proyecto.
+      distributorsOnlyNotice: "Venta exclusiva para distribuidores oficiales. Este servicio no se ofrece a particulares.",
     },
     // Mensaje precargado del botón de cotización por WhatsApp — uno por
     // servicio, indexado por su slug (no por t() con ruta dinámica: t()
@@ -261,7 +265,7 @@ const es = {
       envases: "Hola, quisiera solicitar una cotización para el servicio de envases de Asiaven.",
       construccion: "Hola, quisiera solicitar una cotización para el servicio de construcción de Asiaven.",
       "recipientes-gas-licuado":
-        "Hola, quisiera solicitar una cotización para el servicio de recipientes de gas licuado de Asiaven.",
+        "Hola, quisiera solicitar una cotización para el servicio de recipientes de gas licuado de Asiaven. Soy distribuidor.",
       "compras-internacionales":
         "Hola, quisiera solicitar una cotización para el servicio de compras internacionales de Asiaven.",
     },

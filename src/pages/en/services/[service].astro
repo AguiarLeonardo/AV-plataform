@@ -3,7 +3,7 @@ import Layout from "../../../layouts/Layout.astro";
 import ServiceSlider from "../../../components/react/ServiceSlider.tsx";
 import ProductFeatureSlider from "../../../components/react/ProductFeatureSlider.tsx";
 import { services, type SubProduct } from "../../../data/services";
-import { Download } from "lucide-react";
+import { Download, AlertTriangle } from "lucide-react";
 import { localize, t } from "../../../i18n/utils";
 import { getRouteHref, getServiceDetailUrls, serviceSlugMap } from "../../../i18n/routes";
 import { catalogPdfExists } from "../../../utils/pdfExists";
@@ -101,6 +101,10 @@ const whatsappHref = buildWhatsappHref(whatsappMessages[service.slug]);
           </div>
         ) : service.slug === "recipientes-gas-licuado" ? (
           <div class="flex flex-col gap-2 items-start w-full">
+            <div class="flex w-full items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" strokeWidth={1.5} />
+              <p class="text-sm text-amber-900">{t(lang, "services.detail.distributorsOnlyNotice")}</p>
+            </div>
             <div class="flex flex-wrap items-center gap-4">
               <a
                 href={whatsappHref}

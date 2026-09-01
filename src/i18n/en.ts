@@ -220,6 +220,7 @@ export default {
       catalogCta: "View full catalog",
       catalogPdfCta: "Download catalog (PDF)",
       catalogSpanishOnlyNote: "Our catalog is only available in Spanish.",
+      distributorsOnlyNotice: "Exclusive sale to official distributors. This service is not offered to individual customers.",
     },
     whatsappQuote: {
       ascensores:
@@ -231,7 +232,7 @@ export default {
       envases: "Hello, I would like to request a quote for Asiaven's packaging service.",
       construccion: "Hello, I would like to request a quote for Asiaven's construction service.",
       "recipientes-gas-licuado":
-        "Hello, I would like to request a quote for Asiaven's liquefied gas containers service.",
+        "Hello, I would like to request a quote for Asiaven's liquefied gas containers service. I am a distributor.",
       "compras-internacionales":
         "Hello, I would like to request a quote for Asiaven's international procurement service.",
     },
