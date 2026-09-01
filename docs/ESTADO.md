@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `fix/logo-navbar` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `fix/logo-y-video` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -412,6 +412,50 @@ Ambos construidos con `buildWhatsappHref()` (ver centralización del número má
 
 ---
 
+## 🅱️🎬 Logo del navbar (arreglado) + altura del video corregida (branch `fix/logo-y-video`)
+
+### Texto "ASIAVEN" retirado, `aria-label` de vuelta al logo
+
+Decisión del dueño del proyecto: el texto recuperado en la tarea anterior sale. El `<a>` vuelve a envolver solo el logo, con `aria-label="ASIAVEN"` (la situación exacta previa a esa tarea) — sin el texto visible, el logo no tiene de dónde derivar un nombre accesible, así que hace falta de nuevo. El SVG interno sigue con `aria-hidden="true"` (no compite). Verificado en el HTML generado: exactamente **1** ocurrencia de "ASIAVEN" dentro de `<header>` en ambos idiomas, y es el propio `aria-label` — no hay texto visible duplicándolo.
+
+**Los ajustes de la franja de tablet de la tarea anterior (`md:gap-2`/`lg:gap-3` en el bloque de marca, `md:gap-4`/`lg:gap-8` en los enlaces, el `gap-4` del `<nav>`) se revirtieron** — existían solo porque el bloque logo+texto (~194px de ancho) no cabía cómodamente entre 768–900px. Sin el texto, el bloque de marca vuelve a ser mucho más angosto y ese problema desaparece: confirmado sin overflow ni bloques pegados en 320, 375, 768, 900, 1024 y 1280px con los ajustes ya revertidos — no hacía falta dejarlos "por si acaso".
+
+### Logo arreglado — diagnóstico antes de tocar nada
+
+El dueño del proyecto reemplazó `public/images/corporativo/logo-asiaven.svg` por un archivo nuevo con una estructura distinta, y `AsiavenLogo.astro` (escrito pensando solo en el archivo anterior) se rompió en 3 puntos concretos:
+
+1. **Proporción real del archivo:** `viewBox="0 0 262.000000 186.000000"` — ratio 262:186 ≈ **1.41:1, NO cuadrado** (el archivo anterior era 500×500, cuadrado). Cualquier uso con `h-*` y `w-*` iguales lo deforma.
+2. **Color:** el archivo anterior pintaba cada `<path>` con `fill="rgb(...)"` / `stroke="rgb(...)"` — el regex de recoloreado buscaba exactamente ese patrón. El archivo nuevo pinta un `<g>` que envuelve todo el dibujo con `fill="#000000"` (**hex, no `rgb(...)`**) y `stroke="none"` — el regex viejo no matcheaba nada ahí, así que el logo se veía **negro sólido** en vez de heredar `currentColor`.
+3. **Por qué se veía desalineado y de otro tamaño — dos causas independientes, ambas en el archivo nuevo:**
+   - El archivo anterior no traía `viewBox` propio (solo `width`/`height="500"` planos), así que el componente le inyectaba uno (`viewBox="0 0 500 500"`) a la fuerza. El archivo nuevo **sí trae su propio `viewBox`** — inyectar otro más duplica el atributo en el mismo `<svg>`, y el navegador conserva el **primero** que encuentra (descarta el segundo). El `viewBox="0 0 500 500"` inyectado ganaba, y el contenido real (dibujado para un lienzo de 262×186) se veía diminuto y corrido hacia una esquina dentro de ese cuadrado equivocado. Confirmado en el navegador antes de tocar nada: `svg.getAttribute('viewBox')` devolvía `"0 0 500 500"`, no el real.
+   - El archivo nuevo declara `width="262.000000pt" height="186.000000pt"` en el propio `<svg>` — al usar `h-20` sin `w-20` (ver más abajo), el navegador usaba ese atributo como tamaño intrínseco para el ancho (262pt ≈ 349px) en vez de derivarlo del `viewBox` según el alto que sí fija la clase, deformando la proporción real. Confirmado: con `h-20` (80px de alto) el logo medía 349px de ancho en vez de los ~112.7px que le corresponden a esa proporción.
+
+**La causa está en cómo el componente interpretaba el archivo, no en el archivo en sí — se arregló `AsiavenLogo.astro`, no el SVG del dueño del proyecto** (no hizo falta pedir permiso para editar el asset, porque no se tocó). El parseo ahora:
+- Solo inyecta un `viewBox` de respaldo si el archivo no trae uno propio (nunca duplica).
+- El regex de color cubre `rgb(...)` y hex (3/4/6/8 dígitos), sin importar en qué elemento esté el atributo.
+- Quita los atributos `width`/`height` del `<svg>` raíz, para que el tamaño final dependa solo de la clase CSS que se le pase + el `viewBox` (que si preserva la proporción real).
+
+**Tamaño: `h-20` (80px de alto), sin `w-20`** — el logo no es cuadrado, forzar un ancho igual lo habría deformado (ver punto 3). El ancho se ajusta solo a ~112.7px (proporción 1.41:1 exacta, verificado). Probado el rango completo pedido (320, 375, 768, 900, 1024, 1280px): sin overflow en ningún ancho.
+
+**Footer, sin tocar — pero con un efecto secundario visible a reportar.** El Footer sigue usando `h-10 w-10` (cuadrado) sobre el mismo logo, ahora correctamente no-deformado por el fix del componente — como el logo real no es cuadrado, `preserveAspectRatio="xMidYMid meet"` (el default del archivo) hace que el trazo se dibuje centrado y más chico dentro de esa caja de 40×40, con espacio vacío a los lados en vez de llenarla u deformarse. No se tocó `Footer.astro` (fuera de alcance de esta tarea), pero queda señalado por si el dueño del proyecto quiere ajustar su `w-10` a algo acorde a la proporción real (ej. `w-14` aprox.) en una tarea aparte.
+
+### Altura del video del landing — corregida de raíz, no solo aumentada
+
+**Diagnóstico:** `CorporateVideo.astro` usaba `h-[calc(100dvh-72px)]` — un número fijo puesto hace 3 tareas, cuando el navbar medía 72px. El navbar creció dos veces desde entonces (80px, luego 104px) sin que nadie actualizara este cálculo, así que la sección quedaba **32px más alta** que el espacio real debajo del header sticky — de ahí el ajuste fino de scroll para verla sin que asomen bordes de las secciones vecinas. `100dvh` en sí ya era la unidad correcta (se ajusta sola al mostrar/ocultar la barra del navegador en móvil, según la convención de `CONVENCIONES.md`) — el problema era solo el offset fijo desincronizado.
+
+**Se encontró el mismo bug en un segundo lugar no pedido: `HeroSlider.tsx`** usaba `md:h-[calc(100dvh-100px)]` — otro número fijo distinto (100px), con el mismo problema. Consultado el dueño del proyecto, se corrigen los dos con el mismo mecanismo.
+
+**Solución — alto real medido en runtime, no otro número fijo que se desincronice de nuevo:** `Navbar.astro` mide `header.getBoundingClientRect().height` (al cargar, y en cada cambio vía `ResizeObserver`) y lo guarda en la variable CSS `--header-height` (`document.documentElement.style.setProperty`). `CorporateVideo.astro` y `HeroSlider.tsx` pasan de restar un número fijo a `calc(100dvh - var(--header-height,104px))` — el valor de respaldo (`104px`) es el alto real de hoy, para que el render inicial (antes de que corra el JS) ya sea correcto sin salto visual; el `ResizeObserver` lo corrige solo si el navbar vuelve a cambiar de alto en el futuro, sin depender de que alguien se acuerde de actualizar un número a mano en otro archivo.
+
+**Verificación ejecutada:**
+- `npm run build` → **0 errores, 116 páginas**.
+- Confirmado en el navegador: `--header-height` computado = `104px` (coincide con el alto real medido), en escritorio y móvil, ambos idiomas.
+- Escritorio (960px de alto de viewport en las pruebas): sección del video con altura exacta de 856px (`960 - 104`) — al alinear el borde superior de la sección con el borde inferior del header, el borde inferior de la sección cae exactamente en el borde inferior del viewport (`103.5` a `959.5` de 960px), sin hueco ni corte.
+- Móvil (812px de alto): sección del video con 708px (`812-104`); el Hero mantiene su `82dvh` fijo (665.8px) sin cambios — el mecanismo del header no le aplica en móvil (el `md:` no está activo), que es el comportamiento correcto ya existente ("efecto peekaboo").
+- Grep sobre `dist/`: `calc(100dvh-var(--header-height,104px))` presente tanto en la sección del video como en el Hero.
+
+---
+
 ## 1. Stack y configuración
 
 **Versiones** (de `package.json`, rangos declarados con `^`):
@@ -814,7 +858,7 @@ src/
 │   │   ├── StoreProductCard.astro — tarjeta de producto con toggle "ver más/menos" y botón "Agregar a Cotización" (lógica en <script>); usado en /store/index, /store/[categoria], /store/producto/[slug]
 │   │   └── StoreShowcaseCard.astro— tarjeta de vitrina con badge (Nuevo/Oferta/Más Vendido); no se encontró import activo en las páginas revisadas
 │   └── ui/
-│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente); usado en Footer.astro solo, y en Navbar.astro junto al texto "ASIAVEN" (recuperado, ver "Logo del navbar" más arriba) — ya no lo reemplaza
+│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente, parseo defensivo ante cambios de formato — ver "Logo del navbar (arreglado)" más arriba); usado solo (sin texto al lado) en Navbar.astro (`h-20`, sin `w-20` — el logo no es cuadrado) y Footer.astro (`h-10 w-10`)
 │       ├── LanguageSwitcher.astro — selector de idioma server-only, cero JS; no renderiza nada si la ruta actual no está traducida
 │       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos y sus contrapartes en inglés
 ├── config/
@@ -837,7 +881,7 @@ src/
 ├── store/
 │   └── quoteCart.ts                — utilidades de carrito de cotización sobre localStorage + CustomEvent
 ├── styles/
-│   └── global.css                  — theming Tailwind v4 (@theme), sin tailwind.config.mjs
+│   └── global.css                  — theming Tailwind v4 (@theme) + `:root { --header-height }` (alto real del navbar, medido en runtime por Navbar.astro — ver "Altura del video" más arriba), sin tailwind.config.mjs
 └── utils/
     ├── fakePrice.ts                 — genera un precio determinístico simulado a partir del id de producto
     ├── formSupport.ts               — helper vanilla compartido para formularios de soporte (toggle B2B/B2C)
