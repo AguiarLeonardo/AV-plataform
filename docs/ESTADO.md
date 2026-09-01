@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `fix/logo-y-video` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `fix/logo-video-ajustes` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -456,6 +456,40 @@ El dueño del proyecto reemplazó `public/images/corporativo/logo-asiaven.svg` p
 
 ---
 
+## 📐 Logo reducido, footer corregido y margen del video (branch `fix/logo-video-ajustes`)
+
+### Logo del navbar: de `h-20` a `h-16`
+
+Probado `h-16` (64px) primero, como sugería el dueño del proyecto — visualmente ya proporcionado frente al resto de elementos del navbar (confirmado por captura y geometría), así que no hizo falta bajar otro escalón. Header resultante: **88px** (antes 104px). `--header-height` confirmado reflejando el valor nuevo automáticamente (el `ResizeObserver` de `Navbar.astro` lo recalcula solo) — se actualizó también el valor de respaldo en `global.css` (104px → 88px) y los dos fallbacks inline en `CorporateVideo.astro`/`HeroSlider.tsx` (`var(--header-height,104px)` → `,88px)`), ya que esos números de respaldo solo se usan si la variable no estuviera definida — hoy siempre lo está, pero se mantienen sincronizados para que documenten el valor real y no confundan a quien lea el código.
+
+### Logo del footer: proporción corregida sin agrandarlo
+
+`h-10 w-10` (caja cuadrada 40×40) sobre un logo de proporción real 262:186 dejaba el trazo renderizado a 40×28.4px (`preserveAspectRatio="xMidYMid meet"` limita por el ancho, deja espacio vacío arriba/abajo dentro de la caja cuadrada). Para mantener el tamaño visual actual del trazo (no agrandarlo) mientras se corrige la proporción, se calculó la altura que reproduce ese mismo trazo sin espacio vacío: 40 ÷ (262/186) ≈ 28.4px → **`h-7`** (28px, el escalón de Tailwind más cercano), sin `w-*` (el ancho se resuelve solo, igual que el navbar). Resultado medido: 39.4×28px — a menos de un pixel del tamaño visual anterior (40×28.4px), sin el relleno vacío. Verificado en ambos idiomas que la columna del footer no se descuadra (el logo es un bloque independiente arriba de la descripción, sin otros elementos a su misma altura con los que deba alinearse).
+
+### Margen del video — más alto que el espacio disponible, a propósito
+
+**Antes:** el video medía exactamente `100dvh - header`, así que había un único punto de scroll donde encajaba perfecto — desviarse un poco dejaba asomar la sección de arriba o la de abajo.
+
+**Ahora:** `h-[calc((100dvh-var(--header-height,88px))*1.08)]` en móvil, `md:h-[calc((100dvh-var(--header-height,88px))*1.15)]` en escritorio — el margen es un **factor multiplicativo sobre el cálculo que ya deriva de `--header-height`**, no un número fijo aparte (no se reintrodujo el bug de los offsets desincronizados). Verificado que el margen efectivo es exactamente 15% en escritorio y 8% en móvil (medido: `(alturaSección - espacioDisponible) / espacioDisponible`).
+
+**Rango de scroll con solo video visible, medido:**
+- Escritorio (960px de alto de viewport en las pruebas): **~131px** de rango — dentro de ese rango, el borde superior de la sección puede estar entre 42.5px por encima del borde inferior del header y 87.5px por debajo, y en todo ese tramo el video sigue cubriendo el 100% del área visible bajo el header.
+- Móvil (812px de alto): **~58px** de rango (8% de 724px de espacio disponible).
+
+**Qué recorta `object-cover` — hallazgo que corrige la premisa de la pregunta original:** el video fuente mide 1280×720 (ratio 16:9 ≈ 1.778). Antes del margen, la proporción del contenedor en pantallas de escritorio típicas (1440×900, 1920×1080) ya estaba muy cerca de 16:9 — el margen del 15% hace que el contenedor pase de "un poco más ancho que el video" a "un poco más alto", lo que **cambia qué lado se recorta, no agrega recorte donde no lo había**: con el margen, el recorte pasa a ser en los **laterales** (izquierda/derecha), no arriba/abajo — medido ~117px por lado en 1440×900 (8% del ancho por lado) y ~62px por lado en 1920×1080 (3.2% por lado). **No se pierde nada arriba ni abajo del encuadre** — el recorte vertical medido fue 0px en ambas resoluciones probadas. En móvil (375×812) el video ya se recortaba masivamente por los lados desde antes (es un video panorámico en un viewport vertical) — el margen solo aumenta ese recorte lateral ya existente en un ~8% más, sin tocar arriba/abajo tampoco.
+
+**Por qué el margen es menor en móvil (8% vs 15%):** en móvil el video ya se ve muy recortado lateralmente por el choque de proporciones (panorámico en un viewport vertical) — un margen igual de grande que en escritorio habría acentuado ese recorte lateral más de lo necesario, y el `100dvh` ya resuelve el salto de la barra del navegador (se recalcula solo, sin salto brusco perceptible: es la unidad viva, no un valor leído una vez); no hacía falta un margen tan generoso para compensar un salto que la propia unidad ya absorbe. 8% sigue dando un rango real (~58px) para no depender de un scroll milimétrico.
+
+### Verificación ejecutada
+- `npm run build` → **0 errores, 116 páginas**.
+- Logo del navbar confirmado en 64px de alto, header en 88px, en escritorio y menú móvil, ambos idiomas — sin overflow en 320/375/768/1024px.
+- Logo del footer confirmado en 39.4×28px (ratio 1.4085, coincide con 262:186) en ambos idiomas, columna del footer sin descuadre.
+- Hero confirmado con su altura recalculada automáticamente tras el cambio del navbar (712px = `100dvh(800) - 88px` en 1024×800, sin tocar `HeroSlider.tsx` más que el número de respaldo).
+- Rango de scroll del video medido en escritorio (~131px) y móvil (~58px) — ver detalle arriba.
+- Recorte de `object-cover` verificado analíticamente contra las dimensiones reales del video (1280×720): 0px de recorte vertical en todas las resoluciones de escritorio probadas; el margen desplaza el recorte a los laterales.
+
+---
+
 ## 1. Stack y configuración
 
 **Versiones** (de `package.json`, rangos declarados con `^`):
@@ -858,7 +892,7 @@ src/
 │   │   ├── StoreProductCard.astro — tarjeta de producto con toggle "ver más/menos" y botón "Agregar a Cotización" (lógica en <script>); usado en /store/index, /store/[categoria], /store/producto/[slug]
 │   │   └── StoreShowcaseCard.astro— tarjeta de vitrina con badge (Nuevo/Oferta/Más Vendido); no se encontró import activo en las páginas revisadas
 │   └── ui/
-│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente, parseo defensivo ante cambios de formato — ver "Logo del navbar (arreglado)" más arriba); usado solo (sin texto al lado) en Navbar.astro (`h-20`, sin `w-20` — el logo no es cuadrado) y Footer.astro (`h-10 w-10`)
+│       ├── AsiavenLogo.astro      — logo inline (`currentColor`, leído y transformado en build-time desde el SVG fuente, parseo defensivo ante cambios de formato — ver "Logo del navbar (arreglado)" más arriba); usado sin texto al lado en Navbar.astro (`h-16`, 64px) y Footer.astro (`h-7`, 28px) — ninguno usa `w-*`, el logo no es cuadrado (262:186) y el ancho se resuelve solo en ambos casos
 │       ├── LanguageSwitcher.astro — selector de idioma server-only, cero JS; no renderiza nada si la ruta actual no está traducida
 │       └── PageHeader.astro       — banner de cabecera reutilizable (título + imagen de fondo); usado en /servicios, /proyectos, /soporte-tecnico, /contactanos y sus contrapartes en inglés
 ├── config/
