@@ -29,9 +29,10 @@ const openMenuLabel = t(lang, "nav.openMenu");
 ---
 
 <header class="sticky top-0 z-50 w-full bg-corporativo-gray shadow-sm">
-  <nav class="mx-auto flex w-full items-center justify-between px-4 py-3 sm:px-8 lg:px-16">
-    <a href={getRouteHref("home", lang)} aria-label="ASIAVEN" class="flex-shrink-0 text-white select-none">
-      <AsiavenLogo class="h-14 w-14" />
+  <nav class="mx-auto flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:px-16">
+    <a href={getRouteHref("home", lang)} class="flex flex-shrink-0 items-center gap-3 text-white select-none md:gap-2 lg:gap-3">
+      <AsiavenLogo class="h-16 w-16 flex-shrink-0" />
+      <span class="text-2xl font-bold tracking-widest uppercase md:text-lg lg:text-2xl">ASIAVEN</span>
     </a>
 
     <button
@@ -47,7 +48,7 @@ const openMenuLabel = t(lang, "nav.openMenu");
       </svg>
     </button>
 
-    <div id="nav-links" class="hidden items-center gap-8 md:flex">
+    <div id="nav-links" class="hidden items-center gap-4 md:flex lg:gap-8">
       {navLinks.map(({ label, href }) => (
         <a
           href={href}
