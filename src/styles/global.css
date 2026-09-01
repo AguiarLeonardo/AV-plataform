@@ -6,6 +6,16 @@
     --animate-marquee: marquee 40s linear infinite;
 }
 
+/* Alto real del <header> sticky, medido en runtime por Navbar.astro (ver su
+   <script>) y usado por cualquier sección que necesite restar el header de
+   un alto de viewport (100dvh) — HeroSlider.tsx y CorporateVideo.astro hoy.
+   El valor de respaldo (104px) es el alto real con las clases actuales del
+   navbar; si el navbar vuelve a cambiar de alto, el script lo recalcula
+   solo — no hace falta acordarse de actualizar este número a mano. */
+:root {
+    --header-height: 104px;
+}
+
 /* Carrusel infinito de logos (ClientLogosCarousel.tsx): la fila se duplica
    al renderizar y esta animación desplaza exactamente el 50% del ancho
    total (un set completo), quedando el clon ya alineado para el loop. */
