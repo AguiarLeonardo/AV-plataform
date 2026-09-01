@@ -41,7 +41,7 @@ export default function HeroSlider({ slides, prevLabel, nextLabel, goToSlideLabe
   };
 
   return (
-    <div className="group relative h-[82dvh] md:h-[calc(100dvh-var(--header-height,104px))] w-full overflow-hidden">
+    <div className="group relative h-[82dvh] md:h-[calc(100dvh-var(--header-height,88px))] w-full overflow-hidden">
       {slides.map((slide, index) => (
         <div
           key={slide.image}

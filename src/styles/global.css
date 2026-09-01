@@ -13,7 +13,7 @@
    navbar; si el navbar vuelve a cambiar de alto, el script lo recalcula
    solo — no hace falta acordarse de actualizar este número a mano. */
 :root {
-    --header-height: 104px;
+    --header-height: 88px;
 }
 
 /* Carrusel infinito de logos (ClientLogosCarousel.tsx): la fila se duplica
