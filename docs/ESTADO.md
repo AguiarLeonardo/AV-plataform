@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `fix/logo-video-ajustes` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `feat/video-en-y-brochure` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -490,6 +490,45 @@ Probado `h-16` (64px) primero, como sugería el dueño del proyecto — visualme
 
 ---
 
+## 🎥📄 Video del landing según idioma + botón de brochure (branch `feat/video-en-y-brochure`)
+
+### Parte 1 — Video en inglés
+
+**Dónde vive el video (antes de esta tarea):** `public/videos/video-corporativo.webm` + `.mp4` — directamente bajo `public/videos/`, sin subcarpeta, dos formatos (WebM primero en el `<video>`, MP4 como fallback), sin `poster` ni ningún otro archivo asociado.
+
+**La ruta asumida en el prompt para el video en inglés (`public/videos/corporativo/video-corporativo-en.mp4`, con una subcarpeta "corporativo") no era la convención real.** El archivo que el dueño del proyecto ya había subido, sin embargo, **sí** aterrizó en el lugar correcto: `public/videos/video-corporativo-en.webm` + `.mp4` — mismo directorio que el español, sufijo `-en`, exactamente el patrón ya usado en el resto del proyecto para pares ES/EN de un mismo asset. Se usó tal cual, sin mover nada.
+
+**Implementación:** `CorporateVideo.astro` resuelve `lang` igual que el resto del sitio (`Astro.currentLocale === "en" ? "en" : "es"`, nunca acceso literal a `.es`/`.en`). Nueva comprobación `hasEnglishVideo` — verdadera solo si **ambos** formatos en inglés existen (`publicFileExists("videos", "video-corporativo-en.webm")` y `.mp4`); si falta cualquiera de los dos, cae completo al par en español, para no mezclar formatos de idiomas distintos ni mostrar un reproductor vacío. `publicFileExists` es un helper nuevo (`src/utils/fileExists.ts`), extraído del mismo mecanismo que ya usaba `catalogPdfExists` (que ahora lo reutiliza) — mismo criterio en todo el proyecto: si no hay archivo, no se ofrece/no se usa.
+
+**Verificación ejecutada:**
+- `npm run build` → 0 errores, 116 páginas.
+- Grep sobre `dist/index.html` (ES): `<source src="/videos/video-corporativo.webm">` / `.mp4`.
+- Grep sobre `dist/en/index.html` (EN, con los archivos en inglés presentes): `<source src="/videos/video-corporativo-en.webm">` / `.mp4`.
+- Prueba de fallback: se movieron temporalmente los 2 archivos en inglés fuera de `public/videos/`, se reconstruyó, y `dist/en/index.html` volvió a servir `/videos/video-corporativo.webm`/`.mp4` (el par en español) — confirma la caída completa, no una mezcla de formatos. Los archivos se restauraron a su ubicación original inmediatamente después de la prueba.
+- Confirmado en el navegador (`video.currentSrc`) que `/en` reproduce efectivamente `video-corporativo-en.webm`, no solo que el HTML lo referencia.
+
+### Parte 2 — Botón de descarga del brochure
+
+**El brochure YA EXISTÍA** en `public/documentos/brochure-asiaven.pdf` (720 KB, PDF válido verificado por firma de archivo) cuando se pidió esta tarea — el prompt asumía que el archivo aún no existía. Confirmado con el dueño del proyecto: se implementa igual (mecanismo de ocultar-si-no-existe, reversible si el PDF se retira más adelante), pero como el archivo ya está presente, **el botón se muestra desde ya**, en ambos idiomas — no queda oculto.
+
+**Texto del botón — corregido con el dueño del proyecto.** El prompt pedía el texto "Ver proyectos" para un botón de descarga de PDF — coincide literalmente con el CTA de navegación del Hero de la home (que lleva a `/proyectos`, sin descargar nada), así que se consultó antes de usarlo tal cual. Texto final, explícitamente confirmado por el dueño del proyecto: **"Ver más proyectos"** (ES) / **"See more projects"** (EN) — nueva clave `projects.brochureCta` en ambos diccionarios.
+
+**Ubicación:** entre la grilla de proyectos y el encabezado "Empresas que confían en nosotros" — antes del carrusel de logos de clientes, como se pidió.
+
+**Estilo:** mismo lenguaje visual que los CTA de catálogo PDF ya existentes (`services.detail.catalogPdfCta`) — botón con borde `corporativo-blue`, ícono `Download` de lucide-react, `download` en el `<a>` (fuerza la descarga en vez de abrir el PDF inline en el navegador — patrón nuevo en el proyecto, los CTA de catálogo existentes no lo usaban).
+
+**Sin versión en inglés del brochure por ahora** — ambos idiomas descargan el mismo `brochure-asiaven.pdf`. **Si más adelante existe una versión en inglés:** replicar el mismo patrón que ya usa el video (`hasEnglishVideo` → análogo `hasEnglishBrochure` comprobando `publicFileExists("documentos", "brochure-asiaven-en.pdf")`, con caída al PDF en español si falta) — mismo directorio, sufijo `-en`, ninguna carpeta nueva.
+
+### Pendientes que esperan material del dueño del proyecto
+
+| Archivo | Ruta exacta | Qué pasa mientras no exista |
+|---|---|---|
+| Brochure en inglés (si se decide traducirlo) | `public/documentos/brochure-asiaven-en.pdf` | Hoy no aplica — el botón en `/en/projects` ya descarga el PDF en español, sin caída que implementar todavía (no hay chequeo `hasEnglishBrochure` en el código actual, ver nota arriba de cómo agregarlo si este archivo llega a existir). |
+
+(El video en inglés y el brochure en español, ambos pedidos originalmente como "pendientes de material", **ya llegaron** durante esta misma tarea — ver Partes 1 y 2 arriba. Esta tabla solo lista lo que sigue genuinamente pendiente al cierre de esta tarea.)
+
+---
+
 ## 1. Stack y configuración
 
 **Versiones** (de `package.json`, rangos declarados con `^`):
@@ -919,7 +958,8 @@ src/
 └── utils/
     ├── fakePrice.ts                 — genera un precio determinístico simulado a partir del id de producto
     ├── formSupport.ts               — helper vanilla compartido para formularios de soporte (toggle B2B/B2C)
-    └── pdfExists.ts                 — comprobación de existencia de PDF en build-time (ver "Catálogos PDF" más arriba)
+    ├── fileExists.ts                — `publicFileExists(...pathSegments)`, comprobación genérica de existencia bajo `public/` en build-time (`process.cwd()`, ver "Catálogos PDF" más arriba para el hallazgo de por qué no `import.meta.url`); usado por `pdfExists.ts`, por el video en inglés de `CorporateVideo.astro` y por el brochure de `/proyectos`
+    └── pdfExists.ts                 — `catalogPdfExists(filename)`, envoltorio de `fileExists.ts` para `public/documentos/catalogos/`
 ```
 
 **Regla de aislamiento entre los dos ecosistemas (corporativo / Store), auditada:** cada uno tiene exactamente **un** enlace puente hacia el otro — `Footer.astro` (corporativo) → "AV Store" → `/store` (hoy oculto tras `STORE_CATALOG_LIVE`, ver sección dedicada más arriba); `StoreFooter.astro` (Store) → "Sitio Corporativo Asiaven" → `/`. Ningún otro enlace cruza entre ambos, salvo las excepciones ya documentadas explícitamente (los CTAs de Envases hacia `/store/envases/*` y el enlace de vuelta del Hero de la Store).
