@@ -245,6 +245,7 @@ export default {
   projects: {
     pageTitle: "Our Projects",
     introHeading: "Some of our projects",
+    brochureCta: "See more projects",
     clientsHeading: "Companies that trust us",
     clients: [
       {

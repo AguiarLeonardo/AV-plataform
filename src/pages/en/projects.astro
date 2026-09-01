@@ -2,8 +2,13 @@
 import Layout from "../../layouts/Layout.astro";
 import PageHeader from "../../components/ui/PageHeader.astro";
 import ClientLogosCarousel from "../../components/react/ClientLogosCarousel.tsx";
-import { MapPin } from "lucide-react";
+import { MapPin, Download } from "lucide-react";
 import en from "../../i18n/en";
+import { publicFileExists } from "../../utils/fileExists";
+
+// Sin versión en inglés por ahora (ver docs/ESTADO.md) — ambos idiomas
+// descargan el mismo PDF hasta que exista un brochure propio en inglés.
+const brochurePdfExists = publicFileExists("documentos", "brochure-asiaven.pdf");
 ---
 
 <Layout title={en.seo.projects.title} description={en.seo.projects.description} routeKey="projects">
@@ -38,6 +43,19 @@ import en from "../../i18n/en";
           ))
         }
       </div>
+
+      {brochurePdfExists && (
+        <div class="mt-12 flex justify-center">
+          <a
+            href="/documentos/brochure-asiaven.pdf"
+            download
+            class="inline-flex w-fit items-center gap-2 rounded-lg border border-corporativo-blue px-6 py-3 text-sm font-semibold text-corporativo-blue transition-colors hover:bg-corporativo-blue hover:text-white no-underline"
+          >
+            <Download className="h-4 w-4" />
+            {en.projects.brochureCta}
+          </a>
+        </div>
+      )}
 
       <div class="mt-24">
         <h2 class="text-3xl md:text-4xl text-corporativo-gray font-bold text-center mb-12">

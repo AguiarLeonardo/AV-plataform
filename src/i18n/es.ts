@@ -281,6 +281,7 @@ const es = {
   projects: {
     pageTitle: "Nuestros Proyectos",
     introHeading: "Algunos de nuestros proyectos",
+    brochureCta: "Ver más proyectos",
     clientsHeading: "Empresas que confían en nosotros",
     clients: [
       {
