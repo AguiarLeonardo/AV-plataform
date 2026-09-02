@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `fix/texto-brochure` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-09-01 — corresponde al branch `feat/vistas-360-y-atras` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -542,6 +542,53 @@ Nada más cambió: mismo ícono `Download`, mismo `download` en el `<a>`, misma 
 
 ---
 
+## 🌐🔙 Vistas 360 con enlace directo + botón atrás en Envases (branch `feat/vistas-360-y-atras`)
+
+### Parte 1 — Páginas dedicadas de vista 360
+
+**Ruta:** `/vista-360/<slug>`, una por cada `SubProduct` de `services.ts` que tenga `panorama360` — generado con `getStaticPaths()` iterando **todos** los servicios (no solo ascensores), así que si mañana escaleras-mecánicas u otro servicio gana una panorámica, su página `/vista-360/*` aparece sola. El slug de cada ruta se deriva del nombre de archivo de `panorama360` (ya es kebab-case por convención, ver la sección del visor 360° más arriba) — no se declara a mano en ningún lado.
+
+**3 páginas generadas hoy** (las 3 panorámicas existentes, todas de "Ascensores"):
+- `https://www.asiaven.com/vista-360/ascensores-residenciales`
+- `https://www.asiaven.com/vista-360/ascensores-oficina`
+- `https://www.asiaven.com/vista-360/ascensores-panoramicos`
+
+**Extracción a hook compartido — no se reimplementó nada.** Toda la lógica de `Panorama360Modal.tsx` que no es específica de "ser un modal" (carga diferida de Pannellum, descarga con `fetch()` + progreso real, timeout de 30s, manejo de error, limpieza de blob/timeout/viewer) se movió a `src/components/react/usePanorama360.ts`, un hook que devuelve `{status, progress, containerRef}`. `Panorama360Modal.tsx` ahora solo aporta lo que sí es específico de modal (overlay, atrapar foco, cerrar con Escape/clic fuera, bloquear scroll del fondo, devolver foco al trigger) — verificado sin regresión: el modal en `/servicios/ascensores` se probó en navegador tras el refactor y sigue abriendo/cargando/cerrando igual que antes. El nuevo `Panorama360Viewer.tsx` (para las páginas de enlace directo) usa el mismo hook sin nada de lo anterior — no hay overlay, no hay foco que atrapar, no hay Escape que capturar, no hay scroll de fondo que bloquear (la página no tiene nada debajo). Única diferencia real de comportamiento: la carga arranca sola al montarse (la página existe para eso), no al pulsar un botón — pero eso ya era gratis, el hook siempre carga en su primer render sea cual sea el componente que lo use.
+
+**Solo español, no indexables — ambas decisiones ya tomadas por el dueño del proyecto, implementadas tal cual:**
+- Sin `LanguageSwitcher`, sin `Hreflang`, sin registro en `routes.ts` — la página no usa `Layout.astro` en absoluto (que trae `Navbar`/`Footer`/`WhatsAppButton`/`Hreflang`), sino un `<html>` propio y mínimo, con su propio `import "../../styles/global.css"` (sin este import el CSS de Tailwind no se aplica — se encontró en la primera verificación visual: la página cargaba sin ningún estilo).
+- `<meta name="robots" content="noindex,nofollow" />` explícito en las 3. Además, `astro.config.mjs` gana un `filter` en la integración `sitemap()` que excluye cualquier ruta bajo `/vista-360/` — no basta con el meta tag para que no aparezcan en el sitemap, hacía falta este filtro aparte.
+
+**Sin navbar ni footer completos — decisión evaluada, no solo asumida.** El shell de la página es mínimo a propósito: una barra superior delgada (nombre del ascensor + enlace "Volver a {servicio}") y el visor ocupando el resto de `100dvh` (mismo criterio que `CorporateVideo.astro`/`HeroSlider.tsx` para el salto de la barra del navegador móvil). Se decidió así porque el pedido explícito es que "la panorámica ES la página" — un navbar+footer completos habrían restado una porción significativa del alto disponible, justo donde más importa (móvil). Verificado en navegador (375×812): el visor ocupa prácticamente toda la pantalla, con la barra superior y el enlace de vuelta siempre visibles y sin recortar el visor.
+
+**Enlace desde `/servicios/ascensores`:** no se agregó nada junto al botón que abre el modal, como se pidió — el modal sigue siendo la experiencia principal ahí; las rutas nuevas son solo para compartir.
+
+### Verificación ejecutada — Parte 1
+- `npm run build` → **0 errores, 119 páginas** (116 + 3, las nuevas rutas de vista 360°).
+- Grep sobre `dist/`: `noindex,nofollow` presente en las 3 páginas.
+- Grep sobre `dist/`: 0 coincidencias de `rel="canonical"`/`rel="alternate"` en las 3.
+- Grep sobre `dist/sitemap-0.xml`: 0 coincidencias de `vista-360`.
+- Las 3 páginas verificadas en navegador (escritorio y 375×812): cada una carga su panorámica correcta (confirmado visualmente que las 3 son distintas entre sí — Residenciales, Oficina, Panorámicos no se mezclan), título y botón de vuelta con el texto correcto por página, el botón de vuelta enlaza a `/servicios/ascensores`.
+- Confirmado sin regresión: el modal en `/servicios/ascensores` (los 3 botones "Ver vista 360°") sigue abriendo/cargando/cerrando con normalidad tras extraer la lógica compartida al hook.
+
+### Parte 2 — Botón atrás en el catálogo de Envases
+
+**Estado previo del catálogo, verificado antes de tocar nada:**
+- `/envases` (hub, `envases/index.astro`) — **sin ningún botón de "atrás"**.
+- `/envases/[categoria]` — ya tiene "Volver al Catálogo" → `/envases` (su propio nivel superior).
+- `/envases/producto/[producto]` — ya tiene "Volver al Catálogo" → `/envases/{categoria.slug}` (su propio nivel superior).
+
+**Criterio aplicado — coherente con lo que ya existía, no una regla nueva:** cada nivel vuelve a **su propio nivel superior inmediato**, no todos al mismo destino. Los dos niveles de detalle ya seguían ese patrón (categoría → hub, producto → su categoría); lo único que faltaba era el escalón de arriba: el hub (`/envases`) no tenía adónde volver, porque conceptualmente su "nivel superior" no es otra página del catálogo sino la ficha del servicio corporativo que lo presenta. Se agregó ese único botón faltante: `/envases` → `/servicios/envases`, mismo estilo visual (`ArrowLeft` + texto) que los dos que ya existían. Las dos páginas de detalle no se tocaron — ya tenían el comportamiento correcto.
+
+Solo en español (el catálogo de Envases sigue fuera de i18n, ver sección 2 más arriba) — el texto del nuevo botón no pasa por diccionario.
+
+### Verificación ejecutada — Parte 2
+- `npm run build` → 0 errores, 119 páginas (sin cambio respecto a la Parte 1 — esta parte no agrega rutas).
+- Grep sobre `dist/envases/index.html`: el nuevo enlace `href="/servicios/envases"` presente.
+- Confirmado en navegador: `/envases` muestra "Volver al Servicio de Envases" sin regresión visual en el resto de la página; `/envases/latas-de-aluminio` sigue mostrando su propio "Volver al Catálogo" sin cambios.
+
+---
+
 ## 1. Stack y configuración
 
 **Versiones** (de `package.json`, rangos declarados con `^`):
@@ -870,6 +917,7 @@ Verificado explícitamente (quitando a propósito una entrada de `serviceSlugMap
 | `/envases` | `src/pages/envases/index.astro` | Estática | — |
 | `/envases/[categoria]` | `src/pages/envases/[categoria].astro` | Dinámica | itera `packagingCategories` de `src/data/packagingCatalog.ts` (5 categorías) |
 | `/envases/producto/[producto]` | `src/pages/envases/producto/[producto].astro` | Dinámica | itera los productos anidados dentro de `packagingCategories` (62 productos, vía subcategorías) |
+| `/vista-360/[slug]` | `src/pages/vista-360/[slug].astro` | Dinámica | itera `SubProduct` de **todos** los servicios de `services.ts` filtrando por `panorama360` presente (3 hoy, las 3 de Ascensores) — no usa `Layout.astro`, sin i18n, sin `Hreflang`, `noindex,nofollow`, excluida del sitemap (ver sección dedicada más arriba) |
 | `/404` | `src/pages/404.astro` | Estática (404 global, bilingüe en cliente) | — |
 
 ### Sitio corporativo — inglés (mismo `Layout.astro`, ver sección 2 para el alcance de i18n)
@@ -914,7 +962,7 @@ Verificado explícitamente (quitando a propósito una entrada de `serviceSlugMap
 | `/store/soporte/informacion` | `src/pages/store/soporte/informacion.astro` | Estática (hoy "Próximamente") | — |
 | `/store/soporte/asesoria-compra` | `src/pages/store/soporte/asesoria-compra.astro` | Estática (hoy "Próximamente") | — |
 
-El build genera **116 páginas HTML** en total con el flag en su estado actual (`false`) — confirmado con `npm run build` (ver sección 8). Si `STORE_CATALOG_LIVE` se pone en `true`, el total sube porque las 3 rutas dinámicas de la Store vuelven a generar sus combinaciones completas (~73 de `[categoria]` + 126 de `producto/[slug]` + 67 de `envases/[slug]`) — ese conteo mayor no se ha vuelto a medir desde que el flag se apagó, así que no se documenta una cifra exacta aquí para evitar otra cifra que quede obsoleta.
+El build genera **119 páginas HTML** en total con el flag en su estado actual (`false`) — confirmado con `npm run build` (ver sección 8); 116 del sitio corporativo/Store + 3 de `/vista-360/[slug]`. Si `STORE_CATALOG_LIVE` se pone en `true`, el total sube porque las 3 rutas dinámicas de la Store vuelven a generar sus combinaciones completas (~73 de `[categoria]` + 126 de `producto/[slug]` + 67 de `envases/[slug]`) — ese conteo mayor no se ha vuelto a medir desde que el flag se apagó, así que no se documenta una cifra exacta aquí para evitar otra cifra que quede obsoleta.
 
 ---
 
@@ -923,7 +971,7 @@ El build genera **116 páginas HTML** en total con el flag en su estado actual (
 ```
 src/
 ├── components/
-│   ├── react/                     (15 archivos .tsx — ver sección 5)
+│   ├── react/                     (17 archivos: 16 .tsx + usePanorama360.ts — ver sección 5)
 │   ├── sections/
 │   │   ├── About.astro            — bloque "Excelencia y Solidez Corporativa" con 3 íconos+texto; usado en / y /en
 │   │   ├── Affiliates.astro       — carrusel de desplazamiento lateral de 5 tarjetas "Divisiones" (AV Constructora/Elevators/Maquinarias/Tecnología/Envasados), sin enlace, 3 visibles en escritorio/2 en móvil; usado en / y /en (ver "CTA de WhatsApp + carrusel de divisiones" más arriba)
@@ -963,7 +1011,7 @@ src/
 ├── layouts/
 │   ├── Layout.astro                — layout raíz del sitio corporativo (Navbar+Footer+WhatsAppButton). `<html lang={Astro.currentLocale ?? "es"}>` — dinámico, NO hardcodeado (cambió en la Fase 1c de i18n)
 │   └── StoreLayout.astro           — layout raíz de la Store (StoreFooter). `<html lang="es">` — este sí sigue hardcodeado; la Store no participa de i18n (ver sección 2)
-├── pages/                          (40 archivos — ver sección 3 para el mapa completo, ES + EN + Store)
+├── pages/                          (41 archivos — ver sección 3 para el mapa completo, ES + EN + Store + vista-360)
 ├── store/
 │   └── quoteCart.ts                — utilidades de carrito de cotización sobre localStorage + CustomEvent
 ├── styles/
@@ -995,7 +1043,9 @@ src/
 | `CatalogFilters.tsx` | `client:load` (en `store/[categoria].astro`) | Ninguna | **Sí, extenso** — "Disponibilidad", "Precio", "Línea de Producto", "Especificaciones", las 4 opciones de línea, labels RAM/almacenamiento, botones "Limpiar todo"/"Filtros"/"Ver Resultados". ~20 cadenas. UI funcional a nivel de estado, pero no filtra la grilla real (nota propia en el código). |
 | `ProductFeatureSlider.tsx` | `client:load` (en `servicios/[servicio].astro`) | `products: {title, image, features: string[]}[]`, tipo derivado de `SubProduct` (`src/data/services.ts`) vía mapped type — actualizado post-1c, antes eran datos embebidos en la página | Parcial — el contenido viene por prop, ya resuelto con `localize()` desde `service.subProducts`; los 2 `aria-label` ("Producto anterior/siguiente") siguen hardcodeados. |
 | `ServiceSlider.tsx` | `client:load` (en `servicios/[servicio].astro`) | `images: string[]` | Solo `aria-label`s (4: "Imagen anterior/siguiente", "Ir a la imagen N"). |
-| `Panorama360Modal.tsx` | Ninguna directa — se monta dentro de `ProductFeatureSlider.tsx` (no tiene su propia directiva en ningún `.astro`) | Labels de estado de carga/error vía `Viewer360Labels` (namespace `services.viewer360` del diccionario) | Parcial — el texto llega por prop ya traducido; la lógica de fetch con progreso real, `AbortController` y timeout de 30s vive aquí (ver "Timeout de 30s + indicador de progreso real" más arriba). |
+| `Panorama360Modal.tsx` | Ninguna directa — se monta dentro de `ProductFeatureSlider.tsx` (no tiene su propia directiva en ningún `.astro`) | Labels de estado de carga/error vía `Viewer360Labels` (namespace `services.viewer360` del diccionario) | Parcial — el texto llega por prop ya traducido. Aporta solo lo específico de modal (overlay, atrapar foco, Escape, bloqueo de scroll); la lógica de fetch/progreso/timeout/limpieza vive en `usePanorama360.ts` desde "Vistas 360 con enlace directo" (ver más arriba). |
+| `usePanorama360.ts` | No es un componente, es un hook — sin directiva de hidratación propia | `src: string` (recibe la URL de la panorámica, la usa como dependencia del efecto) | No — sin texto propio, devuelve solo `{status, progress, containerRef}`. |
+| `Panorama360Viewer.tsx` | `client:load` (en `src/pages/vista-360/[slug].astro`) | `src`, `title`, `loadingText`, `loadingProgressText`, `errorText` — mismas labels de `Viewer360Labels` que ya usaba el modal, reenviadas por la página | Parcial — mismo criterio que `Panorama360Modal.tsx`: texto por prop, ya traducido. |
 | `QuoteCartList.tsx` | `client:load` (en `store/cotizacion.astro`) | Ninguna | **Sí** — "Tu cotización está vacía", "Agrega productos...", "Volver a la tienda", "Eliminar", "Total estimado". ~6 cadenas. |
 | `QuoteRequestForm.tsx` | `client:load` (en `store/cotizacion.astro`) | Ninguna | **Sí, extenso** — todos los labels de formulario, mensaje de éxito (incluye el correo `ventas@asiaven.com` embebido en el texto), botón de envío. ~12 cadenas. |
 | `SearchResultCard.tsx` | Ninguna directa — se renderiza dentro de `SearchResults.tsx` (que sí tiene `client:load`), por eso no aparece con su propia directiva en ningún `.astro` | `product: TechProduct` | **Sí** — "Ver más/Ver menos", "¡Agregado!", "Agregar a Cotización", "Saber más". ~4 cadenas. |
@@ -1109,9 +1159,9 @@ Nota: esta es una estimación de orden de magnitud a partir de la lectura manual
 
 ## 8. Estado de salud
 
-**Build:** ✅ Pasa. `npm run build` (`astro check && astro build`) completa sin errores — **116 páginas generadas** (cifra vigente al día de esta actualización, con `STORE_CATALOG_LIVE = false` — ver el mapa de rutas en la sección 3 para cómo llegar a esa cifra y qué la cambiaría).
+**Build:** ✅ Pasa. `npm run build` (`astro check && astro build`) completa sin errores — **119 páginas generadas** (cifra vigente al día de esta actualización, con `STORE_CATALOG_LIVE = false` — ver el mapa de rutas en la sección 3 para cómo llegar a esa cifra y qué la cambiaría).
 
-**Verificación de tipos:** ✅ Habilitada y haciéndose cumplir. `typescript@^6.0.3` + `@astrojs/check@^0.9.10` instalados como devDependencies (ver sección 1 para el porqué del pin a la major 6). `npm run check` (`astro check`) reporta **0 errores, 0 warnings, 0 hints** en 93 archivos. El script `build` ejecuta `astro check` antes de `astro build`, así que un error de tipos rompe el build.
+**Verificación de tipos:** ✅ Habilitada y haciéndose cumplir. `typescript@^6.0.3` + `@astrojs/check@^0.9.10` instalados como devDependencies (ver sección 1 para el porqué del pin a la major 6). `npm run check` (`astro check`) reporta **0 errores, 0 warnings, 1 hint** en 98 archivos (el hint es un `Props` sin usar en `AsiavenLogo.astro`, preexistente, sin relación con esta actualización). El script `build` ejecuta `astro check` antes de `astro build`, así que un error de tipos rompe el build.
 
 **Vulnerabilidades (`npm audit`):** **0** — antes había 4 (2 moderate, 2 high: Astro XSS en View Transitions, js-yaml, nanoid, postcss), resueltas con `npm audit fix` sin `--force` (67 paquetes transitivos actualizados dentro de rango semver; ningún rango de `package.json` cambió).
 
