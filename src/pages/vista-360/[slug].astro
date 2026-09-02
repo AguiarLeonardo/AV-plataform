@@ -1,0 +1,93 @@
+---
+import "../../styles/global.css";
+import { services, type Service, type SubProduct } from "../../data/services";
+import { localize, t } from "../../i18n/utils";
+import Panorama360Viewer from "../../components/react/Panorama360Viewer.tsx";
+import { ArrowLeft } from "lucide-react";
+
+/**
+ * Enlace directo a la vista 360 de un tipo de ascensor (u otro subproducto
+ * que gane panorámica en el futuro) — para compartir por WhatsApp/correo sin
+ * que el cliente tenga que navegar la página de servicios. Genera una ruta
+ * por cada SubProduct que tenga `panorama360`, iterando TODOS los servicios
+ * (no solo ascensores): si mañana escaleras-mecanicas u otro servicio gana
+ * una panorámica, su página aparece sola, sin tocar este archivo.
+ *
+ * El slug de la ruta se deriva del nombre de archivo de `panorama360` (ya es
+ * kebab-case por convención — ver "Convención de nombres" del visor 360 en
+ * docs/ESTADO.md), no se declara a mano ni se inventa un slug nuevo.
+ */
+export function getStaticPaths() {
+  const entries: {
+    params: { slug: string };
+    props: { subProduct: SubProduct; service: Service; panorama360: string };
+  }[] = [];
+  for (const service of services as Service[]) {
+    for (const subProduct of service.subProducts ?? []) {
+      if (!subProduct.panorama360) continue;
+      const filename = subProduct.panorama360.split("/").pop() ?? "";
+      const slug = filename.replace(/\.[^.]+$/, "");
+      entries.push({ params: { slug }, props: { subProduct, service, panorama360: subProduct.panorama360 } });
+    }
+  }
+  return entries;
+}
+
+const { subProduct, service, panorama360 } = Astro.props;
+
+// Solo español — decisión del dueño del proyecto: el contenido es una
+// imagen esférica, no hay texto que traducir más allá del nombre del
+// ascensor y el botón de volver. Sin LanguageSwitcher, sin routeKey, sin
+// Hreflang: estas páginas no se registran en routes.ts.
+const lang = "es" as const;
+const title = localize(subProduct.title, lang);
+const viewer360 = t(lang, "services.viewer360");
+const backHref = `/servicios/${service.slug}`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title} - Vista 360° - Asiaven</title>
+    <style>
+      /* Sin Layout.astro (que trae Navbar/Footer/WhatsAppButton) a propósito:
+         esta página es el visor, no una página de contenido — cada pixel de
+         alto cuenta, sobre todo en móvil. h-dvh en vez de h-screen: mismo
+         criterio ya usado en CorporateVideo.astro/HeroSlider.tsx para que la
+         barra del navegador móvil no deje huecos ni recorte contenido. */
+      html,
+      body {
+        height: 100dvh;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col bg-black">
+    <header class="flex flex-shrink-0 items-center justify-between gap-4 bg-corporativo-gray px-4 py-3 text-white">
+      <h1 class="truncate text-sm font-semibold sm:text-base">{title}</h1>
+      <a
+        href={backHref}
+        class="inline-flex flex-shrink-0 items-center gap-2 text-sm font-semibold text-white/90 hover:text-white hover:underline"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Volver a {localize(service.title, lang)}
+      </a>
+    </header>
+
+    <main class="min-h-0 flex-1">
+      <Panorama360Viewer
+        client:load
+        src={panorama360}
+        title={title}
+        loadingText={viewer360.loadingText}
+        loadingProgressText={viewer360.loadingProgressText}
+        errorText={viewer360.errorText}
+      />
+    </main>
+  </body>
+</html>

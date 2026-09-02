@@ -51,6 +51,10 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
+      // /vista-360/* son páginas noindex de venta directa (enlace para
+      // compartir, no contenido de captación) — no deben aparecer en el
+      // sitemap además de llevar la meta robots noindex,nofollow.
+      filter: (page) => !new URL(page).pathname.startsWith('/vista-360/'),
       serialize(item) {
         const url = new URL(item.url);
         const locale = getLangFromUrl(url);
