@@ -1,11 +1,20 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { packagingCategories } from "../../data/packagingCatalog";
+import { ArrowLeft } from "lucide-react";
 ---
 
 <Layout title="Catálogo de Envases Metálicos - Asiaven">
   <div class="max-w-7xl mx-auto px-4 pt-24 pb-10">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">Catálogo de Envases Metálicos</h1>
+    <a
+      href="/servicios/envases"
+      class="inline-flex items-center gap-2 text-sm font-semibold text-corporativo-blue hover:underline"
+    >
+      <ArrowLeft className="h-4 w-4" />
+      Volver al Servicio de Envases
+    </a>
+
+    <h1 class="mt-6 text-4xl font-bold text-gray-900 mb-4">Catálogo de Envases Metálicos</h1>
     <p class="text-lg text-gray-600 max-w-3xl">
       Todos los productos usan materiales que cumplen estándares de seguridad alimentaria, tienen
       buena hermeticidad y bloqueo de luz, y tras el llenado/esterilización cumplen requisitos de
