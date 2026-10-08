@@ -2,7 +2,7 @@
 
 **Fuente de verdad única del estado del proyecto.** Hasta 2026-09-01 este rol lo compartía con `ESTADO_PROYECTO.md` (documento distinto, en la raíz del repo) — quedó desactualizado frente a este archivo y se eliminó tras rescatar lo que tenía de valor (ver sección 1, incidente de Vercel, y sección "Notas de arquitectura" en la sección 4). Cualquier `.md` de la raíz que necesite remitir al estado del proyecto debe apuntar aquí, no a otro archivo.
 
-**Última actualización:** 2026-09-01 — corresponde al branch `feat/vistas-360-y-atras` (sin mergear; parte de `develop`).
+**Última actualización:** 2026-10-08 — corresponde al branch `fix/datos-miami` (sin mergear; parte de `develop`).
 
 *Nació como una auditoría de solo lectura y se ha mantenido tarea a tarea desde entonces. Es descriptivo, no prescriptivo: reporta hechos verificados en el código, no recomendaciones. Las secciones numeradas (1 en adelante) describen el estado ACTUAL del proyecto y se actualizan cada vez que dejan de ser ciertas — no son una foto histórica. Las secciones con encabezado de tarea (`## 🔥 Título (branch feat/...)`) sí son historia fija: documentan una tarea ya cerrada tal como quedó en su momento, y no se actualizan después (si algo que describen cambia más tarde, el cambio se documenta en una sección nueva, no editando la vieja). Si tienes dudas sobre si algo sigue vigente, las secciones numeradas son la respuesta; las secciones de tarea son el porqué.*
 
@@ -10,7 +10,7 @@
 
 ## ⚠️ BLOQUEANTES DE LANZAMIENTO
 
-**Datos de la oficina de Miami son ficticios/provisionales** (confirmado por el dueño del proyecto). La dirección ("1234 Miami Ave, Suite 100, Miami, FL 33132") tiene forma genérica de placeholder, y el teléfono ("+1 (305) 555-0198") usa el prefijo `555`, reservado en Norteamérica para uso ficticio — nunca asignado a líneas reales. Aparece en `Footer.astro`, `contactanos.astro` y `en/contact.astro` (todos con comentario `⚠️ DATOS FICTICIOS/PROVISIONALES` en el código, junto al literal). **Antes de migrar el dominio a producción**: reemplazar por los datos reales de esa sede, o eliminar la sección por completo. No modificado en ninguna fase — solo señalizado.
+**Ninguno vigente.** El único bloqueante que figuraba aquí — los datos ficticios/provisionales de la oficina de Miami — se resolvió con los datos reales (ver "Datos reales de la oficina de Estados Unidos" más abajo). Esta lista queda vacía; si aparece un bloqueante nuevo, se registra aquí.
 
 ## 🧹 Limpieza estructural del sitio corporativo (branch `feat/limpieza-corporativa`)
 
@@ -589,6 +589,20 @@ Solo en español (el catálogo de Envases sigue fuera de i18n, ver sección 2 m�
 
 ---
 
+## 📍 Datos reales de la oficina de Estados Unidos (branch `fix/datos-miami`)
+
+Los datos provisionales/ficticios de la oficina de Miami (bloqueante de lanzamiento, ver encabezado del documento) se reemplazan por los reales, confirmados por el dueño del proyecto: **17051 SW 92nd St, Miami, FL 33196, USA** y **+1 (305) 721-8840**.
+
+**Dónde aparecían (5 archivos, verificado por grep sobre `src/`):** `Footer.astro`, `contactanos.astro`, `en/contact.astro` (los 3 con el comentario `DATOS FICTICIOS/PROVISIONALES`, ya eliminado) y los diccionarios `es.ts`/`en.ts` (dirección).
+
+**Fuente única:** la dirección ya vivía en `common.usOfficeAddress` (una clave por idioma, usada por los 3 consumidores). El teléfono, en cambio, estaba repetido **literal en los 3 archivos** — se centralizó en la clave nueva `common.usOfficePhone` antes de cambiarlo (mismo valor en ES/EN, un número de teléfono no se traduce; la clave existe por idioma solo porque `en.ts` debe tener la misma forma que `es.ts`). Para cambiar la oficina de EE. UU. otra vez: solo `common.usOfficeAddress` y `common.usOfficePhone` en `es.ts`/`en.ts`. (El teléfono de la oficina de Venezuela sigue literal en 4 archivos — fuera de alcance, anotado como posible centralización futura.)
+
+**Inglés:** la dirección en `en.ts` termina en "USA", no en "EE. UU." (defecto corregido en una fase anterior; `es.ts` conserva "EE. UU.").
+
+**Verificación:** `npm run build` → 0 errores, 119 páginas; 0 coincidencias de "1234 Miami Ave" y "555-0198" en `dist/`; datos nuevos presentes en `contactanos`, `en/contact` y el footer de ambos idiomas.
+
+---
+
 ## 1. Stack y configuración
 
 **Versiones** (de `package.json`, rangos declarados con `^`):
@@ -851,7 +865,7 @@ Verificado en navegador (variante de detección de cliente): `http://localhost:4
 3. **Prerrequisito de tipos para cuando se retome `/envases`:** `packagingCatalog.ts` y `techCatalog.ts` necesitan `satisfies` en vez de su anotación de tipo explícita actual — **pero eso NO basta por sí solo** (hallazgo de la Fase 2, ver sección dedicada): cada `slug`/identificador que deba quedar como literal necesita además `as const` en el campo individual, porque el campo está tipado como `string` en la interfaz (`PackagingCategory.slug`, `TechProduct.slug` o equivalente) y `satisfies` por sí solo ensancha ese campo a `string` de todas formas. Ver el fix aplicado a `services.ts` como referencia exacta del patrón a replicar.
 4. **`ClientLogosCarousel.tsx`** — sin texto de UI propio más allá de los 17 nombres de cliente (`alt` de cada logo); nada que traducir en el componente en sí.
 5. **PENDIENTE DE VERIFICACIÓN:** cuando `www.asiaven.com` migre a Vercel, confirmar con `curl -I` que ese host **no** devuelve `X-Robots-Tag`, mientras `av-plataform-ruby.vercel.app` sí lo hace (ya verificado en producción el 2026-08-28 — ver sección 8).
-6. **BLOQUEANTE DE LANZAMIENTO — datos de oficina de Miami ficticios.** Ver encabezado dedicado al inicio de este documento. Se mantiene sin cambios: no se tocó en este cierre, solo se reafirma que sigue pendiente.
+6. ~~**BLOQUEANTE DE LANZAMIENTO — datos de oficina de Miami ficticios.**~~ **Resuelto** (ver "Datos reales de la oficina de Estados Unidos"); ya no hay bloqueantes de lanzamiento registrados.
 
 ### Fase 2 — `/servicios` traducido (branch `feat/i18n-servicios`)
 
